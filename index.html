@@ -1273,6 +1273,8 @@ function voicePlan(t){
 const AIV=()=>/Gemini/.test((window.VOICE_MANIFEST&&window.VOICE_MANIFEST.voice)||'');
 if(AIV())$('#voice-credit').textContent='よみあげボイス：Google Gemini TTS（Zephyr）／いちぶ VOICEVOX:四国めたん';
 const estMs=t=>String(t).replace(/[、。！？\s]/g,'').length*190+500;
+// アップデートで 取ってきた ファイルは https://manabi.local/web/… から よむ（WEB_OVR は 本体が いれる）
+const wAsset=f=>(window.WEB_OVR&&window.WEB_OVR.indexOf(f)>=0)?'https://manabi.local/web/'+f:f;
 function playList(list,fallbackText,onEnd){
   const tok=++vTok;let i=0;if(!vAud)vAud=new Audio();vAud.pause();
   const fin=()=>{if(tok===vTok&&onEnd){const f=onEnd;onEnd=null;f()}};
@@ -1282,7 +1284,7 @@ function playList(list,fallbackText,onEnd){
     clearTimeout(wd);
     if(tok!==vTok)return;
     if(i>=list.length){fin();return}
-    const it=list[i++];vAud.src=it.f;
+    const it=list[i++];vAud.src=wAsset(it.f);
     vAud.onended=()=>{clearTimeout(wd);if(tok===vTok)setTimeout(next,it.gap||0)};
     vAud.onerror=skip;
     wd=setTimeout(skip,15000);
@@ -3699,7 +3701,8 @@ window.onWebUpd=o=>{
 window.onWebUpdProg=(i,n)=>{$('#wu-msg').textContent='アップデート中… '+i+' / '+n};
 window.onWebUpdErr=e=>{const b=$('#wu-btn');b.disabled=false;b.textContent='もう一度確認';b.onclick=wuInit;$('#wu-msg').textContent='アップデートに失敗しました：'+e};
 // ここまで エラーなく うごいた ＝ この なかみは だいじょうぶ（あたらしい なかみの ときの もどし まち を とめる）
-try{window.Android&&window.Android.webOk&&window.Android.webOk()}catch(e){}
+// ほぞんデータの しるし：アップデート後も おなじ データが よめているかを 本体が たしかめる
+try{let pv=localStorage.getItem('manabi-probe');if(!pv){pv=Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('manabi-probe',pv)}window.Android&&window.Android.webOk&&window.Android.webOk(pv)}catch(e){}
 // アップデートの あとに たちあがったら、せいこうを しらせる（親むけ）
 try{if(WU()){const raw=String(window.Android.webVer()||'');if(/こうしん/.test(raw)&&S.webVer!==raw){$('#upd-done-v').textContent='内容：'+wuVer();$('#upd-done').hidden=false}S.webVer=raw;save()}}catch(e){}
 $('#upd-done-ok').onclick=()=>{$('#upd-done').hidden=true};
