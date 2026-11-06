@@ -884,7 +884,7 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
   <!-- ALBUM MANAGER -->
   <section id="v-albmgr" hidden>
     <div class="top"><button class="back" id="am-back">もどる</button><span class="pill" id="am-title"></span></div>
-    <div class="pkbar"><button class="btn ghost" id="am-all">ぜんぶ えらぶ</button><button class="btn ghost" id="am-none">えらびなおし</button><span class="small" id="am-msg"></span><button class="btn ghost" id="am-del" disabled>えらんだものを けす</button></div>
+    <div class="pkbar"><button class="btn ghost" id="am-all">全部選ぶ</button><button class="btn ghost" id="am-none">選び直し</button><span class="small" id="am-msg"></span><button class="btn ghost" id="am-del" disabled>選んだものを消す</button></div>
     <div id="am-grid"></div>
   </section>
 
@@ -930,84 +930,84 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
 
   <!-- GROWTH（せいちょうの きろく） -->
   <section id="v-growth" hidden>
-    <div class="top"><button class="back" id="gr-back">もどる</button><span class="pill">せいちょうの きろく</span></div>
+    <div class="top"><button class="back" id="gr-back">もどる</button><span class="pill">成長の記録</span></div>
     <div id="gr-wrap"></div>
     <div id="gr-tip" hidden></div>
   </section>
 
   <!-- PARENT -->
   <section id="v-parent" hidden>
-    <div class="top"><button class="back" data-home>もどる</button><span class="pill">おうちのひと</span></div>
+    <div class="top"><button class="back" data-home>もどる</button><span class="pill">保護者メニュー</span></div>
     <div class="panel" id="pin-box">
-      <label>PIN（はじめは 1234）<input id="pin-in" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></label>
+      <label>暗証番号（初期値は 1234）<input id="pin-in" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></label>
       <div class="err" id="pin-err"></div>
-      <button class="btn" id="pin-ok">ひらく</button>
+      <button class="btn" id="pin-ok">開く</button>
     </div>
     <div class="panel" id="parent-panel" hidden>
-      <button type="button" class="btn" id="gr-open">📈 せいちょうの きろく（グラフ）</button>
-      <div id="wu-row" hidden style="margin-top:10px"><div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="wu-btn">あたらしい なかみを しらべる</button><span class="small" id="wu-msg"></span></div><div class="small" id="wu-ver"></div></div>
-      <label>スタンプ3つ（ちがう ゲーム3つ）で もらえる チケット（分）<input id="set-per" type="number" min="1" max="60" inputmode="numeric"></label>
-      <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="ci-again">スタンプの せつめいを こどもに もういちど みせる</button></div>
+      <button type="button" class="btn" id="gr-open">📈 成長の記録（グラフ）</button>
+      <div id="wu-row" hidden style="margin-top:10px"><div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="wu-btn">新しい内容を確認</button><span class="small" id="wu-msg"></span></div><div class="small" id="wu-ver"></div></div>
+      <label>スタンプ3つ（違うゲーム3つ）でもらえるチケット（分）<input id="set-per" type="number" min="1" max="60" inputmode="numeric"></label>
+      <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="ci-again">スタンプの説明を子どもにもう一度見せる</button></div>
       <label>1日にもらえる上限（分）<input id="set-cap" type="number" min="5" max="240" inputmode="numeric"></label>
       <label>ラッキーボーナスの確率（%）<input id="set-luck" type="number" min="0" max="100" inputmode="numeric"></label>
-      <label>⭐おすすめ3つを ぜんぶ やった日の ボーナス（分・0で なし）<input id="set-rbonus" type="number" min="0" max="60" inputmode="numeric"></label>
-      <label>とけいの レベル（3かい クリアで じどうで あがる）<select id="set-tklv"><option value="1">1：○じ ちょうど</option><option value="2">2：○じはん</option><option value="3">3：5ふん きざみ</option></select></label>
-      <label>けいさんの だんかい（5もん ぜんぶ せいかいで はやく できたら じどうで すすむ）<select id="set-calc"></select></label>
-      <label>きまりの レベル（2かい クリアで じどうで あがる）<select id="set-kmlv"><option value="1">1：AB</option><option value="2">2：AAB・ABB</option><option value="3">3：ABC</option><option value="4">4：？が まんなか</option><option value="5">5：ふえる・へる</option><option value="6">6：かずの きまり</option></select></label>
-      <label>ロボットの レベル（2かい クリアで じどうで あがる）<select id="set-rblv"><option value="1">1：まっすぐ</option><option value="2">2：まがる</option><option value="3">3：いわを よける</option><option value="4">4：ながい みち</option><option value="5">5：くりかえし</option></select></label>
-      <label id="earn-row1" hidden>チケットがたまる べんきょうアプリ：なん分つかうと（分）<input id="set-emin" type="number" min="1" max="120" inputmode="numeric"></label>
+      <label>⭐おすすめ3つを全部やった日のボーナス（分・0でなし）<input id="set-rbonus" type="number" min="0" max="60" inputmode="numeric"></label>
+      <label>とけいのレベル（3回クリアで自動的に上がる）<select id="set-tklv"><option value="1">1：○時ちょうど</option><option value="2">2：○時半</option><option value="3">3：5分きざみ</option></select></label>
+      <label>けいさんの段階（5問全部正解で、速くできたら自動的に進む）<select id="set-calc"></select></label>
+      <label>きまりのレベル（2回クリアで自動的に上がる）<select id="set-kmlv"><option value="1">1：AB</option><option value="2">2：AAB・ABB</option><option value="3">3：ABC</option><option value="4">4：？が真ん中</option><option value="5">5：増える・減る</option><option value="6">6：数のきまり</option></select></label>
+      <label>ロボットのレベル（2回クリアで自動的に上がる）<select id="set-rblv"><option value="1">1：まっすぐ</option><option value="2">2：曲がる</option><option value="3">3：岩をよける</option><option value="4">4：長い道</option><option value="5">5：くりかえし</option></select></label>
+      <label id="earn-row1" hidden>チケットがたまる勉強アプリ：何分使うと（分）<input id="set-emin" type="number" min="1" max="120" inputmode="numeric"></label>
       <label id="earn-row2" hidden>　　→ もらえるチケット（分）<input id="set-egive" type="number" min="1" max="60" inputmode="numeric"></label>
-      <label>こどもの なまえ<input id="set-name" type="text" maxlength="12" placeholder="なまえ"></label>
-      <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="fam-toggle">かぞくの おうえん ▼</button></div>
+      <label>子どもの名前<input id="set-name" type="text" maxlength="12" placeholder="なまえ"></label>
+      <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="fam-toggle">家族の応援 ▼</button></div>
       <div id="fam-box" hidden>
-      <div class="small">かぞくの おうえん：しゃしん ＋ よびかた ＋ ひとこと（ひとこと は なくてもOK）。ミッションの おわりに でてきます。「へんしゅう」で ひとこと・よびかた・しゃしん を かえられます。<br>⭐：ゲームの なかに でてくる しゃしん（くだものを たべにくる・3もん つづけて せいかいで おうえん）。ママ ひとり・パパ ひとり の しゃしんに つけるのが おすすめ。⭐が ひとつも なければ、きりぬきから えらびます。</div>
-      <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="fam-off-novoice">こえが ないものを ださない</button><button type="button" class="btn ghost" id="fam-on-all">ぜんぶ だす</button></div>
+      <div class="small">家族の応援：写真＋呼び方＋ひとこと（ひとことはなくてもOK）。ミッションの終わりに出てきます。「編集」でひとこと・呼び方・写真を変えられます。<br>⭐：ゲームの中に出てくる写真（果物を食べに来る・3問続けて正解で応援）。ママ1人・パパ1人の写真に付けるのがおすすめ。⭐がひとつもなければ、切り抜きから選びます。</div>
+      <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="fam-off-novoice">声がないものを出さない</button><button type="button" class="btn ghost" id="fam-on-all">全部出す</button></div>
       <div id="fam-list"></div>
       <div class="row" style="flex-wrap:wrap;justify-content:flex-start">
-        <input id="fam-role" type="text" maxlength="8" placeholder="ママ" style="max-width:6em" aria-label="よびかた">
-        <input id="fam-msg" type="text" maxlength="30" placeholder="ひとこと（れい：ママも うれしいよ）" style="max-width:16em" aria-label="ひとこと">
-        <label class="btn ghost" for="fam-photo">しゃしんを 1まい えらぶ</label><input id="fam-photo" type="file" accept="image/*" hidden>
-        <button type="button" class="btn ghost" id="fam-pick" hidden>まとめて とりこむ（きりぬき）</button>
+        <input id="fam-role" type="text" maxlength="8" placeholder="ママ" style="max-width:6em" aria-label="呼び方">
+        <input id="fam-msg" type="text" maxlength="30" placeholder="ひとこと（例：ママも うれしいよ）" style="max-width:16em" aria-label="ひとこと">
+        <label class="btn ghost" for="fam-photo">写真を1枚選ぶ</label><input id="fam-photo" type="file" accept="image/*" hidden>
+        <button type="button" class="btn ghost" id="fam-pick" hidden>まとめて取り込む（切り抜き）</button>
       </div>
       </div>
       <div class="row" style="flex-wrap:wrap;justify-content:flex-start">
-        <button type="button" class="btn ghost" id="alb-btn">アルバムに ついか（しゃしん・どうが）</button><input id="alb-file" type="file" accept="image/*,video/*" multiple hidden>
-        <button class="btn ghost" id="alb-mgr">アルバムを かんり（いちらん・さくじょ）</button>
-        <button class="btn ghost" id="alb-clear">アルバムを ぜんぶ けす</button>
+        <button type="button" class="btn ghost" id="alb-btn">アルバムに追加（写真・動画）</button><input id="alb-file" type="file" accept="image/*,video/*" multiple hidden>
+        <button class="btn ghost" id="alb-mgr">アルバムの管理（一覧・削除）</button>
+        <button class="btn ghost" id="alb-clear">アルバムを全部消す</button>
       </div>
       <div class="row" style="flex-wrap:wrap;justify-content:flex-start">
-        <label class="btn ghost" for="nurie-file">ぬりえの えを ついか</label><input id="nurie-file" type="file" accept="image/*" multiple hidden>
-        <button class="btn ghost" id="nurie-clear">ついかした ぬりえを ぜんぶ けす</button>
+        <label class="btn ghost" for="nurie-file">ぬりえの絵を追加</label><input id="nurie-file" type="file" accept="image/*" multiple hidden>
+        <button class="btn ghost" id="nurie-clear">追加したぬりえを全部消す</button>
       </div>
-      <div class="small">ぬりえ: ぬりえの がぞう（せんが）や、すきな えを えらぶと、せんだけの えに へんかんして ぬれるように なります。ひとの かいた えは、かていの なかだけで つかってください。</div>
+      <div class="small">ぬりえ：ぬりえの画像（線画）や好きな絵を選ぶと、線だけの絵に変換して塗れるようになります。他の人が描いた絵は、家庭の中だけで使ってください。</div>
       <div class="small" id="alb-info"></div>
       <div class="small" id="media-msg"></div>
       <div id="bk-box" hidden>
-        <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="bk-make">バックアップを つくる</button><button type="button" class="btn ghost" id="bk-load">バックアップから もどす</button></div>
-        <div class="small">かぞくの しゃしんと こえ・アルバム・ぬりえ・すすみぐあいを、1つの ファイルに まとめて タブレットの「Download/manabi-backup」に ほぞんします（PINは ふくみません）。ネットには おくりません。タブレットが こわれると いっしょに きえるので、パソコンに コピーして、たいせつに しまってください。「もどす」は たりない ぶんだけを たします。</div>
+        <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="bk-make">バックアップを作る</button><button type="button" class="btn ghost" id="bk-load">バックアップから戻す</button></div>
+        <div class="small">家族の写真と声・アルバム・ぬりえ・進み具合を1つのファイルにまとめて、タブレットの「Download/manabi-backup」に保存します（暗証番号は含みません）。ネットには送りません。タブレットが壊れると一緒に消えるので、パソコンにコピーして大切に保管してください。「戻す」は足りない分だけを足します。</div>
         <div class="small" id="bk-msg"></div>
       </div>
-      <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button class="btn ghost" id="app-mgr-btn" hidden>べんきょう・ごほうびアプリを えらぶ</button></div>
+      <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button class="btn ghost" id="app-mgr-btn" hidden>勉強アプリ・ごほうびアプリを選ぶ</button></div>
       <div id="app-mgr" class="mgr" hidden></div>
-      <label id="app-row" hidden>つかう動画アプリ<select id="set-app"><option value="kids">YouTube Kids（おすすめ）</option><option value="youtube">YouTube</option></select></label>
-      <label>PINをかえる<input id="set-pin" type="password" inputmode="numeric" maxlength="8" placeholder="あたらしいPIN" autocomplete="off"></label>
+      <label id="app-row" hidden>使う動画アプリ<select id="set-app"><option value="kids">YouTube Kids（おすすめ）</option><option value="youtube">YouTube</option></select></label>
+      <label>暗証番号を変える<input id="set-pin" type="password" inputmode="numeric" maxlength="8" placeholder="新しい暗証番号" autocomplete="off"></label>
       <div class="row" style="flex-wrap:wrap;justify-content:flex-start">
         <button class="btn ghost" id="add10">チケット +10分</button>
         <button class="btn ghost" data-arm="zero">チケットを0にする</button>
-        <button class="btn ghost" data-arm="today">きょうのクリアを消す</button>
-        <button class="btn ghost" data-arm="prog">すすみぐあいを最初から</button>
-        <p id="voice-credit" style="font-size:12px;opacity:.7;margin:8px 0">よみあげボイス：VOICEVOX:四国めたん（v15）</p>
-        <button class="btn ghost" id="sys-settings" hidden>タブレットの設定をひらく</button>
-        <button class="btn ghost" id="sys-acc" hidden>かんし機能（アクセシビリティ）をひらく</button>
-        <button class="btn ghost" id="sys-store" hidden>Playストアをひらく</button>
-        <button class="btn ghost" id="sys-update" hidden>アプリを こうしん（ブラウザ）</button>
-        <button class="btn ghost" id="sys-voice" hidden>よみあげの こえを いれる</button>
+        <button class="btn ghost" data-arm="today">今日のクリアを消す</button>
+        <button class="btn ghost" data-arm="prog">進み具合を最初から</button>
+        <p id="voice-credit" style="font-size:12px;opacity:.7;margin:8px 0">読み上げの声：VOICEVOX:四国めたん（v15）</p>
+        <button class="btn ghost" id="sys-settings" hidden>タブレットの設定を開く</button>
+        <button class="btn ghost" id="sys-acc" hidden>見守り機能（ユーザー補助）を開く</button>
+        <button class="btn ghost" id="sys-store" hidden>Playストアを開く</button>
+        <button class="btn ghost" id="sys-update" hidden>アプリを更新（ブラウザ）</button>
+        <button class="btn ghost" id="sys-voice" hidden>読み上げの声を入れる</button>
         <button class="btn ghost" id="sys-clearerr" hidden>エラー記録を消す</button>
-        <button class="btn ghost" data-arm="release" hidden>制限を解除して元にもどす</button>
+        <button class="btn ghost" data-arm="release" hidden>制限を解除して元に戻す</button>
       </div>
       <div class="small" id="parent-info"></div>
       <div class="small" id="diag-info" style="white-space:pre-wrap" hidden></div>
-      <div class="small">書き順データ: KanjiVG（Ulrich Apel ほか, CC BY-SA 3.0）</div>
+      <div class="small">書き順データ：KanjiVG（Ulrich Apel ほか, CC BY-SA 3.0）</div>
     </div>
   </section>
 </main>
@@ -1470,7 +1470,7 @@ $('#app-mgr-btn').onclick=()=>{
     {const u=appIconUrl(a.p),ic=document.createElement(u?'img':'span');ic.className='aico';if(u)ic.src=u;else ic.textContent=(a.l||'?').slice(0,1);l.appendChild(ic)}
     {const nm=document.createElement('span');nm.className='anm';nm.textContent=a.l;l.appendChild(nm)}
     const sel=document.createElement('select');
-    [['','つかわない'],['free','べんきょう（チケットいらない）'],['earn','べんきょう（つかうとチケットがたまる）'],['ticket','ごほうび（チケットをつかう）']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;if((cur?cur.t:'')===v)o.selected=true;sel.appendChild(o)});
+    [['','使わない'],['free','勉強（チケット不要）'],['earn','勉強（使うとチケットがたまる）'],['ticket','ごほうび（チケットを使う）']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;if((cur?cur.t:'')===v)o.selected=true;sel.appendChild(o)});
     sel.onchange=()=>{
       const old=(S.apps||[]).find(x=>x.p===a.p);
       S.apps=(S.apps||[]).filter(x=>x.p!==a.p);
@@ -1479,7 +1479,7 @@ $('#app-mgr-btn').onclick=()=>{
     };
     l.appendChild(sel);box.appendChild(l);
   });
-  if(!list.length)box.textContent='アプリが みつかりませんでした';
+  if(!list.length)box.textContent='アプリが見つかりませんでした';
 };
 const TICKET_MAX=5;
 /* スタンプカード */
@@ -2691,40 +2691,40 @@ function renderGrowth(){
   const a1=acc(w1),a0=acc(w0);
   const tile=(lab,val,sub)=>'<div class="gr-tile"><div class="gr-lab">'+lab+'</div><div class="gr-val">'+val+'</div><div class="gr-sub">'+(sub||'')+'</div></div>';
   let h='<div class="gr-tiles">'+
-    tile('きょう といた もんだい',today+'<small> もん</small>')+
-    tile('この7日：1かいめで せいかい',a1==null?'—':a1+'<small>%</small>',a0==null?'':'その まえの 7日は '+a0+'%')+
-    tile('この30日で あそんだ 日',p30+'<small> 日</small>')+
-    tile('つづけて あそんだ 日',streak+'<small> 日</small>')+'</div>';
-  if(!Q.length){$('#gr-wrap').innerHTML=h+'<div class="panel small">まだ きろくが ありません。ゲームで あそぶと、ここに グラフが でてきます。</div>';return}
-  h+='<div class="gr-range"><button class="btn ghost'+(grRange===14?' on':'')+'" data-gr="14">2しゅうかん</button><button class="btn ghost'+(grRange===60?' on':'')+'" data-gr="60">2かげつ</button></div>';
-  h+='<div class="gr-two"><div class="gr-card"><h3>1日に といた もんだいの かず</h3>'+grBars(days)+'</div>';
-  h+='<div class="gr-card"><h3>1かいめで せいかいした わりあい（%）</h3>'+grLine(days)+'<div class="gr-note">3もん いじょう といた 日だけ。あてずっぽうで あたっても、まちがえた あとの せいかいは ふくみません。</div></div></div>';
+    tile('今日解いた問題',today+'<small> 問</small>')+
+    tile('この7日：1回目で正解',a1==null?'—':a1+'<small>%</small>',a0==null?'':'その前の7日は '+a0+'%')+
+    tile('この30日で遊んだ日',p30+'<small> 日</small>')+
+    tile('続けて遊んだ日',streak+'<small> 日</small>')+'</div>';
+  if(!Q.length){$('#gr-wrap').innerHTML=h+'<div class="panel small">まだ記録がありません。ゲームで遊ぶと、ここにグラフが出てきます。</div>';return}
+  h+='<div class="gr-range"><button class="btn ghost'+(grRange===14?' on':'')+'" data-gr="14">2週間</button><button class="btn ghost'+(grRange===60?' on':'')+'" data-gr="60">2か月</button></div>';
+  h+='<div class="gr-two"><div class="gr-card"><h3>1日に解いた問題の数</h3>'+grBars(days)+'</div>';
+  h+='<div class="gr-card"><h3>1回目で正解した割合（%）</h3>'+grLine(days)+'<div class="gr-note">3問以上解いた日だけ。間違えた後の正解（当てずっぽう）は含みません。</div></div></div>';
   // ゲームごと
   const games=MISSIONS.filter(m=>Q.some(e=>e[1]===m.k));
-  h+='<h3 class="gr-h">ゲームごとの すすみぐあい</h3><div class="gr-games">';
+  h+='<h3 class="gr-h">ゲームごとの進み具合</h3><div class="gr-games">';
   games.forEach(m=>{
     const L=Q.filter(e=>e[1]===m.k),g1=L.filter(e=>e[0]>now-7*D),g0=L.filter(e=>e[0]<=now-7*D&&e[0]>now-14*D);
     const r1=acc(g1),r0=acc(g0),sec=a=>a.length?Math.round(a.reduce((s,e)=>s+e[4],0)/a.length*10)/10:null,s1=sec(g1),s0=sec(g0);
     const st=GR_STAGE[m.k]?GR_STAGE[m.k]():null,nw=grNow(m.k);
     let stage='';
-    if(st&&nw!=null)stage='<div class="gr-stage">いまの だんかい <b>'+(nw+1)+' / '+st.length+'</b>　'+grEsc(st[nw])+'</div>'+grMeter(nw+1,st.length);
-    else if(m.k==='kokki'&&S.kokki)stage='<div class="gr-stage">でてくる くに <b>'+Math.min(KOKKI.length,8+4*S.kokki.wins)+' / '+KOKKI.length+'</b></div>';
-    else if(/^(hira|kata|num)$/.test(m.k)){const c=grKanaCount(m.k);stage='<div class="gr-stage">「みて かく」まで できた もじ <b>'+c[0]+' / '+c[1]+'</b></div>'+grMeter(c[0],c[1])}
+    if(st&&nw!=null)stage='<div class="gr-stage">今の段階 <b>'+(nw+1)+' / '+st.length+'</b>　'+grEsc(st[nw])+'</div>'+grMeter(nw+1,st.length);
+    else if(m.k==='kokki'&&S.kokki)stage='<div class="gr-stage">出てくる国 <b>'+Math.min(KOKKI.length,8+4*S.kokki.wins)+' / '+KOKKI.length+'</b></div>';
+    else if(/^(hira|kata|num)$/.test(m.k)){const c=grKanaCount(m.k);stage='<div class="gr-stage">「みて かく」までできた文字 <b>'+c[0]+' / '+c[1]+'</b></div>'+grMeter(c[0],c[1])}
     const arrow=(a,b,better)=>a==null||b==null||a===b?'':(better(a,b)?'<span class="gr-up">▲</span>':'<span class="gr-dn">▼</span>');
     // にがて：30日で 2かい いじょう でて、1かいめで まちがえた ことが おおい もの
     const it={};L.filter(e=>e[0]>now-30*D).forEach(e=>{const o=it[e[2]]=it[e[2]]||{n:0,ng:0};o.n++;o.ng+=1-e[3]});
     const weak=Object.entries(it).filter(([,o])=>o.n>=2&&o.ng/o.n>=.34).sort((a,b)=>b[1].ng/b[1].n-a[1].ng/a[1].n||b[1].n-a[1].n).slice(0,3);
-    h+='<div class="gr-card gr-game"><div class="gr-gh"><span class="gr-gi">'+m.g+'</span><b>'+grEsc(m.n)+'</b><span class="gr-cnt">ぜんぶで '+L.length+' もん</span></div>'+stage+
-      '<div class="gr-stats"><div>この7日の せいかい <b>'+(r1==null?'—':r1+'%')+'</b> '+arrow(r1,r0,(a,b)=>a>b)+(r0==null?'':'<small>（まえ '+r0+'%）</small>')+'</div>'+
-      '<div>1もんの じかん <b>'+(s1==null?'—':s1+'びょう')+'</b> '+arrow(s1,s0,(a,b)=>a<b)+(s0==null?'':'<small>（まえ '+s0+'びょう）</small>')+'</div></div>'+
+    h+='<div class="gr-card gr-game"><div class="gr-gh"><span class="gr-gi">'+m.g+'</span><b>'+grEsc(m.n)+'</b><span class="gr-cnt">全部で '+L.length+' 問</span></div>'+stage+
+      '<div class="gr-stats"><div>この7日の正解 <b>'+(r1==null?'—':r1+'%')+'</b> '+arrow(r1,r0,(a,b)=>a>b)+(r0==null?'':'<small>（前 '+r0+'%）</small>')+'</div>'+
+      '<div>1問の時間 <b>'+(s1==null?'—':s1+'秒')+'</b> '+arrow(s1,s0,(a,b)=>a<b)+(s0==null?'':'<small>（前 '+s0+'秒）</small>')+'</div></div>'+
       (st&&!/^(hira|kata|num)$/.test(m.k)?grSteps(L,st.length,now):'')+
-      (weak.length?'<div class="gr-weak">にがてかも：'+weak.map(([k,o])=>'<span>'+grEsc(k)+'<small> '+o.ng+'/'+o.n+'</small></span>').join('')+'</div>':'')+'</div>';
+      (weak.length?'<div class="gr-weak">苦手かも：'+weak.map(([k,o])=>'<span>'+grEsc(k)+'<small> '+o.ng+'/'+o.n+'</small></span>').join('')+'</div>':'')+'</div>';
   });
   h+='</div>';
   h+=grKanaGrid();
-  h+='<details class="gr-card"><summary>すうじの ひょうで みる</summary><table class="gr-tbl"><tr><th>日</th><th>もんだい</th><th>1かいめ せいかい</th></tr>'+
+  h+='<details class="gr-card"><summary>数字の表で見る</summary><table class="gr-tbl"><tr><th>日</th><th>問題</th><th>1回目で正解</th></tr>'+
     days.slice().reverse().filter(d=>d.n).map(d=>'<tr><td>'+d.k.slice(5).replace('-','/')+'</td><td>'+d.n+'</td><td>'+grPct(d.ok,d.n)+'%</td></tr>').join('')+'</table></details>';
-  h+='<div class="gr-note">きろくは この タブレットの なかだけに あります（バックアップにも はいります）。</div>';
+  h+='<div class="gr-note">記録はこのタブレットの中だけにあります（バックアップにも入ります）。</div>';
   $('#gr-wrap').innerHTML=h;
   $('#gr-wrap').querySelectorAll('[data-gr]').forEach(b=>b.onclick=()=>{grRange=+b.dataset.gr;renderGrowth()});
 }
@@ -2732,21 +2732,21 @@ const grLbl=k=>{const [,m,d]=k.split('-');return (+m)+'/'+(+d)};
 function grBars(days){
   const W=640,H=200,pl=34,pb=26,pt=12,n=days.length,mx=Math.max(5,...days.map(d=>d.n)),top=Math.ceil(mx/5)*5;
   const bw=(W-pl-8)/n,y=v=>pt+(H-pt-pb)*(1-v/top);
-  let s='<svg class="gr-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="1日に といた もんだいの かず">';
+  let s='<svg class="gr-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="1日に解いた問題の数">';
   for(let i=0;i<=2;i++){const v=top*i/2;s+='<line class="gr-grid" x1="'+pl+'" x2="'+W+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="gr-ax" x="'+(pl-6)+'" y="'+(y(v)+5)+'" text-anchor="end">'+v+'</text>'}
   const step=Math.ceil(n/8);
   days.forEach((d,i)=>{
     const x=pl+i*bw+Math.max(1,bw*.15),w=Math.max(2,bw*.7);
     if(d.n){const yy=y(d.n),hh=H-pb-yy,r=Math.min(4,w/2,hh);
       s+='<path class="gr-bar" d="M'+x+' '+(H-pb)+'V'+(yy+r)+'q0 -'+r+' '+r+' -'+r+'H'+(x+w-r)+'q'+r+' 0 '+r+' '+r+'V'+(H-pb)+'Z"/>'}
-    s+='<rect class="gr-hit" x="'+(pl+i*bw)+'" y="0" width="'+bw+'" height="'+(H-pb)+'" data-tip="'+grLbl(d.k)+'　'+d.n+' もん"/>';
+    s+='<rect class="gr-hit" x="'+(pl+i*bw)+'" y="0" width="'+bw+'" height="'+(H-pb)+'" data-tip="'+grLbl(d.k)+'　'+d.n+' 問"/>';
     if((n-1-i)%step===0)s+='<text class="gr-ax" x="'+(x+w/2)+'" y="'+(H-6)+'" text-anchor="middle">'+grLbl(d.k)+'</text>';
   });
   return s+'</svg>';
 }
 function grLine(days){
   const W=640,H=200,pl=40,pb=26,pt=12,n=days.length,bw=(W-pl-8)/n,y=v=>pt+(H-pt-pb)*(1-v/100),cx=i=>pl+i*bw+bw/2;
-  let s='<svg class="gr-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="1かいめで せいかいした わりあい">';
+  let s='<svg class="gr-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="1回目で正解した割合">';
   [0,50,100].forEach(v=>{s+='<line class="gr-grid" x1="'+pl+'" x2="'+W+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="gr-ax" x="'+(pl-6)+'" y="'+(y(v)+5)+'" text-anchor="end">'+v+'</text>'});
   const pts=days.map((d,i)=>d.n>=3?[cx(i),y(d.ok/d.n*100),Math.round(d.ok/d.n*100),d]:null);
   let path='',pen=false;pts.forEach(p=>{if(!p){pen=false;return}path+=(pen?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);pen=true});
@@ -2765,15 +2765,15 @@ function grSteps(L,n,now){
   const ks=Object.keys(m).sort().slice(-20);if(ks.length<2)return '';
   const W=320,H=64,p=8,x=i=>p+i*(W-2*p)/(ks.length-1),y=v=>H-p-(H-2*p)*(v-1)/Math.max(1,n-1);
   let d='';ks.forEach((k,i)=>{d+=(i?'H'+x(i).toFixed(1)+'V':'M'+x(i).toFixed(1)+' ')+y(m[k]).toFixed(1)});
-  return '<div class="gr-sl"><small>だんかいの のぼりかた（あそんだ 日ごと・'+grLbl(ks[0])+'〜）</small><svg class="gr-spark" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="だんかいの のぼりかた"><line class="gr-grid" x1="0" x2="'+W+'" y1="'+y(n)+'" y2="'+y(n)+'"/><path class="gr-line" d="'+d+'"/><circle class="gr-dot" cx="'+x(ks.length-1)+'" cy="'+y(m[ks[ks.length-1]])+'" r="5"/></svg></div>';
+  return '<div class="gr-sl"><small>段階の上がり方（遊んだ日ごと・'+grLbl(ks[0])+'〜）</small><svg class="gr-spark" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="段階の上がり方"><line class="gr-grid" x1="0" x2="'+W+'" y1="'+y(n)+'" y2="'+y(n)+'"/><path class="gr-line" d="'+d+'"/><circle class="gr-dot" cx="'+x(ks.length-1)+'" cy="'+y(m[ks[ks.length-1]])+'" r="5"/></svg></div>';
 }
 const grKanaList=k=>(k==='hira'?HIRA:k==='kata'?KATA:NUM).map(x=>x[0]);
 function grKanaCount(k){const l=grKanaList(k);return [l.filter(c=>trLv(c)>=4).length,l.length]}
 function grKanaGrid(){
   if(!S.tr||!Object.keys(S.tr).length)return '';
-  let h='<h3 class="gr-h">もじごとの かきかた レベル</h3><div class="gr-card"><div class="gr-legend"><span><i class="k0"></i>まだ</span>'+TR_NAME.slice(1).map((t,i)=>'<span><i class="k'+(i+1)+'"></i>'+t+'</span>').join('')+'</div>';
-  [['hira','ひらがな'],['kata','カタカナ'],['num','すうじ']].forEach(([k,t])=>{
-    h+='<div class="gr-kt">'+t+'</div><div class="gr-kana">'+grKanaList(k).map(c=>{const o=S.tr[c],lv=o?o.lv:0;return '<span class="k'+lv+'" data-tip="'+c+'　'+(lv?TR_NAME[lv]:'まだ')+'">'+c+'</span>'}).join('')+'</div>';
+  let h='<h3 class="gr-h">文字ごとの書き方レベル</h3><div class="gr-card"><div class="gr-legend"><span><i class="k0"></i>未</span>'+TR_NAME.slice(1).map((t,i)=>'<span><i class="k'+(i+1)+'"></i>'+t+'</span>').join('')+'</div>';
+  [['hira','ひらがな'],['kata','カタカナ'],['num','数字']].forEach(([k,t])=>{
+    h+='<div class="gr-kt">'+t+'</div><div class="gr-kana">'+grKanaList(k).map(c=>{const o=S.tr[c],lv=o?o.lv:0;return '<span class="k'+lv+'" data-tip="'+c+'　'+(lv?TR_NAME[lv]:'未')+'">'+c+'</span>'}).join('')+'</div>';
   });
   return h+'</div>';
 }
@@ -2908,16 +2908,16 @@ $('#tv-stop').onclick=()=>{leaveTV();show('home')};
 /* ---- parent ---- */
 function armed(btn,run){
   if(btn.dataset.armed){delete btn.dataset.armed;btn.classList.remove('warn');btn.textContent=btn.dataset.label;run();return}
-  btn.dataset.label=btn.textContent;btn.dataset.armed='1';btn.classList.add('warn');btn.textContent='もういちど押すと実行';
+  btn.dataset.label=btn.textContent;btn.dataset.armed='1';btn.classList.add('warn');btn.textContent='もう一度押すと実行';
   setTimeout(()=>{if(btn.dataset.armed){delete btn.dataset.armed;btn.classList.remove('warn');btn.textContent=btn.dataset.label}},4000);
 }
-function parentInfo(){$('#parent-info').textContent='いまのチケット '+fmt(S.sec)+' ／ きょうもらった '+Math.round(S.earned/60)+'分 ／ かぞえる '+(S.countBlock*10+1)+'〜 ／ ひらがな「'+HIRA[S.kidx.hira][0]+'」・カタカナ「'+KATA[S.kidx.kata][0]+'」から'+(NATIVE()&&window.Android.ttsStatus?(function(){const t=window.Android.ttsStatus();return t==='ok'?' ／ よみあげ: OK':t==='ng'?' ／ よみあげ: 日本語の声が入っていません（下の「こえを いれる」を押してください）':' ／ よみあげ: じゅんびちゅう'})():'')+(NATIVE()&&window.Android.lastError&&window.Android.lastError()?' ／ エラー記録: '+window.Android.lastError().slice(0,700):'')+(NATIVE()?(function(){const m=window.Android.guardMode();return m==='owner'?' ／ 制限: 管理者モード（強）':m==='service'?' ／ 制限: かんし機能（有効）':' ／ 制限: 未設定（かんし機能がオフ）'})():'');}
+function parentInfo(){$('#parent-info').textContent='今のチケット '+fmt(S.sec)+' ／ 今日もらった '+Math.round(S.earned/60)+'分 ／ かぞえる '+(S.countBlock*10+1)+'〜 ／ ひらがな「'+HIRA[S.kidx.hira][0]+'」・カタカナ「'+KATA[S.kidx.kata][0]+'」から'+(NATIVE()&&window.Android.ttsStatus?(function(){const t=window.Android.ttsStatus();return t==='ok'?' ／ 読み上げ: OK':t==='ng'?' ／ 読み上げ: 日本語の声が入っていません（下の「読み上げの声を入れる」を押してください）':' ／ 読み上げ: 準備中'})():'')+(NATIVE()&&window.Android.lastError&&window.Android.lastError()?' ／ エラー記録: '+window.Android.lastError().slice(0,700):'')+(NATIVE()?(function(){const m=window.Android.guardMode();return m==='owner'?' ／ 制限: 管理者モード（強）':m==='service'?' ／ 制限: 見守り機能（有効）':' ／ 制限: 未設定（見守り機能がオフ）'})():'');}
 $('#to-parent').onclick=()=>{show('parent');$('#pin-box').hidden=false;$('#parent-panel').hidden=true;$('#pin-in').value='';$('#pin-err').textContent=''};
 $('#pin-ok').onclick=()=>{
   if($('#pin-in').value===S.pin){
     $('#pin-box').hidden=true;$('#parent-panel').hidden=false;wuInit();$('#set-per').value=S.cardMin;$('#set-cap').value=S.cap;$('#set-name').value=S.name||'';renderParentMedia();$('#set-luck').value=S.luck;$('#set-rbonus').value=S.rBonus;$('#set-tklv').value=String(clkLv());$('#set-kmlv').value=String(kmLv());{const sel=$('#set-calc');if(!sel.options.length)CALC.forEach((L,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'：'+L[0];sel.appendChild(o)});sel.value=String(calcLv())}$('#set-rblv').value=String(rbLv());$('#set-emin').value=S.eMin;$('#set-egive').value=S.eGive;$('#earn-row1').hidden=$('#earn-row2').hidden=!(window.Android&&typeof window.Android.setEarnApps==='function');$('#set-pin').value='';
-    const nat=!!(window.Android&&typeof window.Android.openSettings==='function');$('#sys-settings').hidden=!nat;$('#app-mgr-btn').hidden=!nat;$('#sys-update').hidden=!nat;document.querySelector('[data-arm="release"]').hidden=!nat;$('#app-row').hidden=!nat;$('#sys-acc').hidden=!nat;$('#sys-clearerr').hidden=!nat;$('#sys-voice').hidden=!nat;$('#fam-pick').hidden=!nat;$('#sys-store').hidden=!nat;$('#bk-box').hidden=!nat;$('#diag-info').hidden=!nat;if(nat){try{$('#diag-info').textContent='おちたときの きろく\n'+window.Android.diagLog()}catch(e){}try{$('#set-app').value=window.Android.getVideoApp()}catch(e){}}parentInfo();
-  }else $('#pin-err').textContent='PINがちがいます';
+    const nat=!!(window.Android&&typeof window.Android.openSettings==='function');$('#sys-settings').hidden=!nat;$('#app-mgr-btn').hidden=!nat;$('#sys-update').hidden=!nat;document.querySelector('[data-arm="release"]').hidden=!nat;$('#app-row').hidden=!nat;$('#sys-acc').hidden=!nat;$('#sys-clearerr').hidden=!nat;$('#sys-voice').hidden=!nat;$('#fam-pick').hidden=!nat;$('#sys-store').hidden=!nat;$('#bk-box').hidden=!nat;$('#diag-info').hidden=!nat;if(nat){try{$('#diag-info').textContent='落ちたときの記録\n'+window.Android.diagLog()}catch(e){}try{$('#set-app').value=window.Android.getVideoApp()}catch(e){}}parentInfo();
+  }else $('#pin-err').textContent='暗証番号が違います';
 };
 $('#set-per').onchange=e=>{const v=Math.min(60,Math.max(1,parseInt(e.target.value)||10));S.cardMin=v;e.target.value=v;save()};
 $('#set-cap').onchange=e=>{const v=Math.min(240,Math.max(5,parseInt(e.target.value)||30));S.cap=v;e.target.value=v;save()};
@@ -2930,11 +2930,11 @@ $('#set-kmlv').onchange=e=>{kmLv();S.kimari.lv=+e.target.value;S.kimari.pt=0;sav
 $('#set-rblv').onchange=e=>{rbLv();S.robot.lv=+e.target.value;S.robot.pt=0;save()};
 $('#set-luck').onchange=e=>{const v=Math.min(100,Math.max(0,parseInt(e.target.value)||0));S.luck=v;e.target.value=v;save()};
 $('#set-app').onchange=e=>{try{window.Android.setVideoApp(e.target.value)}catch(err){}};
-$('#set-pin').onchange=e=>{if(e.target.value.length>=4){S.pin=e.target.value;save();e.target.value='';$('#parent-info').textContent='PINをかえました'}};
+$('#set-pin').onchange=e=>{if(e.target.value.length>=4){S.pin=e.target.value;save();e.target.value='';$('#parent-info').textContent='暗証番号を変えました'}};
 $('#add10').onclick=()=>{S.sec+=600;save();parentInfo()};
 $('#sys-settings').onclick=()=>{try{window.Android.openSettings()}catch(e){}};
 $('#sys-voice').onclick=()=>{try{window.Android.installVoice()}catch(e){}};
-$('#sys-clearerr').onclick=()=>{try{window.Android.clearError();$('#diag-info').textContent='おちたときの きろく\n'+window.Android.diagLog();parentInfo()}catch(e){}};
+$('#sys-clearerr').onclick=()=>{try{window.Android.clearError();$('#diag-info').textContent='落ちたときの記録\n'+window.Android.diagLog();parentInfo()}catch(e){}};
 $('#sys-acc').onclick=()=>{try{window.Android.openAccessibility()}catch(e){}};
 $('#sys-update').onclick=()=>{try{window.Android.openUpdate()}catch(e){}};
 $('#sys-store').onclick=()=>{try{window.Android.openStore()}catch(e){}};
@@ -3027,7 +3027,7 @@ $('#tprint').onclick=()=>{
 };
 $('#tpok').onclick=()=>{
   const m=$('#tmsg');
-  if($('#tpin').value!==S.pin){m.textContent='PINがちがいます';return}
+  if($('#tpin').value!==S.pin){m.textContent='暗証番号が違います';return}
   $('#tpin').value='';$('#tprow').hidden=true;m.textContent='';
   try{window.Android.printImage(composeTrace())}catch(e){m.textContent='いんさつに しっぱいしました'}
 };
@@ -3067,8 +3067,8 @@ async function recSave(f,blob,out,ed){
     if(ed){raw.role=(ed.querySelector('.e-role').value.trim()||'おうちのひと').slice(0,8);raw.msg=ed.querySelector('.e-msg').value.trim().slice(0,30);
       if(ed._ph){const cut=/cut|ぬき|抜|きりぬき/i.test(ed._ph.name)||f.cut;raw.cut=cut;raw.blob=await shrink(ed._ph,cut?800:640,cut)}}
     await mDel('fam',f.id);await mPut('fam',raw);
-    out.textContent=f.role+'の こえを ほぞんしました';
-  }catch(e){out.textContent='ほぞんできませんでした'}
+    out.textContent=f.role+'の声を保存しました';
+  }catch(e){out.textContent='保存できませんでした'}
   famEditId=f.id;await refreshMedia();
 }
 async function recVoice(f,btn,ed){
@@ -3078,15 +3078,15 @@ async function recVoice(f,btn,ed){
     if(recNow==='native'){
       clearTimeout(recTm);recNow=null;btn.textContent='🎙 こえを いれる';
       const r=A.recStop();
-      if(r!=='OK'){out.textContent='ろくおんできませんでした（'+r+'）';return}
+      if(r!=='OK'){out.textContent='録音できませんでした（'+r+'）';return}
       try{const rs=await fetch('https://manabi.local/rec?'+Date.now());if(!rs.ok)throw 0;await recSave(f,await rs.blob(),out,ed)}
-      catch(e){out.textContent='ほぞんできませんでした'}
+      catch(e){out.textContent='保存できませんでした'}
       return;
     }
     const r=A.recStart();
-    if(r==='PERM'){out.textContent='マイクを「ゆるす」にして、もういちど おしてね';window.onRecPerm=ok=>{out.textContent=ok?'もういちど 🎙 を おしてね':'マイクが ゆるされていません'};return}
-    if(r!=='OK'){out.textContent='ろくおんできません（'+r+'）';return}
-    recNow='native';btn.textContent='■ とめる';out.textContent='ろくおんちゅう…（10びょうまで）もういちど おすと とまります';
+    if(r==='PERM'){out.textContent='マイクを「許可」にして、もう一度押してください';window.onRecPerm=ok=>{out.textContent=ok?'もう一度 🎙 を押してください':'マイクが許可されていません'};return}
+    if(r!=='OK'){out.textContent='録音できません（'+r+'）';return}
+    recNow='native';btn.textContent='■ 止める';out.textContent='録音中…（10秒まで）もう一度押すと止まります';
     recTm=setTimeout(()=>{if(recNow==='native')btn.click()},10000);
     return;
   }
@@ -3094,7 +3094,7 @@ async function recVoice(f,btn,ed){
   try{
     const stm=await navigator.mediaDevices.getUserMedia({audio:true});
     const rec=new MediaRecorder(stm),ch=[];
-    recNow=rec;btn.textContent='■ とめる';out.textContent='ろくおんちゅう…（10びょうまで）';
+    recNow=rec;btn.textContent='■ 止める';out.textContent='録音中…（10秒まで）';
     rec.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};
     rec.onstop=async()=>{
       clearTimeout(tm);recNow=null;stm.getTracks().forEach(t=>t.stop());
@@ -3102,7 +3102,7 @@ async function recVoice(f,btn,ed){
     };
     const tm=setTimeout(()=>{if(recNow)recNow.stop()},10000);
     rec.start();
-  }catch(e){recNow=null;btn.textContent='🎙 こえを いれる';out.textContent='マイクが つかえません（'+(e&&e.name||'')+'）'}
+  }catch(e){recNow=null;btn.textContent='🎙 こえを いれる';out.textContent='マイクが使えません（'+(e&&e.name||'')+'）'}
 }
 async function refreshMedia(){
   try{
@@ -3161,7 +3161,7 @@ function closeView(){
 }
 $('#alb-close').onclick=closeView;
 let famOpen=false,famEditId=null;
-function famSync(){const bx=$('#fam-box');bx.hidden=!famOpen;$('#fam-toggle').textContent='かぞくの おうえん（だす '+FAM.length+' ／ ぜんぶ '+FAMALL.length+'） '+(famOpen?'▲':'▼')}
+function famSync(){const bx=$('#fam-box');bx.hidden=!famOpen;$('#fam-toggle').textContent='家族の応援（表示 '+FAM.length+' ／ 全部 '+FAMALL.length+'） '+(famOpen?'▲':'▼')}
 $('#fam-toggle').onclick=()=>{famOpen=!famOpen;famSync()};
 async function famSetOff(f,off){
   const raw=Object.assign({},f);delete raw.url;delete raw.vurl;raw.off=off;
@@ -3175,31 +3175,31 @@ async function famSetStar(f,star){
 }
 async function famBulk(list,off,msg){
   try{for(const f of list)await famSetOff(f,off);$('#media-msg').textContent=msg}
-  catch(e){$('#media-msg').textContent='ほぞんできませんでした'}
+  catch(e){$('#media-msg').textContent='保存できませんでした'}
   await refreshMedia();
 }
-$('#fam-off-novoice').onclick=()=>{const l=FAMALL.filter(f=>!f.voice&&!f.off);famBulk(l,true,l.length+' まいを ださないように しました')};
-$('#fam-on-all').onclick=()=>{const l=FAMALL.filter(f=>f.off);famBulk(l,false,l.length+' まいを だすように しました')};
+$('#fam-off-novoice').onclick=()=>{const l=FAMALL.filter(f=>!f.voice&&!f.off);famBulk(l,true,l.length+' 枚を非表示にしました')};
+$('#fam-on-all').onclick=()=>{const l=FAMALL.filter(f=>f.off);famBulk(l,false,l.length+' 枚を表示するようにしました')};
 function renderParentMedia(){
   const L=$('#fam-list');L.innerHTML='';
   FAMALL.forEach(f=>{
     const r=document.createElement('div');r.className='famitem'+(f.off?' off':'');
     const im=document.createElement('img');im.className='av';im.src=f.url;im.alt='';
     const t=document.createElement('span');t.textContent=f.role+(f.msg?'：'+f.msg:'');
-    const d=document.createElement('button');d.className='btn ghost';d.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';d.textContent='けす';
+    const d=document.createElement('button');d.className='btn ghost';d.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';d.textContent='削除';
     d.onclick=()=>armed(d,async()=>{await mDel('fam',f.id);refreshMedia()});
     const rb=document.createElement('button');rb.className='btn ghost';rb.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';
-    rb.textContent=f.voice?'🎙 とりなおす':'🎙 こえを いれる';
+    rb.textContent=f.voice?'🎙 録り直す':'🎙 声を録る';
     rb.onclick=()=>recVoice(f,rb,ed);
     const sb2=document.createElement('button');sb2.className='btn ghost famstar'+(f.star?' on':'');sb2.style.cssText='min-height:44px;padding:6px 12px;font-size:20px';
-    sb2.textContent=f.star?'⭐':'☆';sb2.title='ゲームの なかに だす';sb2.setAttribute('aria-label','ゲームの なかに だす');sb2.setAttribute('aria-pressed',f.star?'true':'false');
+    sb2.textContent=f.star?'⭐':'☆';sb2.title='ゲームの中に出す';sb2.setAttribute('aria-label','ゲームの中に出す');sb2.setAttribute('aria-pressed',f.star?'true':'false');
     sb2.onclick=async()=>{try{await famSetStar(f,!f.star);sb2.textContent=f.star?'⭐':'☆';sb2.classList.toggle('on',!!f.star);sb2.setAttribute('aria-pressed',f.star?'true':'false');
-      $('#media-msg').textContent=f.star?'ゲームの なかに だします（⭐の しゃしんだけが でます）':'ゲームの なかには だしません'}catch(e){$('#media-msg').textContent='ほぞんできませんでした'}};
+      $('#media-msg').textContent=f.star?'ゲームの中に出します（⭐の写真だけが出ます）':'ゲームの中には出しません'}catch(e){$('#media-msg').textContent='保存できませんでした'}};
     r.append(sb2,im,t);
-    if(f.vurl){const pb=document.createElement('button');pb.className='btn ghost';pb.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';pb.textContent='▶ きく';pb.onclick=()=>playUrl(f.vurl);r.append(pb)}
-    const eb=document.createElement('button');eb.className='btn ghost';eb.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';eb.textContent='へんしゅう';
+    if(f.vurl){const pb=document.createElement('button');pb.className='btn ghost';pb.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';pb.textContent='▶ 聞く';pb.onclick=()=>playUrl(f.vurl);r.append(pb)}
+    const eb=document.createElement('button');eb.className='btn ghost';eb.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';eb.textContent='編集';
     const ed=document.createElement('div');ed.className='famedit';ed.hidden=true;
-    ed.innerHTML='<input class="e-role" type="text" maxlength="8" aria-label="よびかた"><input class="e-msg" type="text" maxlength="30" placeholder="ひとこと" aria-label="ひとこと"><label class="btn ghost" style="min-height:44px;padding:6px 14px;font-size:16px">しゃしんを かえる<input class="e-ph" type="file" accept="image/*" hidden></label><span class="small e-pn"></span><button type="button" class="btn e-save" style="min-height:44px;padding:6px 14px;font-size:16px">ほぞん</button>';
+    ed.innerHTML='<input class="e-role" type="text" maxlength="8" aria-label="呼び方"><input class="e-msg" type="text" maxlength="30" placeholder="ひとこと" aria-label="ひとこと"><label class="btn ghost" style="min-height:44px;padding:6px 14px;font-size:16px">写真を変える<input class="e-ph" type="file" accept="image/*" hidden></label><span class="small e-pn"></span><button type="button" class="btn e-save" style="min-height:44px;padding:6px 14px;font-size:16px">保存</button>';
     ed.querySelector('.e-role').value=f.role||'';ed.querySelector('.e-msg').value=f.msg||'';
     let newPh=null;
     ed.querySelector('.e-ph').onchange=e=>{const x=e.target.files&&e.target.files[0];e.target.value='';if(x){newPh=x;ed._ph=x;ed.querySelector('.e-pn').textContent='✓ '+x.name}};
@@ -3208,49 +3208,49 @@ function renderParentMedia(){
         const rec={id:f.id,ts:f.ts,cut:f.cut,role:(ed.querySelector('.e-role').value.trim()||'おうちのひと').slice(0,8),msg:ed.querySelector('.e-msg').value.trim().slice(0,30),blob:f.blob};
         if(f.voice)rec.voice=f.voice;if(f.key)rec.key=f.key;if(f.name)rec.name=f.name;if(f.off)rec.off=true;if(f.star)rec.star=true;
         if(newPh){const cut=/cut|ぬき|抜|きりぬき/i.test(newPh.name)||f.cut;rec.cut=cut;rec.blob=await shrink(newPh,cut?800:640,cut)}
-        await mPut('fam',rec);famOpen=true;famEditId=null;$('#media-msg').textContent='ほぞんしました';refreshMedia();
-      }catch(err){$('#media-msg').textContent='ほぞんできませんでした'}
+        await mPut('fam',rec);famOpen=true;famEditId=null;$('#media-msg').textContent='保存しました';refreshMedia();
+      }catch(err){$('#media-msg').textContent='保存できませんでした'}
     };
     eb.onclick=()=>{ed.hidden=!ed.hidden;famEditId=ed.hidden?null:f.id};
     ed.prepend(rb);
     if(famEditId===f.id)ed.hidden=false;
-    const sb=document.createElement('button');sb.className='btn ghost';sb.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';sb.textContent=f.off?'ださない':'だす';sb.setAttribute('aria-pressed',f.off?'false':'true');
+    const sb=document.createElement('button');sb.className='btn ghost';sb.style.cssText='min-height:44px;padding:6px 14px;font-size:16px';sb.textContent=f.off?'非表示':'表示中';sb.setAttribute('aria-pressed',f.off?'false':'true');
     sb.onclick=async()=>{
-      try{await famSetOff(f,!f.off)}catch(e){$('#media-msg').textContent='ほぞんできませんでした';return}
-      FAM=FAMALL.filter(x=>!x.off);r.classList.toggle('off',!!f.off);sb.textContent=f.off?'ださない':'だす';sb.setAttribute('aria-pressed',f.off?'false':'true');famSync();
+      try{await famSetOff(f,!f.off)}catch(e){$('#media-msg').textContent='保存できませんでした';return}
+      FAM=FAMALL.filter(x=>!x.off);r.classList.toggle('off',!!f.off);sb.textContent=f.off?'非表示':'表示中';sb.setAttribute('aria-pressed',f.off?'false':'true');famSync();
     };
     r.append(sb,eb,d);L.appendChild(r);L.appendChild(ed);
   });
   famSync();
-  $('#alb-info').textContent='アルバム '+albN+' こ ／ ぬりえ（ついか）'+CUSTOM.length+' まい'+(useMem?'（ここでは いちじてきに ほぞん。Androidアプリ版では のこります）':'');
+  $('#alb-info').textContent='アルバム '+albN+' 件 ／ ぬりえ（追加分）'+CUSTOM.length+' 枚'+(useMem?'（ここでは一時的に保存。Androidアプリ版では残ります）':'');
 }
 $('#set-name').onchange=e=>{S.name=e.target.value.trim().slice(0,12);save();renderHome()};
 $('#fam-photo').onchange=async e=>{
   const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
-  const out=$('#media-msg');out.textContent='ほぞんちゅう…';
+  const out=$('#media-msg');out.textContent='保存中…';
   try{
     const cut=/cut|ぬき|抜|きりぬき/i.test(f.name);
     const blob=await shrink(f,cut?800:640,cut);
     await mPut('fam',{cut,id:'f'+Date.now(),ts:Date.now(),role:($('#fam-role').value.trim()||'おうちのひと').slice(0,8),msg:$('#fam-msg').value.trim().slice(0,30),blob});
-    $('#fam-role').value='';$('#fam-msg').value='';out.textContent='かぞくを ついかしました';refreshMedia();
-  }catch(err){out.textContent='しゃしんを よみこめませんでした'}
+    $('#fam-role').value='';$('#fam-msg').value='';out.textContent='家族を追加しました';refreshMedia();
+  }catch(err){out.textContent='写真を読み込めませんでした'}
 };
 $('#alb-btn').onclick=()=>{if(pkNative()){openPicker('album');return}$('#alb-file').click()};
 $('#alb-file').onchange=async e=>{
   const files=Array.from(e.target.files||[]);e.target.value='';if(!files.length)return;
-  const out=$('#media-msg');let n=0,skip=0,why='';out.textContent='えらんだ '+files.length+' こ（v15）';await new Promise(r=>setTimeout(r,400));
+  const out=$('#media-msg');let n=0,skip=0,why='';out.textContent='選んだ '+files.length+' 件';await new Promise(r=>setTimeout(r,400));
   for(const f of files){
-    out.textContent='ほぞんちゅう… '+(n+skip+1)+' / '+files.length;
+    out.textContent='保存中… '+(n+skip+1)+' / '+files.length;
     try{
       const id='a'+Date.now()+'_'+n;
       const ty=f.type||(/\.(mp4|mov|m4v|webm)$/i.test(f.name)?'video/mp4':/\.(jpe?g|png|gif|webp|heic)$/i.test(f.name)?'image/jpeg':'');
       if(ty.startsWith('image/')){await mPut('album',{id,ts:Date.now()+n,type:'image',blob:await shrink(f,1280)});n++}
       else if(ty.startsWith('video/')&&f.size<=300*1024*1024){const buf=await f.arrayBuffer();await mPut('album',{id,ts:Date.now()+n,type:'video',blob:new Blob([buf],{type:ty})});n++}
-      else{skip++;why=why||('たいおうしてない: '+(f.type||f.name))}
+      else{skip++;why=why||('未対応: '+(f.type||f.name))}
     }catch(err){skip++;why=why||String(err&&err.message||err).slice(0,40)}
     if((n+skip)%20===0)await new Promise(r=>setTimeout(r,30));
   }
-  out.textContent=n+'こ ついかしました'+(skip?'（'+skip+'こは よみこめませんでした: '+why+'）':'');refreshMedia();
+  out.textContent=n+'件追加しました'+(skip?'（'+skip+'件は読み込めませんでした: '+why+'）':'');refreshMedia();
 };
 $('#alb-clear').onclick=function(){armed(this,async()=>{await mClear('album');refreshMedia()})};
 
@@ -3288,7 +3288,7 @@ async function makeBackup(){
     await bkWrite(man);
     let i=0;
     for(const f of files){
-      out.textContent='バックアップちゅう… '+(++i)+' / '+files.length;
+      out.textContent='バックアップ中… '+(++i)+' / '+files.length;
       if(!A.backupEntry(f.file))throw new Error('entry');
       await bkWrite(f.blob);
       await new Promise(res=>setTimeout(res,0));
@@ -3297,14 +3297,14 @@ async function makeBackup(){
   const m=String(A.backupEnd(true)).split(':');
   if(m[0]!=='OK'||+m[2]<total)throw new Error('end');
   const c=st=>stores[st].length;
-  out.textContent='バックアップ できました：'+m[1]+'（'+bkSize(+m[2])+'）。かぞく '+c('fam')+' ／ アルバム '+c('album')+' ／ ぬりえ '+c('nurie')+'。パソコンに コピーしてください。';
+  out.textContent='バックアップできました：'+m[1]+'（'+bkSize(+m[2])+'）。家族 '+c('fam')+' ／ アルバム '+c('album')+' ／ ぬりえ '+c('nurie')+'。パソコンにコピーしてください。';
 }
 $('#bk-make').onclick=async()=>{
-  if(bkBusy)return;bkBusy=true;const out=$('#bk-msg');out.textContent='バックアップちゅう…';
-  try{await makeBackup()}catch(e){out.textContent='バックアップ できませんでした（タブレットの あきようりょうを みてください）'}
+  if(bkBusy)return;bkBusy=true;const out=$('#bk-msg');out.textContent='バックアップ中…';
+  try{await makeBackup()}catch(e){out.textContent='バックアップできませんでした（タブレットの空き容量を確認してください）'}
   bkBusy=false;
 };
-$('#bk-load').onclick=()=>{if(bkBusy)return;bkBusy=true;$('#bk-msg').textContent='ファイルを えらんでください';try{window.Android.restorePick()}catch(e){bkBusy=false}};
+$('#bk-load').onclick=()=>{if(bkBusy)return;bkBusy=true;$('#bk-msg').textContent='ファイルを選んでください';try{window.Android.restorePick()}catch(e){bkBusy=false}};
 async function restoreBackup(){
   const A=window.Android,out=$('#bk-msg');
   const next=()=>{const n=A.restoreNext();if(n==='!')throw new Error('zip');return n};
@@ -3325,7 +3325,7 @@ async function restoreBackup(){
   let i=0;const n=Object.keys(map).length;
   for(let name;(name=next());){
     const m=map[name];if(!m)continue;delete map[name];
-    out.textContent='もどしています… '+(++i)+' / '+n;
+    out.textContent='戻しています… '+(++i)+' / '+n;
     const parts=[];let size=0;
     for(let c;(c=read());){const u=bkUnb64(c);size+=u.length;if(!m.job.have)parts.push(u)}
     if(size!==m.info.size)m.job.ok=false;
@@ -3340,16 +3340,16 @@ async function restoreBackup(){
   const miss=new Set(Object.values(map).map(m=>m.job));bad+=miss.size;
   let st='';
   if(man.state&&!S.lastDay&&!(S.stickers||[]).length&&!Object.keys(S.done||{}).length){
-    Object.assign(S,man.state,{pin:S.pin});save();syncTicketApps();st=' すすみぐあいも もどしました。';
+    Object.assign(S,man.state,{pin:S.pin});save();syncTicketApps();st=' 進み具合も戻しました。';
   }
   if(Array.isArray(man.log)&&man.log.length>LOG.length){LOG=man.log;logSave()}
-  out.textContent='ぜんぶで '+all+' こ：あたらしく もどした '+added+' ／ もともと あった '+same+(bad?' ／ よめなかった '+bad:'')+'。'+st;
+  out.textContent='全部で '+all+' 件：新しく戻した '+added+' ／ もともとあった '+same+(bad?' ／ 読めなかった '+bad:'')+'。'+st;
   await refreshMedia();
 }
 window.onRestorePick=async ok=>{
   const out=$('#bk-msg');
   if(!ok){out.textContent='';bkBusy=false;return}
-  try{await restoreBackup()}catch(e){out.textContent='このファイルは もどせませんでした'}
+  try{await restoreBackup()}catch(e){out.textContent='このファイルは戻せませんでした'}
   try{window.Android.restoreEnd()}catch(e){}
   bkBusy=false;
 };
@@ -3404,7 +3404,7 @@ $('#pk-go').onclick=async()=>{
   if(PK.busy)return;PK.busy=true;$('#pk-go').disabled=true;
   const items=PK.items.filter(x=>PK.sel.has(x.k+x.id));let n=0,fail=0,why='';
   for(const it of items){
-    $('#pk-msg').textContent='ほぞんちゅう… '+(n+fail+1)+' / '+items.length;
+    $('#pk-msg').textContent='保存中… '+(n+fail+1)+' / '+items.length;
     try{
       const key=mkey(it.name,it.size);
       const resp=await fetch('https://manabi.local/file/'+it.k+'/'+it.id);
@@ -3425,17 +3425,17 @@ $('#pk-go').onclick=async()=>{
     if((n+fail)%10===0)await new Promise(r=>setTimeout(r,20));
   }
   PK.busy=false;renderPicker();refreshMedia();
-  $('#pk-msg').textContent=n+' こ とりこみました'+(fail?'（'+fail+' こ しっぱい: '+why+'）':'');
+  $('#pk-msg').textContent=n+' 件取り込みました'+(fail?'（'+fail+' 件失敗: '+why+'）':'');
 };
 /* ---- アルバム管理(いちらん・チェックして削除) ---- */
 const AM={sel:new Set(),items:[]};let amUrls=[];
-function amCount(){const n=AM.sel.size;$('#am-del').disabled=!n;$('#am-del').textContent=n?'えらんだ '+n+' こを けす':'えらんだものを けす'}
+function amCount(){const n=AM.sel.size;$('#am-del').disabled=!n;$('#am-del').textContent=n?'選んだ '+n+' 件を消す':'選んだものを消す'}
 async function openAlbMgr(){
   show('albmgr');AM.sel=new Set();amUrls.forEach(u=>URL.revokeObjectURL(u));amUrls=[];
   AM.items=(await mAll('album')).sort((a,b)=>b.ts-a.ts);
   const mb=Math.round(AM.items.reduce((a,x)=>a+((x.blob&&x.blob.size)||0),0)/1048576);
-  $('#am-title').textContent='アルバム '+AM.items.length+' こ ／ '+mb+'MB';
-  $('#am-msg').textContent='おなじ しゃしんが ないか みて、チェックして けします';
+  $('#am-title').textContent='アルバム '+AM.items.length+' 件 ／ '+mb+'MB';
+  $('#am-msg').textContent='同じ写真がないか見て、チェックして消します';
   const g=$('#am-grid');g.innerHTML='';
   AM.items.forEach(it=>{
     const u=URL.createObjectURL(it.blob);amUrls.push(u);
@@ -3612,14 +3612,14 @@ async function importNurie(e){
   const files=Array.from(e.target.files||[]);e.target.value='';if(!files.length)return;
   const out=$('#media-msg');let n=0,skip=0;
   for(const f of files){
-    out.textContent='へんかんちゅう… '+(n+skip+1)+' / '+files.length;
+    out.textContent='変換中… '+(n+skip+1)+' / '+files.length;
     try{
       if(!f.type.startsWith('image/'))throw new Error('type');
       const blob=await toLineArt(f);
       await mPut('nurie',{id:'n'+Date.now()+'_'+n,ts:Date.now()+n,blob});n++;
     }catch(err){skip++}
   }
-  out.textContent=n+'まい ついかしました（せんの えに へんかんしました）'+(skip?'（'+skip+'まいは よみこめませんでした）':'');
+  out.textContent=n+'枚追加しました（線の絵に変換しました）'+(skip?'（'+skip+'枚は読み込めませんでした）':'');
   await refreshMedia();
   if(n&&!$('#v-nurie').hidden){nIdx=nurieAll()-1;S.nurieIdx=nIdx;save();drawNurie();say('いれた えを ぬろうね')}
   else if(!n&&!$('#v-nurie').hidden)say('よみこめませんでした');
@@ -3636,20 +3636,20 @@ const WU=()=>window.Android&&typeof window.Android.webUpdCheck==='function';
 const wuMB=b=>b<1048576?Math.max(1,Math.round(b/1024))+'KB':(Math.round(b/104857.6)/10)+'MB';
 function wuInit(){
   $('#wu-row').hidden=!WU();if(!WU())return;
-  try{$('#wu-ver').textContent='いまの なかみ：'+(window.Android.webVer()||'—')}catch(e){}
-  const b=$('#wu-btn');b.textContent='しらべています…';b.disabled=true;$('#wu-msg').textContent='';
+  try{$('#wu-ver').textContent='今の内容：'+(window.Android.webVer()||'—')}catch(e){}
+  const b=$('#wu-btn');b.textContent='確認中…';b.disabled=true;$('#wu-msg').textContent='';
   try{window.Android.webUpdCheck()}catch(e){b.disabled=false}
 }
 window.onWebUpd=o=>{
   const b=$('#wu-btn'),m=$('#wu-msg');b.disabled=false;
-  if(o.state==='new'||o.state==='bad'){b.textContent='あたらしい なかみを いれる';m.textContent=o.date+' の なかみ（'+o.count+'こ・'+wuMB(o.bytes)+'）'+(o.state==='bad'?'　※まえに うまく うごかなかった 版です':'');
-    b.onclick=()=>{b.disabled=true;b.textContent='いれています…';window.Android.webUpdApply()}}
-  else if(o.state==='same'){b.textContent='もう いちど しらべる';m.textContent='いまの なかみが いちばん あたらしいです';b.onclick=wuInit}
-  else if(o.state==='apk'){b.textContent='アプリを こうしん（ブラウザ）';m.textContent='こんどの こうしんは、アプリの いれなおしが ひつようです';b.onclick=()=>{try{window.Android.openUpdate()}catch(e){}}}
-  else{b.textContent='もう いちど しらべる';m.textContent=o.msg||'しらべられませんでした';b.onclick=wuInit}
+  if(o.state==='new'||o.state==='bad'){b.textContent='新しい内容を入れる';m.textContent=o.date+' の内容（'+o.count+'件・'+wuMB(o.bytes)+'）'+(o.state==='bad'?'　※前回うまく動かなかった版です':'');
+    b.onclick=()=>{b.disabled=true;b.textContent='更新中…';window.Android.webUpdApply()}}
+  else if(o.state==='same'){b.textContent='もう一度確認';m.textContent='最新の内容です';b.onclick=wuInit}
+  else if(o.state==='apk'){b.textContent='アプリを更新（ブラウザ）';m.textContent='今回の更新は、アプリ（APK）の入れ直しが必要です';b.onclick=()=>{try{window.Android.openUpdate()}catch(e){}}}
+  else{b.textContent='もう一度確認';m.textContent=o.msg||'確認できませんでした';b.onclick=wuInit}
 };
-window.onWebUpdProg=(i,n)=>{$('#wu-msg').textContent='いれています… '+i+' / '+n};
-window.onWebUpdErr=e=>{const b=$('#wu-btn');b.disabled=false;b.textContent='もう いちど しらべる';b.onclick=wuInit;$('#wu-msg').textContent='しっぱい：'+e};
+window.onWebUpdProg=(i,n)=>{$('#wu-msg').textContent='更新中… '+i+' / '+n};
+window.onWebUpdErr=e=>{const b=$('#wu-btn');b.disabled=false;b.textContent='もう一度確認';b.onclick=wuInit;$('#wu-msg').textContent='失敗：'+e};
 // ここまで エラーなく うごいた ＝ この なかみは だいじょうぶ（あたらしい なかみの ときの もどし まち を とめる）
 try{window.Android&&window.Android.webOk&&window.Android.webOk()}catch(e){}
 </script>
