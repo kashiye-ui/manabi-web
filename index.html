@@ -928,6 +928,12 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
     <button class="btn" id="ci-ok">わかった！</button>
   </div></div>
 
+  <div class="ci" id="upd-done" hidden><div class="ci-box">
+    <div class="ci-t">✅ アップデートしました</div>
+    <div id="upd-done-v"></div>
+    <button class="btn" id="upd-done-ok">OK</button>
+  </div></div>
+
   <!-- GROWTH（せいちょうの きろく） -->
   <section id="v-growth" hidden>
     <div class="top"><button class="back" id="gr-back">もどる</button><span class="pill">成長の記録</span></div>
@@ -945,7 +951,7 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
     </div>
     <div class="panel" id="parent-panel" hidden>
       <button type="button" class="btn" id="gr-open">📈 成長の記録（グラフ）</button>
-      <div id="wu-row" hidden style="margin-top:10px"><div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="wu-btn">新しい内容を確認</button><span class="small" id="wu-msg"></span></div><div class="small" id="wu-ver"></div></div>
+      <div id="wu-row" hidden style="margin-top:10px"><div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="wu-btn">アップデートを確認</button><span class="small" id="wu-msg"></span></div><div class="small" id="wu-ver"></div></div>
       <label>スタンプ3つ（違うゲーム3つ）でもらえるチケット（分）<input id="set-per" type="number" min="1" max="60" inputmode="numeric"></label>
       <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="ci-again">スタンプの説明を子どもにもう一度見せる</button></div>
       <label>1日にもらえる上限（分）<input id="set-cap" type="number" min="5" max="240" inputmode="numeric"></label>
@@ -3633,23 +3639,27 @@ show('home');
 refreshMedia();
 /* ---- なかみだけの こうしん（APK を いれなおさない）。本体が かわった ときだけ APK ---- */
 const WU=()=>window.Android&&typeof window.Android.webUpdCheck==='function';
+const wuVer=()=>{try{return String(window.Android.webVer()||'—').replace('（こうしん ずみ）','（アップデート済み）')}catch(e){return '—'}};
 const wuMB=b=>b<1048576?Math.max(1,Math.round(b/1024))+'KB':(Math.round(b/104857.6)/10)+'MB';
 function wuInit(){
   $('#wu-row').hidden=!WU();if(!WU())return;
-  try{$('#wu-ver').textContent='今の内容：'+(window.Android.webVer()||'—')}catch(e){}
+  try{$('#wu-ver').textContent='今の内容：'+wuVer()}catch(e){}
   const b=$('#wu-btn');b.textContent='確認中…';b.disabled=true;$('#wu-msg').textContent='';
   try{window.Android.webUpdCheck()}catch(e){b.disabled=false}
 }
 window.onWebUpd=o=>{
   const b=$('#wu-btn'),m=$('#wu-msg');b.disabled=false;
-  if(o.state==='new'||o.state==='bad'){b.textContent='新しい内容を入れる';m.textContent=o.date+' の内容（'+o.count+'件・'+wuMB(o.bytes)+'）'+(o.state==='bad'?'　※前回うまく動かなかった版です':'');
-    b.onclick=()=>{b.disabled=true;b.textContent='更新中…';window.Android.webUpdApply()}}
-  else if(o.state==='same'){b.textContent='もう一度確認';m.textContent='最新の内容です';b.onclick=wuInit}
+  if(o.state==='new'||o.state==='bad'){b.textContent='アップデート';m.textContent=o.date+' の内容があります（'+o.count+'件・'+wuMB(o.bytes)+'）'+(o.state==='bad'?'　※前回うまく動かなかった版です':'');
+    b.onclick=()=>{b.disabled=true;b.textContent='アップデート中…';window.Android.webUpdApply()}}
+  else if(o.state==='same'){b.textContent='もう一度確認';m.textContent='最新の内容です（アップデートは不要です）';b.onclick=wuInit}
   else if(o.state==='apk'){b.textContent='アプリを更新（ブラウザ）';m.textContent='今回の更新は、アプリ（APK）の入れ直しが必要です';b.onclick=()=>{try{window.Android.openUpdate()}catch(e){}}}
   else{b.textContent='もう一度確認';m.textContent=o.msg||'確認できませんでした';b.onclick=wuInit}
 };
-window.onWebUpdProg=(i,n)=>{$('#wu-msg').textContent='更新中… '+i+' / '+n};
-window.onWebUpdErr=e=>{const b=$('#wu-btn');b.disabled=false;b.textContent='もう一度確認';b.onclick=wuInit;$('#wu-msg').textContent='失敗：'+e};
+window.onWebUpdProg=(i,n)=>{$('#wu-msg').textContent='アップデート中… '+i+' / '+n};
+window.onWebUpdErr=e=>{const b=$('#wu-btn');b.disabled=false;b.textContent='もう一度確認';b.onclick=wuInit;$('#wu-msg').textContent='アップデートに失敗しました：'+e};
 // ここまで エラーなく うごいた ＝ この なかみは だいじょうぶ（あたらしい なかみの ときの もどし まち を とめる）
 try{window.Android&&window.Android.webOk&&window.Android.webOk()}catch(e){}
+// アップデートの あとに たちあがったら、せいこうを しらせる（親むけ）
+try{if(WU()){const raw=String(window.Android.webVer()||'');if(/こうしん/.test(raw)&&S.webVer!==raw){$('#upd-done-v').textContent='内容：'+wuVer();$('#upd-done').hidden=false}S.webVer=raw;save()}}catch(e){}
+$('#upd-done-ok').onclick=()=>{$('#upd-done').hidden=true};
 </script>
