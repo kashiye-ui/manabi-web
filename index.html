@@ -541,6 +541,21 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
 .k4{background:var(--c5);color:#10182A}
 .gr-tbl{border-collapse:collapse;font-size:15px;margin-top:6px}
 .gr-tbl td,.gr-tbl th{border-bottom:1px solid var(--line);padding:4px 14px;text-align:right}
+/* 成長の記録：年齢・得意・好き */
+.gr-warn{border-color:var(--c3)}
+.gr-lead{margin:4px 0 0;font-size:17px}
+.gr-tags{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.gr-tag{font-size:13px;border:2px solid var(--line);border-radius:999px;padding:0 8px;white-space:nowrap;color:var(--ink)}
+.gr-tag.t-good{border-color:var(--good)}.gr-tag.t-bad{border-color:var(--bad)}
+.gr-tag.t-love{border-color:var(--c4)}.gr-tag.t-none{color:var(--muted);border-style:dashed}
+.gr-tag.t-ahead{border-color:var(--c1)}.gr-tag.t-later{color:var(--muted)}
+.gr-note2{font-size:14px;margin-top:6px;padding:4px 8px;border-radius:8px;background:color-mix(in srgb,var(--c3) 14%,var(--surface))}
+.gr-pick{margin:4px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.gr-qd{fill:var(--muted);font-size:13px;font-weight:700;opacity:.8}
+.gr-emo{font-size:24px;cursor:pointer}
+.gr-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px;align-items:start}
+.gr-top .gr-card{margin-bottom:12px}
+.gr-quad .gr-svg{max-height:360px}
 #gr-tip{position:fixed;z-index:99;background:var(--ink);color:var(--surface);border-radius:10px;padding:4px 10px;font-size:15px;pointer-events:none}
 /* ことばづくり：え・ならべる ます・もじカード */
 .kt-wrap{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center}
@@ -964,6 +979,7 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
       <label id="earn-row1" hidden>チケットがたまる勉強アプリ：何分使うと（分）<input id="set-emin" type="number" min="1" max="120" inputmode="numeric"></label>
       <label id="earn-row2" hidden>　　→ もらえるチケット（分）<input id="set-egive" type="number" min="1" max="60" inputmode="numeric"></label>
       <label>子どもの名前<input id="set-name" type="text" maxlength="12" placeholder="なまえ"></label>
+      <label>子どもの生まれた年月（成長の記録で年齢と比べるため。タブレットの中だけに保存）<input id="set-birth" type="month"></label>
       <div class="row" style="flex-wrap:wrap;justify-content:flex-start"><button type="button" class="btn ghost" id="fam-toggle">家族の応援 ▼</button></div>
       <div id="fam-box" hidden>
       <div class="small">家族の応援：写真＋呼び方＋ひとこと（ひとことはなくてもOK）。ミッションの終わりに出てきます。「編集」でひとこと・呼び方・写真を変えられます。<br>⭐：ゲームの中に出てくる写真（果物を食べに来る・3問続けて正解で応援）。ママ1人・パパ1人の写真に付けるのがおすすめ。⭐がひとつもなければ、切り抜きから選びます。</div>
@@ -2681,88 +2697,112 @@ function grNow(k){const st=GR_STAGE[k];if(!st||/^(hira|kata|num)$/.test(k))retur
 const grDay=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const grPct=(a,b)=>b?Math.round(a/b*100):null;
 const grEsc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let grRange=14;
+/* 年齢の目安（だんかいごと・さい）。小学校学習指導要領（1・2年で学ぶ内容）と、幼児の一般的な発達の目安から、このアプリが独自に決めたもの */
+const GR_AGE={
+  math:[4.5,4.5,5,4.5,5, 5,5,5.5, 5.5,5.5, 5.5, 6,6,6.5, 5,5,5.5, 5.5,5.5,6, 6,6.5,6.5],
+  shop:[4.5,5,5,5.5,5.5,6.5], kotoba:[4,4.5,5,5.5,6], nakama:[3.5,4.5,5,5,6], migi:[5,6,5.5,5.5,5],
+  eigo:[5,5.5,6,8], howmany:[3,4,5], compare:[4,5,6,6.5], tokei:[6,6.5,7.5],
+  kimari:[4,4.5,5,5.5,6,7], robot:[4.5,5,5.5,6,7]};
+// かな・すうじ：「みて かく」で かける もじの わりあいで みる
+const GR_KANA_AGE={hira:5.5,kata:6.5,num:5};
+const grLbl=k=>{const [,m,d]=k.split('-');return (+m)+'/'+(+d)};
+const grAgeTxt=a=>{const y=Math.floor(a);return y+'歳'+(a-y>=.5?'後半':'')+'ごろ'};
+function grChildAge(){
+  if(!S.birth||!/^\d{4}-\d{2}$/.test(S.birth))return null;
+  const [y,m]=S.birth.split('-').map(Number),d=new Date();return (d.getFullYear()-y)+(d.getMonth()+1-m)/12;
+}
 function openGrowth(){show('growth');renderGrowth()}
-function renderGrowth(){
-  const now=Date.now(),D=86400000,Q=LOG.filter(e=>e[2]!=='_clear');
-  const days=[];for(let i=grRange-1;i>=0;i--){const t=now-i*D;days.push({k:grDay(t),t,n:0,ok:0})}
-  const byDay=Object.fromEntries(days.map(d=>[d.k,d]));
-  Q.forEach(e=>{const d=byDay[grDay(e[0])];if(d){d.n++;d.ok+=e[3]}});
-  const since=ms=>Q.filter(e=>e[0]>now-ms),w1=since(7*D),w0=Q.filter(e=>e[0]<=now-7*D&&e[0]>now-14*D);
-  const acc=a=>grPct(a.reduce((s,e)=>s+e[3],0),a.length);
-  const today=Q.filter(e=>grDay(e[0])===grDay(now)).length;
-  const played=new Set(Q.map(e=>grDay(e[0])));
-  const p30=[...played].filter(k=>k>grDay(now-29*D)||k===grDay(now-29*D)).length;
-  let streak=0;{let t=now;if(!played.has(grDay(t)))t-=D;while(played.has(grDay(t))){streak++;t-=D}}
-  const a1=acc(w1),a0=acc(w0);
-  const tile=(lab,val,sub)=>'<div class="gr-tile"><div class="gr-lab">'+lab+'</div><div class="gr-val">'+val+'</div><div class="gr-sub">'+(sub||'')+'</div></div>';
-  let h='<div class="gr-tiles">'+
-    tile('今日解いた問題',today+'<small> 問</small>')+
-    tile('この7日：1回目で正解',a1==null?'—':a1+'<small>%</small>',a0==null?'':'その前の7日は '+a0+'%')+
-    tile('この30日で遊んだ日',p30+'<small> 日</small>')+
-    tile('続けて遊んだ日',streak+'<small> 日</small>')+'</div>';
-  if(!Q.length){$('#gr-wrap').innerHTML=h+'<div class="panel small">まだ記録がありません。ゲームで遊ぶと、ここにグラフが出てきます。</div>';return}
-  h+='<div class="gr-range"><button class="btn ghost'+(grRange===14?' on':'')+'" data-gr="14">2週間</button><button class="btn ghost'+(grRange===60?' on':'')+'" data-gr="60">2か月</button></div>';
-  h+='<div class="gr-two"><div class="gr-card"><h3>1日に解いた問題の数</h3>'+grBars(days)+'</div>';
-  h+='<div class="gr-card"><h3>1回目で正解した割合（%）</h3>'+grLine(days)+'<div class="gr-note">3問以上解いた日だけ。間違えた後の正解（当てずっぽう）は含みません。</div></div></div>';
-  // ゲームごと
-  const games=MISSIONS.filter(m=>Q.some(e=>e[1]===m.k));
-  h+='<h3 class="gr-h">ゲームごとの進み具合</h3><div class="gr-games">';
-  games.forEach(m=>{
-    const L=Q.filter(e=>e[1]===m.k),g1=L.filter(e=>e[0]>now-7*D),g0=L.filter(e=>e[0]<=now-7*D&&e[0]>now-14*D);
-    const r1=acc(g1),r0=acc(g0),sec=a=>a.length?Math.round(a.reduce((s,e)=>s+e[4],0)/a.length*10)/10:null,s1=sec(g1),s0=sec(g0);
+// ゲームごとの ようす：年齢の目安・得意／苦手・好き／あまり
+function grGames(){
+  const now=Date.now(),D=86400000,ca=grChildAge();
+  const rows=MISSIONS.map(m=>{
+    const L=LOG.filter(e=>e[1]===m.k),Q=L.filter(e=>e[2]!=='_clear');
+    const plays14=L.filter(e=>e[2]==='_clear'&&e[0]>now-14*D).length,playsAll=L.filter(e=>e[2]==='_clear').length;
+    const q30=Q.filter(e=>e[0]>now-30*D),acc=q30.length?q30.reduce((s,e)=>s+e[3],0)/q30.length:null;
+    // だんかい と 年齢の目安
+    let age=null,stage='',meter=null;
     const st=GR_STAGE[m.k]?GR_STAGE[m.k]():null,nw=grNow(m.k);
-    let stage='';
-    if(st&&nw!=null)stage='<div class="gr-stage">今の段階 <b>'+(nw+1)+' / '+st.length+'</b>　'+grEsc(st[nw])+'</div>'+grMeter(nw+1,st.length);
-    else if(m.k==='kokki'&&S.kokki)stage='<div class="gr-stage">出てくる国 <b>'+Math.min(KOKKI.length,8+4*S.kokki.wins)+' / '+KOKKI.length+'</b></div>';
-    else if(/^(hira|kata|num)$/.test(m.k)){const c=grKanaCount(m.k);stage='<div class="gr-stage">「みて かく」までできた文字 <b>'+c[0]+' / '+c[1]+'</b></div>'+grMeter(c[0],c[1])}
-    const arrow=(a,b,better)=>a==null||b==null||a===b?'':(better(a,b)?'<span class="gr-up">▲</span>':'<span class="gr-dn">▼</span>');
-    // にがて：30日で 2かい いじょう でて、1かいめで まちがえた ことが おおい もの
-    const it={};L.filter(e=>e[0]>now-30*D).forEach(e=>{const o=it[e[2]]=it[e[2]]||{n:0,ng:0};o.n++;o.ng+=1-e[3]});
-    const weak=Object.entries(it).filter(([,o])=>o.n>=2&&o.ng/o.n>=.34).sort((a,b)=>b[1].ng/b[1].n-a[1].ng/a[1].n||b[1].n-a[1].n).slice(0,3);
-    h+='<div class="gr-card gr-game"><div class="gr-gh"><span class="gr-gi">'+m.g+'</span><b>'+grEsc(m.n)+'</b><span class="gr-cnt">全部で '+L.length+' 問</span></div>'+stage+
-      '<div class="gr-stats"><div>この7日の正解 <b>'+(r1==null?'—':r1+'%')+'</b> '+arrow(r1,r0,(a,b)=>a>b)+(r0==null?'':'<small>（前 '+r0+'%）</small>')+'</div>'+
-      '<div>1問の時間 <b>'+(s1==null?'—':s1+'秒')+'</b> '+arrow(s1,s0,(a,b)=>a<b)+(s0==null?'':'<small>（前 '+s0+'秒）</small>')+'</div></div>'+
-      (st&&!/^(hira|kata|num)$/.test(m.k)?grSteps(L,st.length,now):'')+
-      (weak.length?'<div class="gr-weak">苦手かも：'+weak.map(([k,o])=>'<span>'+grEsc(k)+'<small> '+o.ng+'/'+o.n+'</small></span>').join('')+'</div>':'')+'</div>';
+    if(st&&nw!=null){stage=(nw+1)+' / '+st.length+'　'+st[nw];meter=[nw+1,st.length];if(GR_AGE[m.k])age=GR_AGE[m.k][Math.min(nw,GR_AGE[m.k].length-1)]}
+    else if(GR_KANA_AGE[m.k]){const c=grKanaCount(m.k);stage='「みて かく」まで書ける字 '+c[0]+' / '+c[1];meter=c;if(c[0]>=c[1]*.5)age=GR_KANA_AGE[m.k];else if(c[0]>0)age=GR_KANA_AGE[m.k]-.5}
+    else if(m.k==='kokki'&&S.kokki)stage='出てくる国 '+Math.min(KOKKI.length,8+4*S.kokki.wins)+' / '+KOKKI.length;
+    // だんかいが さがった？（30日の なかで）
+    const lvs=q30.map(e=>e[6]).filter(Boolean),drop=lvs.length>4&&Math.max(...lvs.slice(0,Math.ceil(lvs.length/2)))>Math.max(...lvs.slice(-Math.ceil(lvs.length/3)));
+    // 得意・苦手
+    let skill='?';
+    if(q30.length>=8){skill=acc>=.85&&!drop?'得意':acc<.6||drop?'苦手':'ふつう'}
+    if(ca!=null&&age!=null&&age-ca>=1&&skill!=='苦手'&&q30.length>=5)skill='得意';
+    return {m,plays14,playsAll,acc,age,stage,meter,skill,n30:q30.length,L:Q};
+  });
+  // 好き：この14日に えらんで あそんだ 回数（ほかの ゲームと くらべる）
+  const ps=rows.map(r=>r.plays14).filter(n=>n>0).sort((a,b)=>b-a),top=ps.length?ps[Math.max(0,Math.ceil(ps.length/4)-1)]:1,med=ps.length?ps[Math.floor(ps.length/2)]:1;
+  rows.forEach(r=>{r.like=r.playsAll===0?'まだ':r.plays14===0?'最近やっていない':r.plays14>=top&&r.plays14>=3?'大好き':r.plays14>=med?'よく遊ぶ':'たまに'});
+  rows.forEach(r=>{
+    const like=r.like==='大好き'||r.like==='よく遊ぶ',low=r.like==='たまに'||r.like==='最近やっていない';
+    r.note=r.like==='まだ'?'まだ一度も遊んでいません。一緒に始めてみるのもおすすめです':
+      r.skill==='得意'&&like?'得意で大好き。どんどん伸ばしましょう':
+      r.skill==='苦手'&&like?'苦手だけど大好き。一緒にやると伸びやすい時期です':
+      r.skill==='苦手'&&low?'苦手で避けがち。週末に一緒にやってみては':
+      r.skill==='得意'&&low?'できるのに、あまり選びません':
+      r.like==='最近やっていない'?'最近遊んでいません':
+      r.skill==='?'?'まだ記録が少なく、判断できません':'';
+  });
+  return rows;
+}
+function renderGrowth(){
+  const rows=grGames(),ca=grChildAge();
+  let h='';
+  // 年齢の まとめ
+  const aged=rows.filter(r=>r.age!=null&&r.n30>0);
+  let head='';
+  if(ca==null)head+='<div class="gr-card gr-warn">保護者メニューで「子どもの生まれた年月」を入れると、年齢と比べた進み具合が出ます。</div>';
+  else{
+    const ahead=aged.filter(r=>r.age-ca>=1).sort((a,b)=>b.age-a.age);
+    head+='<div class="gr-card"><h3>'+grEsc(S.name||'お子さん')+'（'+Math.floor(ca)+'歳'+Math.round((ca%1)*12)+'か月）の今</h3>'+
+      (ahead.length?'<p class="gr-lead">'+ahead.slice(0,3).map(r=>r.m.g+' '+grEsc(r.m.n)+'は <b>'+grAgeTxt(r.age)+'</b>').join('、')+'の内容まで進んでいます。</p>':'<p class="gr-lead">ほぼ年齢どおりのペースで進んでいます。</p>')+'</div>';
+  }
+  // ひと目で：好き × 得意（ひだり）と、週末の おすすめ（みぎ）
+  h='<div class="gr-top"><div class="gr-card gr-quad"><h3>ひと目で：好き × 得意</h3>'+grQuad(rows)+'<div class="gr-note">横は「この2週間に自分で選んで遊んだ回数」、縦は「この1か月の1回目で正解した割合」。点をタップすると名前が出ます。</div></div>';
+  // 週末の おすすめ
+  const pick=[...rows.filter(r=>r.skill==='苦手'&&(r.like==='大好き'||r.like==='よく遊ぶ')),...rows.filter(r=>r.skill==='苦手'&&!(r.like==='大好き'||r.like==='よく遊ぶ')),...rows.filter(r=>r.like==='まだ'&&GR_AGE[r.m.k])].slice(0,3);
+  h+='<div class="gr-side">'+head+(pick.length?'<div class="gr-card"><h3>週末に一緒にやるなら</h3><ul class="gr-pick">'+pick.map(r=>'<li><span class="gr-gi">'+r.m.g+'</span><b>'+grEsc(r.m.n)+'</b>　'+r.note+'</li>').join('')+'</ul></div>':'')+'</div></div>';
+  // ゲームごと
+  h+='<h3 class="gr-h">ゲームごとの様子</h3><div class="gr-games">';
+  const order={'まだ':3,'最近やっていない':2};
+  rows.slice().sort((a,b)=>(order[a.like]||0)-(order[b.like]||0)||b.plays14-a.plays14).forEach(r=>{
+    const vs=ca!=null&&r.age!=null?(r.age-ca>=1?'<span class="gr-tag t-ahead">先取り</span>':r.age-ca>=.5?'<span class="gr-tag t-ahead">少し先</span>':r.age-ca>-.5?'<span class="gr-tag">年齢相応</span>':'<span class="gr-tag t-later">これから</span>'):'';
+    const sk=r.skill==='得意'?'<span class="gr-tag t-good">得意</span>':r.skill==='苦手'?'<span class="gr-tag t-bad">苦手</span>':'';
+    const lk='<span class="gr-tag'+(r.like==='大好き'?' t-love':r.like==='まだ'||r.like==='最近やっていない'?' t-none':'')+'">'+(r.like==='大好き'?'❤ ':'')+r.like+'</span>';
+    h+='<div class="gr-card gr-game"><div class="gr-gh"><span class="gr-gi">'+r.m.g+'</span><b>'+grEsc(r.m.n)+'</b><span class="gr-tags">'+sk+lk+'</span></div>'+
+      (r.stage?'<div class="gr-stage">'+grEsc(r.stage)+'</div>'+(r.meter?grMeter(r.meter[0],r.meter[1]):''):'')+
+      (r.age!=null?'<div class="gr-stage">内容の目安：<b>'+grAgeTxt(r.age)+'</b> '+vs+'</div>':'')+
+      (r.n30?'<div class="gr-stats"><div>この1か月：<b>'+r.n30+'問</b>・1回目で正解 <b>'+Math.round(r.acc*100)+'%</b></div><div>この2週間に <b>'+r.plays14+'回</b> 遊んだ</div></div>':r.plays14?'<div class="gr-stats"><div>この2週間に <b>'+r.plays14+'回</b> 遊んだ</div></div>':'')+
+      (r.note?'<div class="gr-note2">'+r.note+'</div>':'')+
+      (GR_AGE[r.m.k]&&r.L.length?grSteps(r.L,GR_STAGE[r.m.k]().length,Date.now()):'')+grWeak(r.L)+'</div>';
   });
   h+='</div>';
   h+=grKanaGrid();
-  h+='<details class="gr-card"><summary>数字の表で見る</summary><table class="gr-tbl"><tr><th>日</th><th>問題</th><th>1回目で正解</th></tr>'+
-    days.slice().reverse().filter(d=>d.n).map(d=>'<tr><td>'+d.k.slice(5).replace('-','/')+'</td><td>'+d.n+'</td><td>'+grPct(d.ok,d.n)+'%</td></tr>').join('')+'</table></details>';
-  h+='<div class="gr-note">記録はこのタブレットの中だけにあります（バックアップにも入ります）。</div>';
+  h+='<div class="gr-note">年齢の目安は、小学校の学習指導要領（1・2年生で学ぶ内容）と、幼児の一般的な発達の目安をもとに、このアプリが独自に決めたものです。公式の基準ではありません。「得意・苦手」は1回目で正解した割合と段階の上がり下がりから、「好き」は自分で選んで遊んだ回数から出しています。記録はこのタブレットの中だけにあります。</div>';
   $('#gr-wrap').innerHTML=h;
-  $('#gr-wrap').querySelectorAll('[data-gr]').forEach(b=>b.onclick=()=>{grRange=+b.dataset.gr;renderGrowth()});
 }
-const grLbl=k=>{const [,m,d]=k.split('-');return (+m)+'/'+(+d)};
-function grBars(days){
-  const W=640,H=200,pl=34,pb=26,pt=12,n=days.length,mx=Math.max(5,...days.map(d=>d.n)),top=Math.ceil(mx/5)*5;
-  const bw=(W-pl-8)/n,y=v=>pt+(H-pt-pb)*(1-v/top);
-  let s='<svg class="gr-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="1日に解いた問題の数">';
-  for(let i=0;i<=2;i++){const v=top*i/2;s+='<line class="gr-grid" x1="'+pl+'" x2="'+W+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="gr-ax" x="'+(pl-6)+'" y="'+(y(v)+5)+'" text-anchor="end">'+v+'</text>'}
-  const step=Math.ceil(n/8);
-  days.forEach((d,i)=>{
-    const x=pl+i*bw+Math.max(1,bw*.15),w=Math.max(2,bw*.7);
-    if(d.n){const yy=y(d.n),hh=H-pb-yy,r=Math.min(4,w/2,hh);
-      s+='<path class="gr-bar" d="M'+x+' '+(H-pb)+'V'+(yy+r)+'q0 -'+r+' '+r+' -'+r+'H'+(x+w-r)+'q'+r+' 0 '+r+' '+r+'V'+(H-pb)+'Z"/>'}
-    s+='<rect class="gr-hit" x="'+(pl+i*bw)+'" y="0" width="'+bw+'" height="'+(H-pb)+'" data-tip="'+grLbl(d.k)+'　'+d.n+' 問"/>';
-    if((n-1-i)%step===0)s+='<text class="gr-ax" x="'+(x+w/2)+'" y="'+(H-6)+'" text-anchor="middle">'+grLbl(d.k)+'</text>';
-  });
+// 好き（よこ）× 得意（たて）の ちず
+function grQuad(rows){
+  const W=640,H=300,pl=44,pr=16,pt=16,pb=34,R=rows.filter(r=>r.playsAll>0&&r.n30>=3);
+  if(!R.length)return '<p class="gr-note">まだ記録が少ないので、もう少し遊ぶと出てきます。</p>';
+  const mx=Math.max(4,...R.map(r=>r.plays14)),x=v=>pl+(W-pl-pr)*v/mx,y=v=>pt+(H-pt-pb)*(1-v);
+  let s='<svg class="gr-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="好きと得意の図">';
+  s+='<line class="gr-grid" x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(.75)+'" y2="'+y(.75)+'" stroke-dasharray="4 4"/><line class="gr-grid" x1="'+x(mx/2)+'" x2="'+x(mx/2)+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke-dasharray="4 4"/>';
+  [0,50,100].forEach(v=>{s+='<text class="gr-ax" x="'+(pl-6)+'" y="'+(y(v/100)+5)+'" text-anchor="end">'+v+'%</text>'});
+  s+='<text class="gr-ax" x="'+pl+'" y="'+(H-8)+'">あまり遊ばない</text><text class="gr-ax" x="'+(W-pr)+'" y="'+(H-8)+'" text-anchor="end">よく遊ぶ →</text>';
+  s+='<text class="gr-qd" x="'+(W-pr-6)+'" y="'+(pt+16)+'" text-anchor="end">得意で好き</text><text class="gr-qd" x="'+(W-pr-6)+'" y="'+(H-pb-8)+'" text-anchor="end">苦手だけど好き</text>';
+  s+='<text class="gr-qd" x="'+(pl+6)+'" y="'+(pt+16)+'">できるけど選ばない</text><text class="gr-qd" x="'+(pl+6)+'" y="'+(H-pb-8)+'">苦手で避けがち</text>';
+  R.forEach((r,i)=>{const cx=Math.min(W-pr-14,Math.max(pl+14,x(r.plays14)+(i%3-1)*4)),cy=Math.min(H-pb-12,Math.max(pt+12,y(r.acc)));
+    s+='<text class="gr-emo" x="'+cx+'" y="'+(cy+9)+'" text-anchor="middle" data-tip="'+grEsc(r.m.n)+'　2週間で'+r.plays14+'回・正解'+Math.round(r.acc*100)+'%">'+r.m.g+'</text>'});
   return s+'</svg>';
 }
-function grLine(days){
-  const W=640,H=200,pl=40,pb=26,pt=12,n=days.length,bw=(W-pl-8)/n,y=v=>pt+(H-pt-pb)*(1-v/100),cx=i=>pl+i*bw+bw/2;
-  let s='<svg class="gr-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="1回目で正解した割合">';
-  [0,50,100].forEach(v=>{s+='<line class="gr-grid" x1="'+pl+'" x2="'+W+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="gr-ax" x="'+(pl-6)+'" y="'+(y(v)+5)+'" text-anchor="end">'+v+'</text>'});
-  const pts=days.map((d,i)=>d.n>=3?[cx(i),y(d.ok/d.n*100),Math.round(d.ok/d.n*100),d]:null);
-  let path='',pen=false;pts.forEach(p=>{if(!p){pen=false;return}path+=(pen?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);pen=true});
-  // とびとびの 日も せんで つなぐ（うすく）
-  const real=pts.filter(Boolean);if(real.length>1)s+='<polyline class="gr-gap" points="'+real.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'"/>';
-  s+='<path class="gr-line" d="'+path+'"/>';
-  real.forEach(p=>{s+='<circle class="gr-dot" cx="'+p[0]+'" cy="'+p[1]+'" r="5"/>'});
-  pts.forEach((p,i)=>{if(p)s+='<rect class="gr-hit" x="'+(pl+i*bw)+'" y="0" width="'+bw+'" height="'+(H-pb)+'" data-tip="'+grLbl(p[3].k)+'　'+p[2]+'%（'+p[3].ok+'/'+p[3].n+'）"/>'});
-  const step=Math.ceil(n/8);days.forEach((d,i)=>{if((n-1-i)%step===0)s+='<text class="gr-ax" x="'+cx(i)+'" y="'+(H-6)+'" text-anchor="middle">'+grLbl(d.k)+'</text>'});
-  return s+'</svg>';
+function grWeak(L){
+  const now=Date.now(),it={};L.filter(e=>e[0]>now-30*864e5).forEach(e=>{const o=it[e[2]]=it[e[2]]||{n:0,ng:0};o.n++;o.ng+=1-e[3]});
+  const weak=Object.entries(it).filter(([,o])=>o.n>=2&&o.ng/o.n>=.34).sort((a,b)=>b[1].ng/b[1].n-a[1].ng/a[1].n||b[1].n-a[1].n).slice(0,3);
+  return weak.length?'<div class="gr-weak">間違えやすい問題：'+weak.map(([k,o])=>'<span>'+grEsc(k)+'<small> '+o.ng+'/'+o.n+'</small></span>').join('')+'</div>':'';
 }
 function grMeter(a,b){let s='<div class="gr-meter">';for(let i=1;i<=b;i++)s+='<i class="'+(i<=a?'on':'')+'"></i>';return s+'</div>'}
 // だんかいの のぼりかた：あそんだ 日ごとに、その日 いちばん たかかった だんかい
@@ -2921,7 +2961,7 @@ function parentInfo(){$('#parent-info').textContent='今のチケット '+fmt(S.
 $('#to-parent').onclick=()=>{show('parent');$('#pin-box').hidden=false;$('#parent-panel').hidden=true;$('#pin-in').value='';$('#pin-err').textContent=''};
 $('#pin-ok').onclick=()=>{
   if($('#pin-in').value===S.pin){
-    $('#pin-box').hidden=true;$('#parent-panel').hidden=false;wuInit();$('#set-per').value=S.cardMin;$('#set-cap').value=S.cap;$('#set-name').value=S.name||'';renderParentMedia();$('#set-luck').value=S.luck;$('#set-rbonus').value=S.rBonus;$('#set-tklv').value=String(clkLv());$('#set-kmlv').value=String(kmLv());{const sel=$('#set-calc');if(!sel.options.length)CALC.forEach((L,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'：'+L[0];sel.appendChild(o)});sel.value=String(calcLv())}$('#set-rblv').value=String(rbLv());$('#set-emin').value=S.eMin;$('#set-egive').value=S.eGive;$('#earn-row1').hidden=$('#earn-row2').hidden=!(window.Android&&typeof window.Android.setEarnApps==='function');$('#set-pin').value='';
+    $('#pin-box').hidden=true;$('#parent-panel').hidden=false;wuInit();$('#set-per').value=S.cardMin;$('#set-cap').value=S.cap;$('#set-name').value=S.name||'';$('#set-birth').value=S.birth||'';renderParentMedia();$('#set-luck').value=S.luck;$('#set-rbonus').value=S.rBonus;$('#set-tklv').value=String(clkLv());$('#set-kmlv').value=String(kmLv());{const sel=$('#set-calc');if(!sel.options.length)CALC.forEach((L,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'：'+L[0];sel.appendChild(o)});sel.value=String(calcLv())}$('#set-rblv').value=String(rbLv());$('#set-emin').value=S.eMin;$('#set-egive').value=S.eGive;$('#earn-row1').hidden=$('#earn-row2').hidden=!(window.Android&&typeof window.Android.setEarnApps==='function');$('#set-pin').value='';
     const nat=!!(window.Android&&typeof window.Android.openSettings==='function');$('#sys-settings').hidden=!nat;$('#app-mgr-btn').hidden=!nat;$('#sys-update').hidden=!nat;document.querySelector('[data-arm="release"]').hidden=!nat;$('#app-row').hidden=!nat;$('#sys-acc').hidden=!nat;$('#sys-clearerr').hidden=!nat;$('#sys-voice').hidden=!nat;$('#fam-pick').hidden=!nat;$('#sys-store').hidden=!nat;$('#bk-box').hidden=!nat;$('#diag-info').hidden=!nat;if(nat){try{$('#diag-info').textContent='落ちたときの記録\n'+window.Android.diagLog()}catch(e){}try{$('#set-app').value=window.Android.getVideoApp()}catch(e){}}parentInfo();
   }else $('#pin-err').textContent='暗証番号が違います';
 };
@@ -2934,6 +2974,7 @@ $('#set-tklv').onchange=e=>{clkLv();S.tokei.lv=+e.target.value;S.tokei.wins=0;sa
 $('#set-calc').onchange=e=>{calcLv();S.calc.lv=+e.target.value;S.calc.good=S.calc.bad=0;save()};
 $('#set-kmlv').onchange=e=>{kmLv();S.kimari.lv=+e.target.value;S.kimari.pt=0;save()};
 $('#set-rblv').onchange=e=>{rbLv();S.robot.lv=+e.target.value;S.robot.pt=0;save()};
+$('#set-birth').onchange=e=>{S.birth=/^\d{4}-\d{2}$/.test(e.target.value)?e.target.value:'';save()};
 $('#set-luck').onchange=e=>{const v=Math.min(100,Math.max(0,parseInt(e.target.value)||0));S.luck=v;e.target.value=v;save()};
 $('#set-app').onchange=e=>{try{window.Android.setVideoApp(e.target.value)}catch(err){}};
 $('#set-pin').onchange=e=>{if(e.target.value.length>=4){S.pin=e.target.value;save();e.target.value='';$('#parent-info').textContent='暗証番号を変えました'}};
