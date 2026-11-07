@@ -260,6 +260,15 @@ a.btn{display:inline-block;text-decoration:none}
 .stage{position:relative;margin:0 auto;aspect-ratio:var(--ar,1);width:min(100%,calc((100vh - 235px)*var(--ar,1)));background:#fff;border-radius:18px;overflow:hidden}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
 #nurie-ln{pointer-events:none;mix-blend-mode:multiply}
+#nurie-tmp{pointer-events:none;opacity:.9}
+/* えを えらぶ がめん */
+#v-erabu:not([hidden]){display:flex;flex-direction:column;height:100%}
+#eb-grid{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;align-content:start;padding:4px 2px 12px}
+#eb-grid button{display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff;border:3px solid var(--line);border-radius:20px;padding:8px;color:#16263D;font-size:16px;font-weight:700}
+#eb-grid button img{width:100%;aspect-ratio:1;object-fit:contain;pointer-events:none}
+#eb-grid button span{width:100%;min-height:1.3em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+#eb-grid button.on{border-color:var(--accent)}
+.thumb.art{background:#fff}.thumb.art img{object-fit:contain}
 .cb.er{background:#fff;display:grid;place-items:center;font-size:22px}
 .cb{width:46px;height:46px}
 main{position:relative;z-index:1}
@@ -853,34 +862,37 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
   <!-- TRACE -->
   <section id="v-trace" hidden>
     <div class="top"><button class="back" data-home>もどる</button><span class="pill">うつしえ</span></div>
-    <div class="twrap"><img id="timg" alt="" hidden><div class="tempty" id="tempty">「がぞうを えらぶ」で<br>すきな えを だそう</div><canvas id="tcanvas"></canvas></div>
-    <div class="tpics" id="tpics" hidden></div>
+    <div class="twrap"><img id="timg" alt="" hidden><div class="tempty" id="tempty">「ほかの え」で<br>すきな えを えらんでね</div><canvas id="tcanvas"></canvas></div>
     <div class="tools" style="margin:10px 0"><span class="tools" id="tswatches" style="margin:0"></span><span>うすさ</span><input id="topa" type="range" min="10" max="80" value="35" aria-label="うすさ"></div>
     <div class="btns">
-      <label class="btn ghost" for="tfile">がぞうを えらぶ</label><input id="tfile" type="file" accept="image/*" hidden>
+      <button class="btn ghost" id="tnext">ほかの え</button>
       <button class="btn ghost" id="tclear">ぜんぶ けす</button>
       <button class="btn ghost" id="tprint">いんさつ</button>
       <button class="btn" id="tdone">かけた！</button>
     </div>
     <div class="tools" id="tprow" hidden><span>おうちのひとの PIN</span><input id="tpin" type="password" inputmode="numeric" maxlength="8" autocomplete="off" aria-label="PIN"><button class="btn" id="tpok">いんさつする</button></div>
     <div class="word" id="tmsg" style="font-size:16px;color:var(--bad);margin:6px 0 0"></div>
-    <div class="word" style="font-size:14px;color:var(--muted);font-weight:500;margin:4px 0 0">えらんだ がぞうと かいた えは、この タブレットの なかだけ（いんさつ だけ できます）。</div>
+    <div class="word" style="font-size:14px;color:var(--muted);font-weight:500;margin:4px 0 0">「かけた！」で ギャラリーに かざるよ。えは この タブレットの なかだけ。</div>
   </section>
 
   <!-- NURIE -->
   <section id="v-nurie" class="nv" hidden>
     <div class="top"><button class="back" data-home>もどる</button><span class="pill" id="nurie-count"></span></div>
-    <div class="paper"><div class="stage" id="nurie-stage"><canvas id="nurie-cv"></canvas><canvas id="nurie-ln"></canvas></div></div>
+    <div class="paper"><div class="stage" id="nurie-stage"><canvas id="nurie-cv"></canvas><canvas id="nurie-tmp"></canvas><canvas id="nurie-ln"></canvas></div></div>
     <div class="pal" id="nurie-pal"></div>
     <div class="btns">
       <button class="btn ghost" id="nurie-undo">もどす</button>
       <button class="btn ghost" id="nurie-size">ふとさ</button>
       <button class="btn ghost" id="nurie-reset">ぜんぶ けす</button>
       <button class="btn ghost" id="nurie-next">ほかの え</button>
-      <label class="btn ghost" for="nurie-file2">えを いれる</label><input id="nurie-file2" type="file" accept="image/*" multiple hidden>
-      <button class="btn ghost" id="nurie-save">ほぞん</button>
       <button class="btn" id="nurie-done">できた！</button>
     </div>
+  </section>
+
+  <!-- ERABU（ぬりえ・うつしえの えを えらぶ） -->
+  <section id="v-erabu" hidden>
+    <div class="top"><button class="back" data-home>もどる</button><span class="pill" id="eb-title">えを えらぼう</span><button class="pill" id="eb-gal">🖼 ギャラリー</button></div>
+    <div id="eb-grid"></div>
   </section>
 
   <!-- ALBUM -->
@@ -998,10 +1010,10 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
         <button class="btn ghost" id="alb-clear">アルバムを全部消す</button>
       </div>
       <div class="row" style="flex-wrap:wrap;justify-content:flex-start">
-        <label class="btn ghost" for="nurie-file">ぬりえの絵を追加</label><input id="nurie-file" type="file" accept="image/*" multiple hidden>
-        <button class="btn ghost" id="nurie-clear">追加したぬりえを全部消す</button>
+        <label class="btn ghost" for="nurie-file">ぬりえ・うつしえの絵を追加</label><input id="nurie-file" type="file" accept="image/*" multiple hidden>
+        <button class="btn ghost" id="nurie-clear">追加した絵を全部消す</button>
       </div>
-      <div class="small">ぬりえ：ぬりえの画像（線画）や好きな絵を選ぶと、線だけの絵に変換して塗れるようになります。他の人が描いた絵は、家庭の中だけで使ってください。</div>
+      <div class="small">ぬりえ・うつしえ：ぬりえの画像（線画）や好きな絵を選ぶと、線だけの絵に変換して、ぬりえとうつしえの両方で使えます。子どもの画面からは追加できません。完成した絵は「ギャラリー」にたまります（アルバムを全部消しても、ギャラリーの絵は残ります）。他の人が描いた絵は、家庭の中だけで使ってください。</div>
       <div class="small" id="alb-info"></div>
       <div class="small" id="media-msg"></div>
       <div id="bk-box" hidden>
@@ -1163,7 +1175,7 @@ async function showHello(){
   const ov=document.createElement('div');ov.className='hello-ov';
   const hf=document.createElement('div');hf.className='hf';
   let shown=false;
-  try{const al=(await mAll('album')).filter(x=>x.type==='image');
+  try{const al=(await mAll('album')).filter(x=>x.type==='image'&&!isArt(x));
     if(al.length){const it=al[rnd(al.length)],u=URL.createObjectURL(it.blob),im=document.createElement('img');im.className='hp';im.src=u;im.alt='';im.onload=()=>setTimeout(()=>URL.revokeObjectURL(u),2000);ov.appendChild(im);shown=true}}catch(e){}
   if(!shown){const f=FAM[rnd(FAM.length)],im=document.createElement('img');im.src=f.url;im.alt=f.role;im.className='hp'+(f.cut?' cutout':'');ov.appendChild(im)}
   const t=document.createElement('h2');t.textContent=(S.name?S.name+'、':'')+g+'！ きょうも いっしょに あそぼうね！';ov.appendChild(t);
@@ -1381,7 +1393,7 @@ async function flashPhoto(key,go){
   if(_flash)return;_flash=true;
   let u='',rev=false;
   try{
-    const al=(await mAll('album')).filter(x=>x.type==='image');
+    const al=(await mAll('album')).filter(x=>x.type==='image'&&!isArt(x));
     if(al.length){u=URL.createObjectURL(al[rnd(al.length)].blob);rev=true}
     else if(FAM.length)u=FAM[rnd(FAM.length)].url;
   }catch(e){}
@@ -3007,6 +3019,26 @@ function sizeT(){const r=tcv.getBoundingClientRect(),d=window.devicePixelRatio||
   tcv.width=Math.round(r.width*d);tcv.height=Math.round(r.height*d);tctx.setTransform(d,0,0,d,0,0);
   if(old){const a=tFit(ow,oh),b=tFit(r.width,r.height);tctx.drawImage(old,a.x*d,a.y*d,a.w*d,a.h*d,b.x,b.y,b.w,b.h)}}
 const SZ=window.SOZAI||{nurie:[],utsushi:[]};
+// えを えらぶ がめん（ぬりえ・うつしえ きょうつう）。L は [{n:なまえ, u:がぞうの URL}]、えらぶと pick(ばんごう)
+let ebUrls=[];
+const blobUrl=b=>{const u=URL.createObjectURL(b);ebUrls.push(u);return u};
+function openErabu(kind,mk,cur,pick){
+  ebUrls.forEach(u=>URL.revokeObjectURL(u));ebUrls=[];
+  const L=mk();
+  show('erabu');
+  $('#eb-title').textContent=kind==='nurie'?'ぬりえ：えを えらぼう':'うつしえ：えを えらぼう';
+  $('#eb-gal').textContent='🖼 '+(S.name?S.name+'の ':'')+'ギャラリー';
+  const g=$('#eb-grid');g.innerHTML='';
+  L.forEach((p,i)=>{
+    const b=document.createElement('button');if(i===cur)b.className='on';b.setAttribute('aria-label',p.n||'え');
+    const im=document.createElement('img');im.src=p.u;im.alt='';im.loading='lazy';im.decoding='async';b.appendChild(im);
+    const t=document.createElement('span');t.textContent=p.n||'';b.appendChild(t);
+    b.onclick=()=>pick(i,L[i]);g.appendChild(b);
+  });
+  if(cur>0){const on=g.children[cur];if(on)setTimeout(()=>on.scrollIntoView({block:'center'}),0)}
+  say((S.name?S.name+'、':'')+'すきな えを えらんでね');
+}
+$('#eb-gal').onclick=()=>openAlbum(true);
 function setTraceImg(src){
   const im=$('#timg');im.src=src;im.hidden=false;im.style.opacity=$('#topa').value/100;$('#tempty').hidden=true;
   im.onload=()=>{const b=inkBox(im);ORI.trace=picOri(b.w/b.h);if(!$('#v-trace').hidden)setOri(ORI.trace)};
@@ -3025,48 +3057,44 @@ const TPICS=[
  {n:'メロン',s:'<rect x="80" y="30" width="40" height="9" rx="4" fill="#8B5A2B"/><rect x="96" y="34" width="8" height="20" fill="#8B5A2B"/><circle cx="100" cy="116" r="66" fill="#A8D86E"/><path d="M50 82Q100 104 150 82M38 116Q100 140 162 116M50 150Q100 172 150 150M72 58Q58 116 76 172M100 52Q92 116 100 182M128 58Q142 116 124 172" fill="none" stroke="#EAF7D2" stroke-width="3"/>'},
 ];
 const tpicUrl=p=>'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="1000" height="1000"><g stroke="#16263D" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">'+p.s+'</g></svg>');
-function buildTracePics(){
-  const row=$('#tpics'),L=[...TPICS.map(p=>({n:p.n,u:tpicUrl(p)})),...SZ.utsushi.map(p=>({n:p.n,u:'sozai/'+p.f}))];
-  row.innerHTML='';row.hidden=!L.length;
-  if(L.length)$('#tempty').innerHTML='したの えを タッチして<br>すきな えを えらんでね';
-  L.forEach(p=>{
-    const b=document.createElement('button');b.setAttribute('aria-label',p.n||'え');
-    const im=document.createElement('img');im.src=p.u;im.alt='';im.loading='lazy';b.appendChild(im);
-    b.onclick=()=>{if(turl&&turl.startsWith('blob:'))URL.revokeObjectURL(turl);turl=p.u;setTraceImg(turl);
-      row.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));if(p.n)say(p.n+'を うつそうね')};
-    row.appendChild(b);
-  });
+function traceList(){
+  return [...TPICS.map(p=>({n:p.n,u:tpicUrl(p)})),...SZ.utsushi.map(p=>({n:p.n,u:'sozai/'+p.f})),
+    ...PICS.map(p=>({n:p.n,u:picSvgUrl(p)})),...SZ.nurie.map(p=>({n:p.n,u:'sozai/'+p.f})),...CUSTOM.map(c=>({n:'',u:blobUrl(c.blob),blob:c.blob}))];
 }
 function startTrace(){
-  show('trace');buildTracePics();sizeT();tn=0;say((S.name?S.name+'、':'')+'すきな えを うつそうね');$('#tprow').hidden=true;$('#tmsg').textContent='';
+  openErabu('trace',traceList,S.traceIdx|0,(i,p)=>{S.traceIdx=i;save();goTrace(p)});
+}
+function goTrace(p){
+  show('trace');sizeT();tn=0;$('#tprow').hidden=true;$('#tmsg').textContent='';
+  {const r=tcv.getBoundingClientRect();tctx.clearRect(0,0,r.width,r.height)}
+  if(turl&&turl.startsWith('blob:'))URL.revokeObjectURL(turl);
+  turl=p.blob?URL.createObjectURL(p.blob):p.u;setTraceImg(turl);
+  say((S.name?S.name+'、':'')+(p.n?p.n+'を ':'')+'うつそうね');
   const box=$('#tswatches');box.innerHTML='';
   ['--c4','--c1','--c2','--c3','--c5','--ink'].forEach(c=>{const b=document.createElement('button');b.className='sw'+(c===tcol?' on':'');b.style.setProperty('--c','var('+c+')');b.setAttribute('aria-label','いろ');b.onclick=()=>{tcol=c;box.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));b.classList.add('on')};box.appendChild(b)});
 }
 const tpos=e=>{const r=tcv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
 tcv.addEventListener('pointerdown',e=>{tdraw=true;tlast=tpos(e);tn++;tcv.setPointerCapture(e.pointerId);tctx.fillStyle=cssv(tcol);tctx.beginPath();tctx.arc(tlast[0],tlast[1],6,0,7);tctx.fill()});
-tcv.addEventListener('pointermove',e=>{if(!tdraw)return;const p=tpos(e);tctx.strokeStyle=cssv(tcol);tctx.lineWidth=12;tctx.lineCap='round';tctx.lineJoin='round';tctx.beginPath();tctx.moveTo(tlast[0],tlast[1]);tctx.lineTo(p[0],p[1]);tctx.stroke();tlast=p});
+tcv.addEventListener('pointermove',e=>{if(!tdraw)return;tctx.strokeStyle=cssv(tcol);tctx.lineWidth=12;tctx.lineCap='round';tctx.lineJoin='round';tctx.beginPath();tctx.moveTo(tlast[0],tlast[1]);
+  const evs=e.getCoalescedEvents?e.getCoalescedEvents():[];for(const ev of (evs.length?evs:[e])){const p=tpos(ev);tctx.lineTo(p[0],p[1]);tlast=p}tctx.stroke()});
 ['pointerup','pointercancel'].forEach(t=>tcv.addEventListener(t,()=>{tdraw=false}));
 $('#tclear').onclick=()=>{const r=tcv.getBoundingClientRect();tctx.clearRect(0,0,r.width,r.height);tn=0};
 $('#topa').oninput=e=>{$('#timg').style.opacity=e.target.value/100};
-$('#tfile').onchange=e=>{
-  const f=e.target.files&&e.target.files[0];if(!f)return;
-  if(turl&&turl.startsWith('blob:'))URL.revokeObjectURL(turl);
-  turl=URL.createObjectURL(f);setTraceImg(turl);$('#tpics').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
-  e.target.value='';
-};
-$('#tdone').onclick=()=>{
+$('#tnext').onclick=startTrace;
+$('#tdone').onclick=async()=>{
   if(!turl){say('がぞうを えらんでね');return}
   if(tn<5){say('もうすこし かいてみよう');return}
-  finish('trace');
+  try{await saveArt('tr',composeTrace(true))}catch(e){}
+  finish('trace','ギャラリーに かざったよ！');
 };
-function composeTrace(){
+function composeTrace(asCanvas){
   const r=tcv.getBoundingClientRect(),W=Math.round(r.width*2),H=Math.round(r.height*2);
   const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   x.fillStyle='#fff';x.fillRect(0,0,W,H);
   const im=$('#timg');
   if(!im.hidden&&im.naturalWidth){const s=Math.min(W/im.naturalWidth,H/im.naturalHeight),w=im.naturalWidth*s,hh=im.naturalHeight*s;x.globalAlpha=parseFloat(im.style.opacity)||.35;x.drawImage(im,(W-w)/2,(H-hh)/2,w,hh);x.globalAlpha=1}
   x.drawImage(tcv,0,0,W,H);
-  return c.toDataURL('image/jpeg',.9);
+  return asCanvas?c:c.toDataURL('image/jpeg',.9);
 }
 $('#tprint').onclick=()=>{
   const m=$('#tmsg');
@@ -3094,6 +3122,7 @@ function openBook(){
 }
 /* ---- family photos & album (stored only on this device) ---- */
 const mem={fam:[],album:[],nurie:[]};let useMem=false;
+const isArt=it=>/^(nr|tr)/.test(String(it&&it.id||'')); // ぬりえ・うつしえの さくひん（ギャラリー）
 let _db=null;
 function idb(){return _db||(_db=new Promise((res,rej)=>{try{const r=indexedDB.open('manabi-media',2);r.onupgradeneeded=()=>{const d=r.result;['fam','album','nurie'].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n,{keyPath:'id'})})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}}))}
 async function mAll(s){if(!useMem){try{const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction(s).objectStore(s).getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}catch(e){useMem=true}}return mem[s].slice()}
@@ -3159,7 +3188,7 @@ async function refreshMedia(){
     FAMALL.forEach(x=>{if(x.vurl)URL.revokeObjectURL(x.vurl)});
     FAMALL=f.sort((a,b)=>a.ts-b.ts).map(x=>Object.assign({},x,{url:URL.createObjectURL(x.blob),vurl:x.voice?URL.createObjectURL(x.voice):''}));
     FAM=FAMALL.filter(x=>!x.off);
-    albN=(await mAll('album')).length;
+    albN=(await mAll('album')).filter(x=>!isArt(x)).length;
     CUSTOM=(await mAll('nurie')).sort((a,b)=>a.ts-b.ts);
   }catch(e){}
   if(!$('#v-home').hidden){renderHome();renderScatter('home')}
@@ -3183,16 +3212,17 @@ function renderCheer(){
   const t=document.createElement('div');t.textContent=text;
   box.appendChild(fw);box.appendChild(t);box.hidden=false;return text;
 }
-async function openAlbum(){
+async function openAlbum(art){
+  art=art===true;
   albUrls.forEach(u=>URL.revokeObjectURL(u));albUrls=[];
   show('album');
-  const items=(await mAll('album')).sort((a,b)=>a.ts-b.ts);albN=items.length;
-  $('#alb-count').textContent=nmo()+'おもいで '+items.length+' こ';
+  const items=(await mAll('album')).filter(x=>isArt(x)===art).sort((a,b)=>a.ts-b.ts);if(!art)albN=items.length;
+  $('#alb-count').textContent=art?(S.name?S.name+'の ':'')+'ギャラリー '+items.length+' まい':nmo()+'おもいで '+items.length+' こ';
   const g=$('#alb-grid');g.innerHTML='';
-  if(!items.length){g.innerHTML='<div class="word">まだ なにも ないよ。おうちのひとに いれてもらおう！</div>';return}
+  if(!items.length){g.innerHTML='<div class="word">'+(art?'まだ ないよ。ぬりえや うつしえで「できた！」を おすと、ここに かざられるよ！':'まだ なにも ないよ。おうちのひとに いれてもらおう！')+'</div>';return}
   items.slice().reverse().forEach(it=>{
     const u=URL.createObjectURL(it.blob);albUrls.push(u);
-    const b=document.createElement('button');b.className='thumb';
+    const b=document.createElement('button');b.className='thumb'+(art?' art':'');
     if(it.type==='video'){const v=document.createElement('video');v.src=u+'#t=0.1';v.muted=true;v.preload='metadata';v.playsInline=true;b.appendChild(v);const p=document.createElement('span');p.textContent='▶';b.appendChild(p)}
     else{const im=document.createElement('img');im.src=u;im.alt='';b.appendChild(im)}
     b.onclick=()=>viewMedia(it);g.appendChild(b);
@@ -3301,7 +3331,7 @@ $('#alb-file').onchange=async e=>{
   }
   out.textContent=n+'件追加しました'+(skip?'（'+skip+'件は読み込めませんでした: '+why+'）':'');refreshMedia();
 };
-$('#alb-clear').onclick=function(){armed(this,async()=>{await mClear('album');refreshMedia()})};
+$('#alb-clear').onclick=function(){armed(this,async()=>{for(const it of await mAll('album'))if(!isArt(it))await mDel('album',it.id);refreshMedia()})};
 
 /* ---- バックアップ(写真・声・アルバム・すすみぐあいを1つのzipに。タブレットの外には送らない) ---- */
 const BK_STORES=['fam','album','nurie'],BK_CH=768*1024;
@@ -3526,20 +3556,20 @@ const PICS=[
  {n:'みかん',s:'<circle class="reg" cx="100" cy="114" r="64"/><ellipse class="reg" cx="122" cy="50" rx="22" ry="9" transform="rotate(-25 122 50)"/><circle cx="100" cy="52" r="6" fill="#16263D"/><ellipse class="reg" cx="72" cy="92" rx="10" ry="18" transform="rotate(30 72 92)"/><circle cx="120" cy="96" r="2" fill="#16263D"/><circle cx="136" cy="120" r="2" fill="#16263D"/><circle cx="108" cy="142" r="2" fill="#16263D"/><circle cx="80" cy="132" r="2" fill="#16263D"/><circle cx="128" cy="150" r="2" fill="#16263D"/><circle cx="96" cy="116" r="2" fill="#16263D"/>'},
  {n:'さくらんぼ',s:'<path d="M70 116Q84 64 112 40M134 124Q124 72 112 40" fill="none" stroke="#16263D" stroke-width="4" stroke-linecap="round"/><ellipse class="reg" cx="138" cy="40" rx="24" ry="11" transform="rotate(-20 138 40)"/><circle class="reg" cx="68" cy="142" r="30"/><circle class="reg" cx="134" cy="150" r="30"/><ellipse class="reg" cx="56" cy="132" rx="6" ry="10" transform="rotate(30 56 132)"/><ellipse class="reg" cx="122" cy="140" rx="6" ry="10" transform="rotate(30 122 140)"/>'},
 ];
-let nIdx=0,nCol=0,nTok=0,nSize=1,penSeen=false,cells=new Uint8Array(400),cellN=0,hist=[],crDown=false,lastP=null;
+let nIdx=0,nCol=0,nTok=0,nSize=0,penSeen=false,cells=new Uint8Array(400),cellN=0,hist=[],crDown=false,lastP=null;
 const SIZES=[['ほそい',14],['ふつう',28],['ふとい',50]];
 const nurieAll=()=>PICS.length+SZ.nurie.length+CUSTOM.length;
 const nName=()=>nIdx<PICS.length?PICS[nIdx].n:nIdx<PICS.length+SZ.nurie.length?(SZ.nurie[nIdx-PICS.length].n||'ぬりえ'):'ぬりえ '+(nIdx-PICS.length-SZ.nurie.length+1);
 const pct=()=>Math.min(100,Math.round(cellN/400*100*1.6));
 function updNurie(){$('#nurie-count').textContent=nName()+'  ぬった '+pct()+'%'}
 function loadImg(src){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src})}
+function picSvgUrl(p){return 'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="1000" height="1000"><style>.reg{fill:#fff;stroke:#16263D;stroke-width:3;stroke-linejoin:round}</style>'+p.s+'</svg>')}
+function nurieList(){return [...PICS.map(p=>({n:p.n,u:picSvgUrl(p)})),...SZ.nurie.map(p=>({n:p.n,u:'sozai/'+p.f})),...CUSTOM.map((c,i)=>({n:'ぬりえ '+(i+1),u:blobUrl(c.blob)}))]}
 async function setLines(tok){
-  const ln=$('#nurie-ln'),cv=$('#nurie-cv'),st=$('#nurie-stage');
+  const ln=$('#nurie-ln'),cv=$('#nurie-cv'),st=$('#nurie-stage'),tmp=$('#nurie-tmp');
   let im;
   if(nIdx<PICS.length){
-    const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="1000" height="1000"><style>.reg{fill:#fff;stroke:#16263D;stroke-width:3;stroke-linejoin:round}</style>'+PICS[nIdx].s+'</svg>';
-    const b=new Blob([svg],{type:'image/svg+xml'}),u=URL.createObjectURL(b);
-    try{im=await loadImg(u)}finally{URL.revokeObjectURL(u)}
+    im=await loadImg(picSvgUrl(PICS[nIdx]));
   }else if(nIdx<PICS.length+SZ.nurie.length){
     im=await loadImg('sozai/'+SZ.nurie[nIdx-PICS.length].f);
   }else{
@@ -3550,7 +3580,7 @@ async function setLines(tok){
   // まわりの よはくを きりおとして、えを できるだけ おおきく だす
   // きりおとして ちいさく なった えは、ながい ほうが 1000に なるまで おおきく して ぼやけを ふせぐ
   const b=inkBox(im),k=Math.max(1,1000/Math.max(b.w,b.h)),w=Math.round(b.w*k),h2=Math.round(b.h*k);
-  cv.width=ln.width=w;cv.height=ln.height=h2;st.style.setProperty('--ar',w/h2);
+  cv.width=ln.width=tmp.width=w;cv.height=ln.height=tmp.height=h2;crPat={};st.style.setProperty('--ar',w/h2);
   ORI.nurie=picOri(w/h2);if(!$('#v-nurie').hidden)setOri(ORI.nurie);
   const lx=ln.getContext('2d');lx.clearRect(0,0,w,h2);lx.fillStyle='#fff';lx.fillRect(0,0,w,h2);lx.drawImage(im,b.x,b.y,b.w,b.h,0,0,w,h2);
   if(nIdx<PICS.length){ /* make regions dark outlines only */ }
@@ -3561,29 +3591,42 @@ function drawNurie(){
   setLines(tok).catch(()=>say('この えは ひらけませんでした'));
 }
 function cpos(e){const cv=$('#nurie-cv'),r=cv.getBoundingClientRect();return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]}
-function crayon(x0,y0,x1,y1){
-  const cv=$('#nurie-cv'),c=cv.getContext('2d'),R=SIZES[nSize][1]*(cv.width/1000)/2,er=nCol===-1;
-  const dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy),step=Math.max(1.5,R/4),n=Math.max(1,Math.ceil(len/step));
-  if(er){c.globalCompositeOperation='destination-out';c.globalAlpha=1;c.lineCap='round';c.lineWidth=R*2.4;c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();c.globalCompositeOperation='source-over';return}
-  c.fillStyle=NCOL[nCol][1];
-  for(let i=0;i<=n;i++){
-    const x=x0+dx*i/n,y=y0+dy*i/n;
-    c.globalAlpha=.35;c.beginPath();c.arc(x,y,R*.85,0,7);c.fill();
-    c.globalAlpha=.55;
-    for(let k=0;k<7;k++){const a=Math.random()*6.283,d=Math.sqrt(Math.random())*R;c.beginPath();c.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,R*(.12+Math.random()*.16),0,7);c.fill()}
-    const gx=Math.min(19,Math.max(0,Math.floor(x/cv.width*20))),gy=Math.min(19,Math.max(0,Math.floor(y/cv.height*20)));
-    if(!cells[gy*20+gx]){cells[gy*20+gx]=1;cellN++}
-  }
-  c.globalAlpha=1;
+// クレヨンの ざらざら（いろごとに 1かいだけ つくる もよう）
+let crPat={};
+function crPattern(c,col){
+  if(crPat[col])return crPat[col];
+  const t=document.createElement('canvas');t.width=t.height=96;const x=t.getContext('2d');
+  x.fillStyle=col;x.fillRect(0,0,96,96);x.globalCompositeOperation='destination-out';
+  for(let k=0;k<260;k++){x.globalAlpha=.25+Math.random()*.5;x.beginPath();x.arc(Math.random()*96,Math.random()*96,.6+Math.random()*1.6,0,7);x.fill()}
+  return crPat[col]=c.createPattern(t,'repeat');
 }
+function crMark(x,y){
+  const cv=$('#nurie-cv'),gx=Math.min(19,Math.max(0,Math.floor(x/cv.width*20))),gy=Math.min(19,Math.max(0,Math.floor(y/cv.height*20)));
+  if(!cells[gy*20+gx]){cells[gy*20+gx]=1;cellN++}
+}
+// 1かいの ひと ふでは、うわがきに なめらかな せんで かき（かるい）、はなした ときに したの かみへ うつす
+function crayon(x0,y0,x1,y1){
+  const cv=$('#nurie-cv'),R=SIZES[nSize][1]*(cv.width/1000)/2,er=nCol===-1;
+  if(er){const c=cv.getContext('2d');c.globalCompositeOperation='destination-out';c.globalAlpha=1;c.lineCap='round';c.lineJoin='round';c.lineWidth=R*2.4;c.beginPath();c.moveTo(x0,y0);c.lineTo(x1,y1);c.stroke();c.globalCompositeOperation='source-over';return}
+  const t=$('#nurie-tmp').getContext('2d');
+  t.strokeStyle=crPattern(t,NCOL[nCol][1]);t.lineWidth=R*2;t.lineCap='round';t.lineJoin='round';
+  t.beginPath();t.moveTo(x0,y0);t.lineTo(x1,y1);t.stroke();
+  crMark(x1,y1);
+}
+function crCommit(){
+  const tmp=$('#nurie-tmp'),c=$('#nurie-cv').getContext('2d');
+  c.globalAlpha=.9;c.drawImage(tmp,0,0);c.globalAlpha=1;
+  tmp.getContext('2d').clearRect(0,0,tmp.width,tmp.height);
+}
+// もどす ための しゃしん（キャンバスの コピー。getImageData より ずっと はやい）
+function snap(){const cv=$('#nurie-cv'),o=document.createElement('canvas');o.width=cv.width;o.height=cv.height;o.getContext('2d').drawImage(cv,0,0);hist.push(o);if(hist.length>6)hist.shift()}
 const cvE=$('#nurie-cv');
 cvE.addEventListener('pointerdown',e=>{
   if(e.pointerType==='pen')penSeen=true;
   if(e.pointerType==='touch'&&penSeen)return;
   e.preventDefault();
   try{cvE.setPointerCapture(e.pointerId)}catch(_){}
-  const c=cvE.getContext('2d');
-  hist.push(c.getImageData(0,0,cvE.width,cvE.height));if(hist.length>8)hist.shift();
+  snap();
   crDown=true;lastP=cpos(e);crayon(lastP[0],lastP[1],lastP[0],lastP[1]);
 });
 cvE.addEventListener('pointermove',e=>{
@@ -3592,7 +3635,7 @@ cvE.addEventListener('pointermove',e=>{
   for(const ev of (evs.length?evs:[e])){const p=cpos(ev);crayon(lastP[0],lastP[1],p[0],p[1]);lastP=p}
   updNurie();
 });
-const endD=()=>{if(crDown){crDown=false;updNurie();const k=Math.floor(cellN/60);if(k>(endD.k||0)){endD.k=k;say(praiseText())}}};
+const endD=()=>{if(crDown){crDown=false;crCommit();updNurie();const k=Math.floor(cellN/60);if(k>(endD.k||0)){endD.k=k;say(praiseText())}}};
 cvE.addEventListener('pointerup',endD);cvE.addEventListener('pointercancel',endD);
 function buildPal(){
   const box=$('#nurie-pal');box.innerHTML='';
@@ -3603,26 +3646,33 @@ function buildPal(){
   mk(-1,'けしごむ',null,' er');
 }
 function startNurie(){
-  delete ORI.nurie;show('nurie');nIdx=(S.nurieIdx||0)%nurieAll();nCol=0;endD.k=0;drawNurie();buildPal();
+  delete ORI.nurie;
+  openErabu('nurie',nurieList,(S.nurieIdx||0)%nurieAll(),i=>{nIdx=i;S.nurieIdx=i;save();goNurie()});
+}
+function goNurie(){
+  delete ORI.nurie;show('nurie');nCol=0;nSize=0;endD.k=0;drawNurie();buildPal();
   $('#nurie-size').textContent='ふとさ: '+SIZES[nSize][0];
   say((S.name?S.name+'、':'')+nName()+'を ぬろうね！ クレヨンで すきな いろを ぬってね');
 }
-$('#nurie-reset').onclick=()=>{const c=cvE.getContext('2d');hist.push(c.getImageData(0,0,cvE.width,cvE.height));c.clearRect(0,0,cvE.width,cvE.height);cells=new Uint8Array(400);cellN=0;endD.k=0;updNurie()};
-$('#nurie-undo').onclick=()=>{const s=hist.pop();if(s){cvE.getContext('2d').putImageData(s,0,0);updNurie()}};
+$('#nurie-reset').onclick=()=>{const c=cvE.getContext('2d');snap();c.clearRect(0,0,cvE.width,cvE.height);cells=new Uint8Array(400);cellN=0;endD.k=0;updNurie()};
+$('#nurie-undo').onclick=()=>{const s=hist.pop();if(s){const c=cvE.getContext('2d');c.clearRect(0,0,cvE.width,cvE.height);c.drawImage(s,0,0);updNurie()}};
 $('#nurie-size').onclick=()=>{nSize=(nSize+1)%SIZES.length;$('#nurie-size').textContent='ふとさ: '+SIZES[nSize][0]};
-$('#nurie-next').onclick=()=>{nIdx=(nIdx+1)%nurieAll();S.nurieIdx=nIdx;save();drawNurie();say(nName()+'だよ')};
+$('#nurie-next').onclick=startNurie;
 async function saveNurie(){
   const cv=$('#nurie-cv'),ln=$('#nurie-ln'),o=document.createElement('canvas');o.width=cv.width;o.height=cv.height;
   const x=o.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,o.width,o.height);x.drawImage(cv,0,0);x.globalCompositeOperation='multiply';x.drawImage(ln,0,0);
-  const blob=await new Promise(r=>o.toBlob(r,'image/jpeg',.88));
-  await mPut('album',{id:'nr'+Date.now(),ts:Date.now(),type:'image',blob});
+  await saveArt('nr',o);
+}
+// できた え を ギャラリーへ（この タブレットの なかだけ）
+async function saveArt(pre,cv){
+  const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.88));
+  await mPut('album',{id:pre+Date.now(),ts:Date.now(),type:'image',blob});
   await refreshMedia();
 }
-$('#nurie-save').onclick=async()=>{try{await saveNurie();say((S.name?S.name+'、':'')+'おもいでに ほぞんしたよ！')}catch(e){say('ほぞんできませんでした')}};
 $('#nurie-done').onclick=async()=>{
   if(pct()<30){say((S.name?S.name+'、':'')+'もうすこし ぬろうね');return}
   try{await saveNurie()}catch(e){}
-  finish('nurie',nName()+' が かんせい！');
+  finish('nurie',nName()+' が かんせい！ ギャラリーに かざったよ！');
 };
 /* import: any picture -> black/white line art */
 async function toLineArt(file){
@@ -3673,7 +3723,7 @@ async function importNurie(e){
   if(n&&!$('#v-nurie').hidden){nIdx=nurieAll()-1;S.nurieIdx=nIdx;save();drawNurie();say('いれた えを ぬろうね')}
   else if(!n&&!$('#v-nurie').hidden)say('よみこめませんでした');
 }
-$('#nurie-file').onchange=importNurie;$('#nurie-file2').onchange=importNurie;
+$('#nurie-file').onchange=importNurie;
 $('#nurie-clear').onclick=function(){armed(this,async()=>{await mClear('nurie');S.nurieIdx=0;save();refreshMedia()})};
 const START={count:startCount,hira:()=>startKana('hira'),kata:()=>startKana('kata'),num:()=>startKana('num'),math:startCalc,imi:startCalc,shop:startShop,kotoba:startKotoba,nakama:startNakama,migi:startMigi,tokei:startTokei,kokki:startKokki,kimari:startKimari,robot:startRobot,howmany:()=>startQuiz('howmany'),compare:()=>startQuiz('compare'),memory:startMemory,trace:startTrace,nurie:startNurie,react:startReact,abc:startAbc,eigo:startEigo};
 buildMissions();
