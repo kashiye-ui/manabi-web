@@ -1409,8 +1409,8 @@ window.syncFromNative=function(sec){S.sec=Math.max(0,sec|0);save();if(!$('#v-hom
 let cancelAnim=()=>{};
 // 画面の むきは ふだん 横。ぬりえ・うつしえだけ、えが たてながなら 縦に する
 const ORI={};let _ori='';
-const picOri=ar=>ar<.85?'port':'land';
-function setOri(o){if(o===_ori)return;_ori=o;try{window.Android&&window.Android.setOrient&&window.Android.setOrient(o)}catch(e){}}
+const picOri=ar=>ar<1.05?'port':'land'; // ほぼ しかくの えも たてで（たての ほうが えが おおきく でる）
+function setOri(o){_ori=o;try{window.Android&&window.Android.setOrient&&window.Android.setOrient(o)}catch(e){}}
 // えの「かいてある ところ」の わく（まわりの しろい よはくは のぞく）
 function inkBox(im){
   const W=im.naturalWidth||im.width||1,H=im.naturalHeight||im.height||1,full={x:0,y:0,w:W,h:H};
@@ -3293,7 +3293,7 @@ const blobUrl=b=>{const u=URL.createObjectURL(b);ebUrls.push(u);return u};
 function openErabu(kind,mk,cur,pick){
   ebUrls.forEach(u=>URL.revokeObjectURL(u));ebUrls=[];
   const L=mk();
-  show('erabu');
+  ORI.erabu=_ori||'land';show('erabu');
   $('#eb-title').textContent=kind==='nurie'?'ぬりえ：えを えらぼう':'うつしえ：えを えらぼう';
   $('#eb-gal').textContent='🖼 '+(S.name?S.name+'の ':'')+'ギャラリー';
   const g=$('#eb-grid');g.innerHTML='';
@@ -3330,7 +3330,10 @@ function traceList(){
     ...PICS.map(p=>({n:p.n,u:picSvgUrl(p)})),...SZ.nurie.map(p=>({n:p.n,u:'sozai/'+p.f})),...CUSTOM.map(c=>({n:'',u:blobUrl(c.blob),blob:c.blob}))];
 }
 function startTrace(){
-  openErabu('trace',traceList,S.traceIdx|0,(i,p)=>{S.traceIdx=i;save();goTrace(p)});
+  openErabu('trace',traceList,S.traceIdx|0,async(i,p)=>{S.traceIdx=i;save();await preOri('trace',p.u);goTrace(p)});
+}
+// えの むき（たて・よこ）を、がめんを ひらく まえに きめる
+async function preOri(v,u){try{const im=await loadImg(u),b=inkBox(im);ORI[v]=picOri(b.w/b.h)}catch(e){}
 }
 function goTrace(p){
   show('trace');sizeT();tn=0;$('#tprow').hidden=true;$('#tmsg').textContent='';
@@ -3915,10 +3918,10 @@ function buildPal(){
 }
 function startNurie(){
   delete ORI.nurie;
-  openErabu('nurie',nurieList,(S.nurieIdx||0)%nurieAll(),i=>{nIdx=i;S.nurieIdx=i;save();goNurie()});
+  openErabu('nurie',nurieList,(S.nurieIdx||0)%nurieAll(),async(i,p)=>{nIdx=i;S.nurieIdx=i;save();await preOri('nurie',p.u);goNurie()});
 }
 function goNurie(){
-  delete ORI.nurie;show('nurie');nCol=0;nSize=0;endD.k=0;drawNurie();buildPal();
+  show('nurie');nCol=0;nSize=0;endD.k=0;drawNurie();buildPal();
   $('#nurie-size').textContent='ふとさ: '+SIZES[nSize][0];
   say((S.name?S.name+'、':'')+nName()+'を ぬろうね！ クレヨンで すきな いろを ぬってね');
 }
