@@ -96,6 +96,12 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:4px solid var(-
 .dots i.b{background:var(--c4)}
 .dots span{font-family:var(--font-display);font-size:28px}
 .stars{display:flex;flex-wrap:wrap;gap:6px 10px;justify-content:center;font-size:min(11vw,52px);line-height:1.1;padding:8px}
+.stars.rows{flex-direction:column;align-items:center;gap:4px}
+.row5{display:flex;gap:6px}.row5 .gap{margin-left:18px}
+.scat{position:relative;width:min(100%,620px);height:min(46vh,360px);margin:0 auto;font-size:min(10vw,56px)}
+.scat span{position:absolute;line-height:1}
+.duo.pics .choice{font-size:min(9vw,8vh,52px);padding:10px;line-height:1.15}
+.cmp{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 4px;max-width:5.6em;margin:0 auto}
 .abc-big{font-family:var(--font-display);font-size:min(30vw,170px);line-height:1;color:var(--c3)}
 .abc-row{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:10px 0;font-family:var(--font-display);font-size:22px}
 .abc-row b{padding:2px 6px;border-radius:8px;color:var(--ink,inherit)}
@@ -359,6 +365,35 @@ main{position:relative;z-index:1}
 .prog i{position:absolute;inset:0 auto 0 0;width:0;background:var(--c2);transition:width .6s}
 .prog span{position:relative;display:block;text-align:center;font-size:15px;line-height:24px;color:var(--ink)}
 .sticker-pop{font-size:96px;line-height:1;min-height:96px;animation:pop2 .6s}
+.sticker-pop:empty{display:none}
+/* そだつ どうぶつ */
+.mission .glyph.pet{position:relative;background:#fff;overflow:visible;width:clamp(56px,12vh,88px);height:clamp(56px,12vh,88px)}
+.mission .glyph.pet img{width:86%;height:86%;object-fit:contain;pointer-events:none}
+.ring{position:absolute;inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);transform:rotate(-90deg);pointer-events:none}
+.ring circle{fill:none;stroke-width:7}
+.ring .rb{stroke:color-mix(in srgb,var(--c,#aaa) 22%,#fff)}
+.ring .rf{stroke:var(--c,#7aa);stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:var(--off,100);transition:stroke-dashoffset 1.2s ease}
+.king .ring .rf,.mission .glyph.pet.king .ring .rf{stroke:#F4B73A}
+.petbox{display:flex;flex-direction:column;align-items:center;gap:4px;margin:2px 0 6px}
+.pet-stage{position:relative;width:min(34vw,170px);height:min(34vw,170px);border-radius:50%;background:#fff;display:grid;place-items:center;--c:var(--accent)}
+.pet-stage img{width:84%;height:84%;object-fit:contain}
+.pet-stage img.chomp{animation:chomp .7s ease}
+.pet-stage img.grow{animation:petgrow 1.1s ease}
+@keyframes chomp{0%,100%{transform:scale(1)}25%{transform:scale(1.08,.92)}50%{transform:scale(.95,1.06) translateY(-8%)}75%{transform:scale(1.04,.97)}}
+@keyframes petgrow{0%{transform:scale(1);filter:brightness(1)}40%{transform:scale(1.25);filter:brightness(2.2)}60%{transform:scale(.9);filter:brightness(1.6)}100%{transform:scale(1);filter:brightness(1)}}
+.snack{position:absolute;left:50%;top:-30%;font-size:min(10vw,52px);transform:translateX(-50%);opacity:0;pointer-events:none}
+.snack.go{animation:snackdrop 1s ease-in forwards}
+@keyframes snackdrop{0%{opacity:0;top:-34%;transform:translateX(-50%) rotate(-20deg) scale(1)}20%{opacity:1}80%{opacity:1;top:38%;transform:translateX(-50%) rotate(15deg) scale(.8)}100%{opacity:0;top:44%;transform:translateX(-50%) scale(.2)}}
+.pfx{position:absolute;inset:0;pointer-events:none}
+.pfx i{position:absolute;font-style:normal;font-size:min(6vw,30px);animation:heart 1.3s ease-out forwards}
+@keyframes heart{0%{opacity:0;transform:translateY(0) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translateY(-120%) scale(1.2)}}
+.pet-txt{font-family:var(--font-display);font-size:22px;color:var(--accent);min-height:1.3em;text-align:center}
+.house{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;align-content:start;padding:4px 2px 12px}
+.house .hs{display:flex;flex-direction:column;align-items:center;gap:2px;background:#FFF8EC;border:3px solid #F1D9A8;border-radius:22px;padding:10px 6px;color:#3A2A1C}
+.house .hs img{width:100%;aspect-ratio:1;object-fit:contain;pointer-events:none}
+.house .hs b{font-size:18px}.house .hs small{font-size:13px;opacity:.75}
+.house .hs.king{background:#FFF1C9;border-color:#F4B73A}
+.house h3{grid-column:1/-1;margin:8px 4px 0;font-size:20px}
 .sticker-pop small{display:block;font-size:20px;font-family:var(--font-body);margin-top:6px}
 @keyframes pop2{0%{transform:scale(.2) rotate(-20deg)}70%{transform:scale(1.2) rotate(6deg)}100%{transform:scale(1) rotate(0)}}
 .lucky{font-family:var(--font-display);font-size:30px;color:var(--accent)}
@@ -918,7 +953,7 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
   <!-- BOOK -->
   <section id="v-book" hidden>
     <div class="top"><button class="back" data-home>もどる</button><span class="pill" id="book-count"></span></div>
-    <div class="book" id="book-grid"></div>
+    <div class="house" id="book-grid"></div>
   </section>
 
   <!-- RESULT -->
@@ -926,6 +961,10 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
     <div class="center">
       <svg class="mascot big" viewBox="0 0 100 100" aria-hidden="true"><use href="#mascot"/></svg>
       <h2 id="res-h">よくできました！</h2>
+      <div class="petbox" id="res-pet" hidden>
+        <div class="pet-stage"><svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rb" cx="50" cy="50" r="46"/><circle class="rf" cx="50" cy="50" r="46" pathLength="100"/></svg><img id="rp-img" alt=""><span class="snack" id="rp-snack"></span><span class="pfx" id="rp-fx"></span></div>
+        <div class="pet-txt" id="rp-txt"></div>
+      </div>
       <div class="cheer" id="res-cheer" hidden></div>
       <div id="res-msg" style="font-size:24px"></div>
       <div class="card3" id="res-card" hidden></div>
@@ -1412,11 +1451,123 @@ async function flashPhoto(key,go){
     say((S.name?S.name+'、':'')+'がんばって！'+(rule?' '+rule:''));
   }catch(e){_flash=false;if(go)go()}
 }
+/* ---- そだつ どうぶつ：ゲームごとに 1ぴき。そのゲームの だんかいが あがると そだつ（てきとうに やっても そだたない）。
+   だんかいの ない ゲームは、あそんだ ひかずで ゆっくり そだつ ---- */
+const PETS={howmany:[['neko','ねこ']],compare:[['zou','ぞう']],math:[['usagi','うさぎ',0,14],['kuma','くま',14,23]],shop:[['buta','こぶた']],
+  tokei:[['fukurou','ふくろう']],kimari:[['kitsune','きつね']],robot:[['pengin','ペンギン']],kokki:[['panda','パンダ']],kotoba:[['risu','りす']],
+  nakama:[['hitsuji','ひつじ']],migi:[['ahiru','あひる']],eigo:[['lion','ライオン']],hira:[['hiyoko','ひよこ']],kata:[['shiba','しばいぬ']],
+  num:[['koala','コアラ']],count:[['harinezumi','はりねずみ']],abc:[['saru','おさる']],memory:[['hamster','ハムスター']],react:[['iruka','いるか']],
+  nurie:[['pony','ポニー']],trace:[['alpaca','アルパカ']]};
+const PET_SPARE=[['shirokuma','しろくま'],['azarashi','あざらし'],['kojika','こじか'],['neko','ねこ'],['zou','ぞう'],['usagi','うさぎ']];
+const PET_DAYS=[1,4,8,14];               // あかちゃん・こども・おとな・おうさま に なる ひかず（だんかいの ない ゲーム）
+const PET_ST=['たまご','あかちゃん','こども','おとな','おうさま'];
+const petImg=(a,st)=>'pets/'+a+'_'+st+'.webp';
+function lvProg(k){
+  const g=(o,n)=>o?Math.min(1,(Math.min(o.lv|0,n-1)+Math.min(o.good|0,2)/2)/n):0,L=S.lv||{};
+  switch(k){
+    case 'howmany':case 'compare':return g(L[k],QLV[k].length);
+    case 'kotoba':return g(L.kotoba,KT_L.length);
+    case 'nakama':return g(L.nakama,NK_L.length);
+    case 'migi':return g(L.migi,MG_L.length);
+    case 'eigo':return g(L.eigo,EIGO_L.length);
+    case 'shop':return g(S.shop,SHOP.length);
+    case 'tokei':{const T=S.tokei;return T?Math.min(1,((T.lv-1)+Math.min(T.wins|0,CLK_WIN)/CLK_WIN)/3):0}
+    case 'kimari':{const K=S.kimari;return K?Math.min(1,((K.lv-1)+Math.min(K.pt|0,2)/2)/6):0}
+    case 'robot':{const K=S.robot;return K?Math.min(1,((K.lv-1)+Math.min(K.pt|0,2)/2)/5):0}
+    case 'kokki':return S.kokki?Math.min(1,(S.kokki.wins|0)/10):0;
+  }
+  return null;
+}
+// いまの どうぶつ：{a, n, st(0〜4), f(つぎまでの わりあい), p}
+function petNow(k){
+  const list=PETS[k];if(!list)return null;
+  S.pet=S.pet||{};const rec=S.pet[k]||{};
+  const played=((S.plays||{})[k]|0)>0;
+  let a,n,p=null,st,f;
+  if(k==='math'){
+    const C=S.calc||{lv:0,good:0},lv=C.lv|0,good=Math.min(C.good|0,2);
+    const B=lv>=14,[aa,nn,lo,hi]=list[B?1:0];a=aa;n=nn;p=Math.min(1,(Math.min(lv,hi-1)-lo+good/2)/(hi-lo));if(!B&&lv>=14)p=1;
+  }else if((p=lvProg(k))!==null){[a,n]=list[0]}
+  if(p!==null){
+    if(!played&&p===0){st=0;f=0}
+    else if(p>=1){st=4;f=1}
+    else{const x=p*3;st=1+Math.floor(x);f=x-Math.floor(x)}
+  }else{
+    // ひかずで そだつ。おうさまに なった あと、つぎの ひに あそぶと おうちへ おひっこし → つぎの こ
+    const gen=rec.gen|0,[aa,nn]=gen?PET_SPARE[(gen-1)%PET_SPARE.length]:list[0];a=aa;n=nn;
+    const d=((S.pdays||{})[k]|0)-(rec.base|0);
+    st=d>=PET_DAYS[3]?4:d>=PET_DAYS[2]?3:d>=PET_DAYS[1]?2:d>=PET_DAYS[0]?1:0;
+    f=st>=4?1:(d-(st?PET_DAYS[st-1]:0))/(PET_DAYS[st]-(st?PET_DAYS[st-1]:0));
+  }
+  // いちど そだったら ちいさく ならない（だんかいが もどっても）
+  if(rec.a===a&&(rec.st|0)>st){st=rec.st;f=st>=4?1:0}
+  return {a,n,st,f,p};
+}
+function petRing(el,f,king){el.style.setProperty('--off',String(100-Math.round(Math.max(0,Math.min(1,f))*100)));el.closest('.glyph,.pet-stage').classList.toggle('king',!!king)}
+function petHouseAdd(a,n,k){S.house=S.house||[];if(!S.house.some(h=>h.a===a&&h.k===k))S.house.push({a,n,k,ts:Date.now()})}
+// ゲームの おわりに：おやつ（がんばった）／ごちそう（できるように なった）を あげて、そだったら おおきく する
+function petFeed(k){
+  const list=PETS[k];if(!list)return null;
+  S.pet=S.pet||{};S.pdays=S.pdays||{};S.pday=S.pday||{};
+  let newDay=false;if(S.pday[k]!==today()){S.pday[k]=today();S.pdays[k]=(S.pdays[k]|0)+1;newDay=true}
+  const rec=S.pet[k]||{},before=rec.a?{a:rec.a,st:rec.st|0,f:rec.f||0,p:rec.p}:null;
+  let hatchNext=false,grad='';
+  // ひかずの こ：おうさまの あとの あたらしい ひ → おひっこし して つぎの こ
+  if(before&&before.st>=4&&lvProg(k)===null&&newDay){grad=PET_NAME(before.a);petHouseAdd(before.a,PET_NAME(before.a),k);rec.gen=(rec.gen|0)+1;rec.base=(S.pdays[k]|0)-1;rec.a='';rec.st=0;S.pet[k]=rec;hatchNext=true}
+  const now=petNow(k);
+  if(k==='math'&&before&&before.a!==now.a){petHouseAdd(before.a,PET_NAME(before.a),k);grad=PET_NAME(before.a)}
+  const same=before&&before.a===now.a&&!hatchNext;
+  const p0=same?(before.p==null?null:before.p):null;
+  const better=now.p!=null?(p0!=null&&now.p>p0+1e-9):newDay;
+  const grew=same?now.st>before.st:now.st>0;
+  if(now.st>=4)petHouseAdd(now.a,now.n,k);
+  S.pet[k]=Object.assign(rec,{a:now.a,st:now.st,f:now.f,p:now.p});
+  return {now,from:same?before:{a:now.a,st:hatchNext?0:Math.max(0,now.st-(grew?1:0)),f:0},better,grew,hatchNext,grad};
+}
+const PET_NAME=a=>{for(const k in PETS)for(const x of PETS[k])if(x[0]===a)return x[1];const s=PET_SPARE.find(x=>x[0]===a);return s?s[1]:''};
+const SNACK=['🍪','🍙','🍎','🥕','🍌','🍇'],FEAST=['🍰','🍓','🍮','🍩','🍨'];
+function showPetFeed(r){
+  const box=$('#res-pet');if(!r){box.hidden=true;return ''}
+  box.hidden=false;
+  const img=$('#rp-img'),rf=box.querySelector('.rf'),sn=$('#rp-snack'),fx=$('#rp-fx'),tx=$('#rp-txt');
+  img.className='';img.src=petImg(r.from.a,r.from.st);petRing(rf,r.from.st>=4?1:r.from.f,r.from.st>=4);
+  sn.className='snack';fx.innerHTML='';
+  sn.textContent=(r.better?FEAST:SNACK)[rnd(r.better?FEAST.length:SNACK.length)];
+  tx.textContent=r.better?'ごちそう！':'おやつ！';
+  const n=r.now.n,tk=++showPetFeed.tk;
+  setTimeout(()=>{if(tk!==showPetFeed.tk)return;sn.classList.add('go')},350);
+  setTimeout(()=>{if(tk!==showPetFeed.tk)return;img.classList.add('chomp');
+    for(let i=0;i<(r.better?6:3);i++){const h=document.createElement('i');h.textContent=r.better?'💖':'💗';h.style.left=(15+Math.random()*70)+'%';h.style.top=(30+Math.random()*30)+'%';h.style.animationDelay=(i*.12)+'s';fx.appendChild(h)}
+    petRing(rf,r.grew?1:r.now.f,r.now.st>=4)},1250);
+  if(r.grew)setTimeout(()=>{if(tk!==showPetFeed.tk)return;img.classList.remove('chomp');void img.offsetWidth;img.classList.add('grow');
+    setTimeout(()=>{if(tk!==showPetFeed.tk)return;img.src=petImg(r.now.a,r.now.st);petRing(rf,r.now.st>=4?1:r.now.f,r.now.st>=4)},420);
+    tx.textContent=r.now.st===1?n+'が うまれたよ！':r.now.st>=4?n+'が おうさまに なったよ！':n+'が おおきく なったよ！';chime(2)},2500);
+  if(r.grad)setTimeout(()=>{if(tk===showPetFeed.tk)tx.textContent=r.grad+'は おうちへ。'+n+'が うまれたよ！'},2600);
+  return r.grad?r.grad+'は おうさまに なって、どうぶつの おうちへ おひっこし。'+n+'が うまれたよ！':r.grew?(r.now.st===1?n+'が うまれたよ！':r.now.st>=4?n+'が おうさまに なったよ！ どうぶつの おうちに いるよ':n+'が おおきく なったよ！')
+    :(r.better?n+'が ごちそうを たべたよ！':n+'が おやつを たべたよ');
+}
+showPetFeed.tk=0;
+// どうぶつの おうち（シールちょうの かわり）
+function openHouse(){
+  show('book');
+  const g=$('#book-grid');g.innerHTML='';
+  const kings=(S.house||[]).length;
+  $('#book-count').textContent=nmo()+'どうぶつの おうち'+(kings?'  👑 '+kings:'');
+  const cur=[];
+  MISSIONS.forEach(m=>{const pn=petNow(m.k);if(pn)cur.push([m,pn])});
+  const mk=(a,st,name,sub,king)=>{const b=document.createElement('button');b.className='hs'+(king?' king':'');
+    b.innerHTML='<img alt="" src="'+petImg(a,st)+'"><b>'+name+'</b><small>'+sub+'</small>';
+    b.onclick=()=>say(name+'。'+PET_ST[st]+(st===0?'だよ。'+'あそぶと うまれるよ':'だよ'),true);g.appendChild(b)};
+  cur.forEach(([m,pn])=>mk(pn.a,pn.st,pn.st?pn.n:'たまご',m.n+'・'+PET_ST[pn.st],pn.st>=4));
+  const away=(S.house||[]).filter(h=>!cur.some(([,pn])=>pn.a===h.a&&pn.st>=4));
+  if(away.length){const h=document.createElement('h3');h.textContent='👑 そだった なかま';g.appendChild(h);
+    away.forEach(h=>{const m=MISSIONS.find(x=>x.k===h.k);mk(h.a,4,h.n,(m?m.n:'')+'で そだった',true)})}
+}
 function buildMissions(){
   const box=$('#missions');box.innerHTML='';
   MISSIONS.forEach(m=>{
     const b=document.createElement('button');b.className='mission';b.id='m-'+m.k;
-    b.innerHTML='<span class="glyph">'+m.g+'</span><span class="nm">'+m.n+'</span><span class="st"></span>';
+    b.innerHTML=(PETS[m.k]?'<span class="glyph pet"><svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rb" cx="50" cy="50" r="46"/><circle class="rf" cx="50" cy="50" r="46" pathLength="100"/></svg><img alt=""></span>':'<span class="glyph">'+m.g+'</span>')+'<span class="nm">'+m.n+'</span><span class="st"></span>';
     b.onclick=()=>{flashPhoto(m.k,()=>START[m.k]())};
     box.appendChild(b);
   });
@@ -1435,6 +1586,9 @@ function curPicks(){
   }
   return S.picks.list;
 }
+let petSeed=0;
+// まえから あそんで いた ゲーム（だんかい なし）は、あそんだ かいすうで すこし そだった ところから はじめる
+{S.pdays=S.pdays||{};if(!S.petInit){for(const k in (S.plays||{}))if(PETS[k]&&lvProg(k)===null&&k!=='math')S.pdays[k]=Math.min(S.plays[k]|0,3);S.petInit=1;store.set(S)}}
 function renderHome(){
   rollover();
   $('#tk-time').textContent=fmt(S.sec);
@@ -1445,7 +1599,10 @@ function renderHome(){
     const el=$('#m-'+m.k),inCard=cardList().some(x=>x.k===m.k);
     el.classList.remove('done');el.classList.toggle('stamped',inCard);el.classList.toggle('rec',cur.includes(m.k));
     el.querySelector('.st').textContent=inCard?'✓ スタンプ':full?'れんしゅう':'スタンプ'+(cur.includes(m.k)?' ⭐':'');
+    {const pn=petNow(m.k),im=el.querySelector('.glyph.pet img');
+      if(pn&&im){if(!S.pet[m.k]){S.pet[m.k]={a:pn.a,st:pn.st,f:pn.f,p:pn.p};petSeed=1;if(pn.st>=4)petHouseAdd(pn.a,pn.n,m.k);if(m.k==='math'&&pn.a==='kuma')petHouseAdd('usagi','うさぎ','math')}const u=petImg(pn.a,pn.st);if(im.getAttribute('src')!==u)im.src=u;petRing(el.querySelector('.rf'),pn.f,pn.st>=4)}}
   });
+  if(petSeed){petSeed=0;save()}
   [...cur,...MISSIONS.map(m=>m.k).filter(k=>!cur.includes(k))].forEach(k=>$('#missions').appendChild($('#m-'+k)));
   const dn=MISSIONS.filter(m=>S.done[m.k]).length;
   $('#card3').innerHTML=cardHTML(cardList());
@@ -1453,7 +1610,7 @@ function renderHome(){
   const y=new Date();y.setDate(y.getDate()-1);const ys=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();
   const live=S.lastDay===today()||S.lastDay===ys;
   $('#streak').textContent='れんぞく '+(live?S.streak:0)+' にち';
-  $('#to-book').textContent='シールちょう '+S.stickers.length+' / '+STICKERS.length;
+  $('#to-book').textContent='🏠 どうぶつの おうち'+((S.house||[]).length?' 👑'+S.house.length:'');
   $('#home-title').textContent=S.name?S.name+'、あそぼうね！':'まなびチケット';
   
   $('#tk-lab').textContent='YouTubeの チケット';
@@ -1565,12 +1722,9 @@ function finish(key,extra){
     }else{S.card=card;msg='スタンプ ゲット！ あと '+(CARD_N-card.length)+'つで チケット';cardSay=(star?'キラキラ スタンプ！ ':'スタンプ ゲット！ ')+(CARD_N-card.length===1?'あと ひとつで ゲームだよ':'あと ふたつで ゲームだよ')}
   }
   {
-    // sticker for every first clear of a mission
-    if(first){const have=new Set(S.stickers),left=STICKERS.map((_,i)=>i).filter(i=>!have.has(i));
-    const pick=left.length?left[rnd(left.length)]:rnd(STICKERS.length);
-    if(left.length)S.stickers.push(pick);
-    stk='<span>'+STICKERS[pick][0]+'</span><small>'+STICKERS[pick][1]+(left.length?' ゲット！':'')+'</small>'}
-    }
+    // シールちょうは やめて、そだつ どうぶつに した（2026-11-07）
+  }
+  const petR=petFeed(key);
   // ⭐おすすめ3つを ぜんぶ やった日は、かならず ボーナス（1日の上限とは べつ）
   let rb='';
   {const cur=curPicks();if(S.rBonus>0&&!S.picks.bonus&&cur.includes(key)&&cur.every(k=>S.done[k])){S.picks.bonus=true;S.sec+=S.rBonus*60;rb='⭐おすすめ ぜんぶ クリア！ ボーナス +'+S.rBonus+'ふん'}}
@@ -1579,6 +1733,7 @@ function finish(key,extra){
   const ct=renderCheer();
   $('#res-h').textContent=S.name?S.name+'、おめでとう！':'よくできました！';
   show('result');chime(2);confetti();crackers();if(cheerVoice)sayThenVoice((S.name?S.name+'、':'')+(lucky?'ラッキー！':'')+'おめでとう。',cheerVoice);else say((S.name?S.name+'、':'')+(lucky?'ラッキー！':'')+'おめでとう。'+(ct||'よくできました')+' '+cheerText());
+  {const pt=showPetFeed(petR);if(pt)say(pt)}
   if(cardSay)say(cardSay);
   if(rb)say('おすすめ ぜんぶ クリア！ ボーナス ゲット！');
 }
@@ -1787,9 +1942,19 @@ $('#kana-next').onclick=()=>{
 window.addEventListener('resize',()=>{if(!$('#v-kana').hidden)sizeCanvas()});
 
 /* ---- quiz engine (math / howmany / compare) ---- */
-let qKey='',qn=0;
+let qKey='',qn=0,cmpEm='🍎';
 // いくつかな・どっちが おおきい の だんかい
-const QLV={howmany:['3まで','5まで','10まで'],compare:['5まで','10まで','20まで','50まで']};
+const QLV={howmany:['3まで','5まで','5まで（ばらばら）','10まで（5の まとまり）','10まで（ばらばら）','2しゅるいから えらんで かぞえる','20まで（10の まとまり）'],
+  compare:['5まで（えで くらべる）','5まで（すうじ）','10まで（えで くらべる）','10まで（すうじ）','20まで','50まで','100まで']};
+// だんかいを ふやした（2026-11-07）。まえの だんかいを あたらしい ばんごうに うつす
+{const L=S.lv||{},m={howmany:[0,1,3],compare:[1,3,4,5]};if(!S.qlv2){for(const k in m)if(L[k]){L[k].lv=m[k][Math.min(L[k].lv,m[k].length-1)];L[k].good=0;L[k].bad=0}S.qlv2=1;store.set(S)}}
+// ばらばらに おく（かさならない ように）
+function scatterHTML(items){
+  const pos=[];let h='<div class="scat">';
+  items.forEach(em=>{let x,y,t=0;do{x=4+Math.random()*84;y=6+Math.random()*76;t++}while(t<80&&pos.some(p=>Math.abs(p[0]-x)<12&&Math.abs(p[1]-y)<16));pos.push([x,y]);
+    h+='<span style="left:'+x.toFixed(1)+'%;top:'+y.toFixed(1)+'%">'+em+'</span>'});
+  return h+'</div>';
+}
 function startQuiz(key){comboN=0;sessMiss=0;qKey=key;qn=0;show('quiz');nextQ()}
 function threeChoices(ans,lo,hi){const set=new Set([ans]);let guard=0;while(set.size<3&&guard++<50){set.add(Math.min(hi,Math.max(lo,ans+rnd(5)-2)))}return shuffle([...set])}
 function nextQ(){
@@ -1804,18 +1969,26 @@ function nextQ(){
     q.innerHTML='<div class="eq">'+a+' '+op+' '+b+' ＝ ？</div>'+(L[1]==='pic'?'<div class="dots"><span class="g em">'+e1.repeat(a)+'</span><span>'+op+'</span><span class="g em">'+e2.repeat(b)+'</span></div>':'');
     opts=threeChoices(ans,0,10);speak=numToJa(a)+(sub?'ひく':'たす')+numToJa(b)+'は';qStart('math',a+(sub?'-':'+')+b,calc.lv+1);
   }else if(qKey==='howmany'){
-    const mx=[3,5,10][lvGet('howmany',3)];ans=1+rnd(mx);
-    const em=FRUITS[rnd(FRUITS.length)];
-    q.innerHTML='<div class="ask">ぜんぶで いくつ？</div><div class="stars">'+Array(ans).fill(em).join(' ')+'</div>';
-    opts=threeChoices(ans,1,Math.max(mx,4));speak='いくつ あるかな';qStart('howmany',ans,lvGet('howmany',3)+1);
+    const lv=lvGet('howmany',QLV.howmany.length),mx=[3,5,5,10,10,8,20][lv],lo=lv===6?11:lv>=3?4:1;
+    ans=lo+rnd(mx-lo+1);
+    const em=FRUITS[rnd(FRUITS.length)];let em2=FRUITS[rnd(FRUITS.length)];while(em2===em)em2=FRUITS[rnd(FRUITS.length)];
+    let body,ask='ぜんぶで いくつ？';
+    if(lv===2||lv===4)body=scatterHTML(Array(ans).fill(em));
+    else if(lv===5){const other=1+rnd(4);body=scatterHTML(shuffle([...Array(ans).fill(em),...Array(other).fill(em2)]));ask=em+' は いくつ？'}
+    else{const per=lv===6?10:5;let r='';for(let i=0;i<ans;i+=per)r+='<div class="row5">'+Array(Math.min(per,ans-i)).fill(em).map((e,j)=>'<span'+(per===10&&j===5?' class="gap"':'')+'>'+e+'</span>').join('')+'</div>';body='<div class="stars rows">'+r+'</div>'}
+    q.innerHTML='<div class="ask">'+ask+'</div>'+body;
+    opts=threeChoices(ans,1,Math.max(mx,4));speak=lv===5?'この くだものは いくつ あるかな':'いくつ あるかな';qStart('howmany',ans,lv+1);
   }else{
-    const mx=[5,10,20,50][lvGet('compare',4)],a=1+rnd(mx);let b=a;while(b===a)b=1+rnd(mx);
+    const lv=lvGet('compare',QLV.compare.length),mx=[5,5,10,10,20,50,100][lv],pic=lv===0||lv===2;
+    const a=1+rnd(mx);let b=a;while(b===a)b=1+rnd(mx);
     ans=Math.max(a,b);
-    q.innerHTML='<div class="ask">おおきいほうを タッチ！</div>';
-    opts=[a,b];box.className='choices duo';speak='どっちが おおきいかな';qStart('compare',a+'/'+b,lvGet('compare',4)+1);
+    q.innerHTML='<div class="ask">'+(pic?'おおいほうを タッチ！':'おおきいほうを タッチ！')+'</div>';
+    opts=[a,b];box.className='choices duo'+(pic?' pics':'');speak=pic?'どっちが おおいかな':'どっちが おおきいかな';qStart('compare',a+'/'+b,lv+1);
+    if(pic)cmpEm=FRUITS[rnd(FRUITS.length)];
   }
   opts.forEach(v=>{
     const bt=document.createElement('button');bt.className='choice';bt.textContent=v;bt.style.setProperty('--bc','var(--c'+(1+rnd(6))+')');
+    if(box.classList.contains('pics')){bt.textContent='';bt.innerHTML='<span class="cmp">'+Array(v).fill(cmpEm).join('')+'</span>'}
     bt.onclick=()=>{
       if(v===ans){bt.classList.add('good');chime();say(numToJa(v)+'。せいかい！ '+praiseText());const ln=qKey==='math'&&calcLine(q,calc.cur);combo();qn++;box.style.pointerEvents='none';setTimeout(()=>{box.style.pointerEvents='';nextQ()},ln?3600:2200)}
       else{bt.classList.add('shake');setTimeout(()=>bt.classList.remove('shake'),400);say((qKey==='compare'?numToJa(v)+'。':'')+oshii())}
@@ -2715,7 +2888,7 @@ const grEsc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;
 const GR_AGE={
   math:[4.5,4.5,5,4.5,5, 5,5,5.5, 5.5,5.5, 5.5, 6,6,6.5, 5,5,5.5, 5.5,5.5,6, 6,6.5,6.5],
   shop:[4.5,5,5,5.5,5.5,6.5], kotoba:[4,4.5,5,5.5,6], nakama:[3.5,4.5,5,5,6], migi:[5,6,5.5,5.5,5],
-  eigo:[5,5.5,6,8], howmany:[3,4,5], compare:[4,5,6,6.5], tokei:[6,6.5,7.5],
+  eigo:[5,5.5,6,8], howmany:[3,3.5,4,4.5,5,5,5.5], compare:[3.5,4,4.5,5,5.5,6,6.5], tokei:[6,6.5,7.5],
   kimari:[4,4.5,5,5.5,6,7], robot:[4.5,5,5.5,6,7]};
 // かな・すうじ：「みて かく」で かける もじの わりあいで みる
 const GR_KANA_AGE={hira:5.5,kata:6.5,num:5};
@@ -3727,7 +3900,7 @@ $('#nurie-file').onchange=importNurie;
 $('#nurie-clear').onclick=function(){armed(this,async()=>{await mClear('nurie');S.nurieIdx=0;save();refreshMedia()})};
 const START={count:startCount,hira:()=>startKana('hira'),kata:()=>startKana('kata'),num:()=>startKana('num'),math:startCalc,imi:startCalc,shop:startShop,kotoba:startKotoba,nakama:startNakama,migi:startMigi,tokei:startTokei,kokki:startKokki,kimari:startKimari,robot:startRobot,howmany:()=>startQuiz('howmany'),compare:()=>startQuiz('compare'),memory:startMemory,trace:startTrace,nurie:startNurie,react:startReact,abc:startAbc,eigo:startEigo};
 buildMissions();
-$('#tv-btn').onclick=openTV;$('#to-book').onclick=openBook;$('#to-album').onclick=openAlbum;
+$('#tv-btn').onclick=openTV;$('#to-book').onclick=openHouse;$('#to-album').onclick=openAlbum;
 show('home');
 refreshMedia();
 /* ---- なかみだけの こうしん（APK を いれなおさない）。本体が かわった ときだけ APK ---- */
