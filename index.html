@@ -1461,7 +1461,7 @@ const PETS={howmany:[['neko','ねこ']],compare:[['zou','ぞう']],math:[['usagi
 const PET_SPARE=[['shirokuma','しろくま'],['azarashi','あざらし'],['kojika','こじか'],['neko','ねこ'],['zou','ぞう'],['usagi','うさぎ']];
 const PET_DAYS=[1,4,8,14];               // あかちゃん・こども・おとな・おうさま に なる ひかず（だんかいの ない ゲーム）
 const PET_ST=['たまご','あかちゃん','こども','おとな','おうさま'];
-const petImg=(a,st)=>'pets/'+a+'_'+st+'.webp';
+const petImg=(a,st)=>wAsset('pets/'+a+'_'+st+'.webp');
 function lvProg(k){
   const g=(o,n)=>o?Math.min(1,(Math.min(o.lv|0,n-1)+Math.min(o.good|0,2)/2)/n):0,L=S.lv||{};
   switch(k){
@@ -1588,8 +1588,10 @@ function curPicks(){
 }
 let petSeed=0;
 // まえから あそんで いた ゲーム（だんかい なし）は、あそんだ かいすうで すこし そだった ところから はじめる
-{S.pdays=S.pdays||{};if(!S.petInit){for(const k in (S.plays||{}))if(PETS[k]&&lvProg(k)===null&&k!=='math')S.pdays[k]=Math.min(S.plays[k]|0,3);S.petInit=1;store.set(S)}}
+// （きどうの とちゅうでは だんかい表が まだ ないので、さいしょの ホームで よぶ）
+function petInitOnce(){S.pdays=S.pdays||{};if(!S.petInit){for(const k in (S.plays||{}))if(PETS[k]&&k!=='math'&&lvProg(k)===null)S.pdays[k]=Math.min(S.plays[k]|0,3);S.petInit=1;save()}}
 function renderHome(){
+  try{petInitOnce()}catch(e){}
   rollover();
   $('#tk-time').textContent=fmt(S.sec);
   const d=new Date();$('#date').textContent=(d.getMonth()+1)+'がつ'+d.getDate()+'にち';
@@ -1599,8 +1601,8 @@ function renderHome(){
     const el=$('#m-'+m.k),inCard=cardList().some(x=>x.k===m.k);
     el.classList.remove('done');el.classList.toggle('stamped',inCard);el.classList.toggle('rec',cur.includes(m.k));
     el.querySelector('.st').textContent=inCard?'✓ スタンプ':full?'れんしゅう':'スタンプ'+(cur.includes(m.k)?' ⭐':'');
-    {const pn=petNow(m.k),im=el.querySelector('.glyph.pet img');
-      if(pn&&im){if(!S.pet[m.k]){S.pet[m.k]={a:pn.a,st:pn.st,f:pn.f,p:pn.p};petSeed=1;if(pn.st>=4)petHouseAdd(pn.a,pn.n,m.k);if(m.k==='math'&&pn.a==='kuma')petHouseAdd('usagi','うさぎ','math')}const u=petImg(pn.a,pn.st);if(im.getAttribute('src')!==u)im.src=u;petRing(el.querySelector('.rf'),pn.f,pn.st>=4)}}
+    try{const pn=petNow(m.k),im=el.querySelector('.glyph.pet img');
+      if(pn&&im){if(!S.pet[m.k]){S.pet[m.k]={a:pn.a,st:pn.st,f:pn.f,p:pn.p};petSeed=1;if(pn.st>=4)petHouseAdd(pn.a,pn.n,m.k);if(m.k==='math'&&pn.a==='kuma')petHouseAdd('usagi','うさぎ','math')}const u=petImg(pn.a,pn.st);if(im.getAttribute('src')!==u)im.src=u;petRing(el.querySelector('.rf'),pn.f,pn.st>=4)}}catch(e){}
   });
   if(petSeed){petSeed=0;save()}
   [...cur,...MISSIONS.map(m=>m.k).filter(k=>!cur.includes(k))].forEach(k=>$('#missions').appendChild($('#m-'+k)));
@@ -1724,7 +1726,7 @@ function finish(key,extra){
   {
     // シールちょうは やめて、そだつ どうぶつに した（2026-11-07）
   }
-  const petR=petFeed(key);
+  let petR=null;try{petR=petFeed(key)}catch(e){}
   // ⭐おすすめ3つを ぜんぶ やった日は、かならず ボーナス（1日の上限とは べつ）
   let rb='';
   {const cur=curPicks();if(S.rBonus>0&&!S.picks.bonus&&cur.includes(key)&&cur.every(k=>S.done[k])){S.picks.bonus=true;S.sec+=S.rBonus*60;rb='⭐おすすめ ぜんぶ クリア！ ボーナス +'+S.rBonus+'ふん'}}
@@ -1733,7 +1735,7 @@ function finish(key,extra){
   const ct=renderCheer();
   $('#res-h').textContent=S.name?S.name+'、おめでとう！':'よくできました！';
   show('result');chime(2);confetti();crackers();if(cheerVoice)sayThenVoice((S.name?S.name+'、':'')+(lucky?'ラッキー！':'')+'おめでとう。',cheerVoice);else say((S.name?S.name+'、':'')+(lucky?'ラッキー！':'')+'おめでとう。'+(ct||'よくできました')+' '+cheerText());
-  {const pt=showPetFeed(petR);if(pt)say(pt)}
+  try{const pt=showPetFeed(petR);if(pt)say(pt)}catch(e){}
   if(cardSay)say(cardSay);
   if(rb)say('おすすめ ぜんぶ クリア！ ボーナス ゲット！');
 }
