@@ -619,8 +619,9 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
 /* おかいもの：ひだりに おみせ（かぞく・たな）、みぎに かご（または さいふ）と トレー */
 .sh-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;flex:1;min-height:0}
 .sh-shop{background:color-mix(in srgb,var(--c3) 18%,var(--surface));border:3px solid var(--line);border-radius:24px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:0}
-.sh-clerk{height:min(30vh,210px);display:grid;place-items:center;font-size:min(20vh,140px);line-height:1}
-.sh-clerk img{height:100%;max-width:100%;object-fit:cover;border-radius:16px}
+/* しゃしんが わくより おおきく ならないように（おおきく なると たなを おおって タッチが きかなくなる） */
+.sh-clerk{position:relative;width:100%;height:min(30vh,210px);display:grid;place-items:center;font-size:min(20vh,140px);line-height:1;overflow:hidden}
+.sh-clerk img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;border-radius:16px;pointer-events:none}
 .sh-clerk img.cutout{object-fit:contain;border-radius:0}
 .sh-bub{background:#fff;color:#16263D;font-weight:900;font-size:22px;padding:8px 18px;border-radius:18px;min-height:1.4em;position:relative}
 .sh-shelf{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;background:color-mix(in srgb,#8B5A2B 28%,var(--surface));border-radius:14px;padding:10px;min-height:84px;width:100%}
