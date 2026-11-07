@@ -269,9 +269,9 @@ a.btn{display:inline-block;text-decoration:none}
 #nurie-tmp{pointer-events:none;opacity:.9}
 /* えを えらぶ がめん */
 #v-erabu:not([hidden]){display:flex;flex-direction:column;height:100%}
-#eb-grid{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;align-content:start;padding:4px 2px 12px}
+#eb-grid{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;align-content:start;grid-auto-rows:max-content;padding:4px 2px 12px}
 #eb-grid button{display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff;border:3px solid var(--line);border-radius:20px;padding:8px;color:#16263D;font-size:16px;font-weight:700}
-#eb-grid button img{width:100%;aspect-ratio:1;object-fit:contain;pointer-events:none}
+#eb-grid button img{width:100%;height:clamp(110px,20vh,170px);object-fit:contain;pointer-events:none}
 #eb-grid button span{width:100%;min-height:1.3em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
 #eb-grid button.on{border-color:var(--accent)}
 .thumb.art{background:#fff}.thumb.art img{object-fit:contain}
@@ -321,14 +321,14 @@ main{position:relative;z-index:1}
 .popper.r{right:1vw;transform:scaleX(-1)}
 .confetti.burst{top:auto;animation:none}
 .athumbs,.book2{display:grid}
-#alb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr));gap:12px}
-.thumb{position:relative;aspect-ratio:1;border-radius:20px;overflow:hidden;border:3px solid var(--line);background:var(--surface);padding:0}
-.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+#alb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr));gap:12px;grid-auto-rows:max-content}
+.thumb{position:relative;display:block;width:100%;height:0;padding:0 0 100%;box-sizing:border-box;border-radius:20px;overflow:hidden;border:3px solid var(--line);background:var(--surface)}
+.thumb img,.thumb video{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .thumb span{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:16px}
 .aview{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;gap:12px;padding:16px;padding-top:max(16px,env(safe-area-inset-top,0px))}
 .aview[hidden]{display:none}
-#alb-stage{flex:1;min-height:0;display:grid;place-items:center}
-#alb-stage img,#alb-stage video{max-width:100%;max-height:100%;border-radius:20px}
+#alb-stage{flex:1;min-height:0;position:relative}
+#alb-stage img,#alb-stage video{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;border-radius:20px}
 .famitem{display:flex;align-items:center;gap:10px;font-size:16px}
 .famitem span{flex:1;min-width:0;word-break:break-all}
 .famitem.off .av{opacity:.3;filter:grayscale(1)}
@@ -388,9 +388,9 @@ main{position:relative;z-index:1}
 .pfx i{position:absolute;font-style:normal;font-size:min(6vw,30px);animation:heart 1.3s ease-out forwards}
 @keyframes heart{0%{opacity:0;transform:translateY(0) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translateY(-120%) scale(1.2)}}
 .pet-txt{font-family:var(--font-display);font-size:22px;color:var(--accent);min-height:1.3em;text-align:center}
-.house{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;align-content:start;padding:4px 2px 12px}
+.house{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;align-content:start;grid-auto-rows:max-content;padding:4px 2px 12px}
 .house .hs{display:flex;flex-direction:column;align-items:center;gap:2px;background:#FFF8EC;border:3px solid #F1D9A8;border-radius:22px;padding:10px 6px;color:#3A2A1C}
-.house .hs img{width:100%;aspect-ratio:1;object-fit:contain;pointer-events:none}
+.house .hs img{width:100%;height:clamp(100px,18vh,150px);object-fit:contain;pointer-events:none}
 .house .hs b{font-size:18px}.house .hs small{font-size:13px;opacity:.75}
 .house .hs.king{background:#FFF1C9;border-color:#F4B73A}
 .house h3{grid-column:1/-1;margin:8px 4px 0;font-size:20px}
