@@ -3074,8 +3074,8 @@ function goTrace(p){
   ['--c4','--c1','--c2','--c3','--c5','--ink'].forEach(c=>{const b=document.createElement('button');b.className='sw'+(c===tcol?' on':'');b.style.setProperty('--c','var('+c+')');b.setAttribute('aria-label','いろ');b.onclick=()=>{tcol=c;box.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));b.classList.add('on')};box.appendChild(b)});
 }
 const tpos=e=>{const r=tcv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
-tcv.addEventListener('pointerdown',e=>{tdraw=true;tlast=tpos(e);tn++;tcv.setPointerCapture(e.pointerId);tctx.fillStyle=cssv(tcol);tctx.beginPath();tctx.arc(tlast[0],tlast[1],6,0,7);tctx.fill()});
-tcv.addEventListener('pointermove',e=>{if(!tdraw)return;tctx.strokeStyle=cssv(tcol);tctx.lineWidth=12;tctx.lineCap='round';tctx.lineJoin='round';tctx.beginPath();tctx.moveTo(tlast[0],tlast[1]);
+tcv.addEventListener('pointerdown',e=>{tdraw=true;tlast=tpos(e);tn++;tcv.setPointerCapture(e.pointerId);tctx.fillStyle=cssv(tcol);tctx.beginPath();tctx.arc(tlast[0],tlast[1],2.5,0,7);tctx.fill()});
+tcv.addEventListener('pointermove',e=>{if(!tdraw)return;tctx.strokeStyle=cssv(tcol);tctx.lineWidth=5;tctx.lineCap='round';tctx.lineJoin='round';tctx.beginPath();tctx.moveTo(tlast[0],tlast[1]);
   const evs=e.getCoalescedEvents?e.getCoalescedEvents():[];for(const ev of (evs.length?evs:[e])){const p=tpos(ev);tctx.lineTo(p[0],p[1]);tlast=p}tctx.stroke()});
 ['pointerup','pointercancel'].forEach(t=>tcv.addEventListener(t,()=>{tdraw=false}));
 $('#tclear').onclick=()=>{const r=tcv.getBoundingClientRect();tctx.clearRect(0,0,r.width,r.height);tn=0};
