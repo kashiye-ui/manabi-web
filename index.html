@@ -210,7 +210,8 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:4px solid var(-
 .rb-wrap{display:flex;gap:20px;align-items:center;justify-content:center;flex:1;min-height:0;flex-wrap:wrap}
 .rb-board{--cs:min(15vh,9vw,100px);position:relative;display:grid;grid-template-columns:repeat(6,var(--cs));grid-template-rows:repeat(4,var(--cs));background:color-mix(in srgb,var(--c3) 22%,var(--surface));border:4px solid var(--line);border-radius:18px;flex:none;overflow:hidden}
 .rb-cell{border:1px dashed color-mix(in srgb,var(--ink) 16%,transparent);display:grid;place-items:center;font-size:calc(var(--cs) * .62);line-height:1}
-.rb-cell img{width:88%;height:88%;object-fit:cover;border-radius:12px}
+.rb-cell{position:relative;overflow:hidden}
+.rb-cell img{position:absolute;left:6%;top:6%;width:88%;height:88%;object-fit:cover;border-radius:12px;pointer-events:none}
 .rb-cell img.cutout{object-fit:contain;border-radius:0}
 .rb-goal{background:color-mix(in srgb,var(--accent) 22%,transparent)}
 .rb-goal.yay{animation:pop2 .6s}
@@ -220,6 +221,7 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:4px solid var(-
 .rb-bot.bump{animation:shake .35s 2}
 .rb-side{display:flex;flex-direction:column;gap:10px;align-items:stretch;min-width:280px;max-width:440px;flex:1;text-align:center}
 .rb-side .ask{font-size:24px;font-weight:900}
+#v-robot.direct .rb-prog,#v-robot.direct .rb-left,#v-robot.direct #rb-del,#v-robot.direct #rb-go,#v-robot.direct #rb-x{display:none}
 .rb-prog{display:flex;flex-wrap:wrap;gap:6px;min-height:68px;padding:8px;border:3px dashed var(--line);border-radius:16px;background:var(--surface);align-content:flex-start;align-items:center}
 .rb-prog span{color:var(--muted);font-size:16px;margin:auto}
 .rb-prog button{font-size:28px;min-width:52px;height:50px;border-radius:12px;background:var(--c5);color:var(--on-c);font-family:var(--font-display);padding:0 8px;transition:transform .15s}
@@ -1033,7 +1035,7 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
       <label>とけいのレベル（3回クリアで自動的に上がる）<select id="set-tklv"><option value="1">1：○時ちょうど</option><option value="2">2：○時半</option><option value="3">3：5分きざみ</option></select></label>
       <label>けいさんの段階（5問全部正解で、速くできたら自動的に進む）<select id="set-calc"></select></label>
       <label>きまりのレベル（2回クリアで自動的に上がる）<select id="set-kmlv"><option value="1">1：AB</option><option value="2">2：AAB・ABB</option><option value="3">3：ABC</option><option value="4">4：？が真ん中</option><option value="5">5：増える・減る</option><option value="6">6：数のきまり</option></select></label>
-      <label>ロボットのレベル（2回クリアで自動的に上がる）<select id="set-rblv"><option value="1">1：まっすぐ</option><option value="2">2：曲がる</option><option value="3">3：岩をよける</option><option value="4">4：長い道</option><option value="5">5：くりかえし</option></select></label>
+      <label>ロボットのレベル（2回クリアで自動的に上がる）<select id="set-rblv"><option value="1">1：おすと動く</option><option value="2">2：おすと動く（曲がる）</option><option value="3">3：カード1枚</option><option value="4">4：まっすぐ</option><option value="5">5：曲がる</option><option value="6">6：岩をよける</option><option value="7">7：長い道</option><option value="8">8：くりかえし</option></select></label>
       <label id="earn-row1" hidden>チケットがたまる勉強アプリ：何分使うと（分）<input id="set-emin" type="number" min="1" max="120" inputmode="numeric"></label>
       <label id="earn-row2" hidden>　　→ もらえるチケット（分）<input id="set-egive" type="number" min="1" max="60" inputmode="numeric"></label>
       <label>子どもの名前<input id="set-name" type="text" maxlength="12" placeholder="なまえ"></label>
@@ -1421,7 +1423,7 @@ function inkBox(im){
   return {x:bx,y:by,w:Math.min(W-bx,Math.ceil((x1+1)/s)-bx),h:Math.min(H-by,Math.ceil((y1+1)/s)-by)};
 }
 function show(v){
-  cancelAnim();sayCut();try{demoClear();if(typeof sh==='object'&&sh)clearTimeout(sh.idleT)}catch(e){}
+  cancelAnim();sayCut();try{demoClear();if(typeof sh==='object'&&sh)clearTimeout(sh.idleT);if(typeof rb==='object'&&rb)clearTimeout(rb.idleT)}catch(e){}
   if(v!=='albmgr'&&amUrls.length){amUrls.forEach(u=>URL.revokeObjectURL(u));amUrls=[]}
   setOri(ORI[v]||'land');
   if(v!=='album'){closeView();albUrls.forEach(u=>URL.revokeObjectURL(u));albUrls=[]}
@@ -1480,7 +1482,7 @@ function lvProg(k){
     case 'shop':return g(S.shop,SHOP.length);
     case 'tokei':{const T=S.tokei;return T?Math.min(1,((T.lv-1)+Math.min(T.wins|0,CLK_WIN)/CLK_WIN)/3):0}
     case 'kimari':{const K=S.kimari;return K?Math.min(1,((K.lv-1)+Math.min(K.pt|0,2)/2)/6):0}
-    case 'robot':{const K=S.robot;return K?Math.min(1,((K.lv-1)+Math.min(K.pt|0,2)/2)/5):0}
+    case 'robot':{const K=S.robot;return K?Math.min(1,((Math.min(K.lv,RB_MAX)-1)+Math.min(K.pt|0,2)/2)/RB_MAX):0}
     case 'kokki':return S.kokki?Math.min(1,(S.kokki.wins|0)/10):0;
   }
   return null;
@@ -2494,9 +2496,13 @@ $('#km-hint').onclick=()=>{if(!km.q)return;qHint();$('#km-row').classList.add('h
 /* ---- robot: やじるしカードを ならべて、ロボットを ゴール（かぞくの ところ）まで うごかす。ぶつかったら なおして もういちど ---- */
 const RB_W=6,RB_H=4,RB_D={u:[0,-1,'↑'],r:[1,0,'→'],d:[0,1,'↓'],l:[-1,0,'←']};
 // [いわの かず, みちの ながさ（さいたん）の はば]。5は くりかえしカードで まとめないと カードが たりない
-const RB_LV=[null,{r:0,min:2,max:4,line:1},{r:0,min:3,max:6},{r:3,min:4,max:7},{r:5,min:5,max:9},{r:3,min:6,max:9,rep:1}];
-const RB_NAME=['','まっすぐ','まがる','いわを よける','ながい みち','くりかえし'];
-function rbLv(){S.robot=S.robot||{lv:1,pt:0};return S.robot.lv}
+// direct＝やじるしを おすと すぐ うごく（カードを ならべない）。turn＝まがらないと いけない もんだい
+const RB_LV=[null,{r:0,min:1,max:3,line:1,direct:1},{r:0,min:2,max:4,turn:1,direct:1},{r:0,min:1,max:1,line:1},{r:0,min:2,max:3,line:1},
+  {r:0,min:3,max:6,turn:1},{r:3,min:4,max:7},{r:5,min:5,max:9},{r:3,min:6,max:9,rep:1}];
+const RB_NAME=['','おすと うごく','おすと うごく（まがる）','カード 1まい','まっすぐ','まがる','いわを よける','ながい みち','くりかえし'];
+const RB_MAX=RB_LV.length-1;
+// 2026-11-07：ルールが わかって いなかったので、いちばん やさしい ところから やりなおす
+function rbLv(){S.robot=S.robot||{lv:1,pt:0};if(!S.rbv2){S.robot.lv=1;S.robot.pt=0;S.rbv2=1}return Math.min(S.robot.lv,RB_MAX)}
 const rbFree=(q,x,y)=>x>=0&&y>=0&&x<RB_W&&y<RB_H&&!q.rocks.has(x+','+y);
 // いちばん みじかい みち（とおる マスの ならび）
 function rbPath(q){
@@ -2517,13 +2523,13 @@ function rbMake(lv){
   for(let t=0;t<800;t++){
     const s=[rnd(RB_W),rnd(RB_H)],g=[rnd(RB_W),L.line?s[1]:rnd(RB_H)];
     if(g[0]===s[0]&&g[1]===s[1])continue;
-    if(lv===2&&(g[0]===s[0]||g[1]===s[1]))continue;
+    if(L.turn&&(g[0]===s[0]||g[1]===s[1]))continue;
     const q={s,g,rocks:new Set()};
     while(q.rocks.size<L.r){const x=rnd(RB_W),y=rnd(RB_H);if((x!==s[0]||y!==s[1])&&(x!==g[0]||y!==g[1]))q.rocks.add(x+','+y)}
     const p=rbPath(q);if(!p)continue;
     const len=p.length-1;if(len<L.min||len>L.max)continue;
     // いわが ある レベルは、たいてい いわを よけないと いけない もんだいに する
-    if(L.r&&lv<5&&len===Math.abs(g[0]-s[0])+Math.abs(g[1]-s[1])&&Math.random()<.7)continue;
+    if(L.r&&!L.rep&&len===Math.abs(g[0]-s[0])+Math.abs(g[1]-s[1])&&Math.random()<.7)continue;
     if(L.rep){const c=rbCards(q);if(c>4||c<2)continue;q.limit=c+1}
     return q;
   }
@@ -2534,14 +2540,17 @@ function startRobot(){comboN=0;rb={n:0,lv:rbLv(),miss:0,q:null,prog:[],busy:fals
 function rbPut(x,y){const b=$('#rb-bot');b.style.left='calc(var(--cs) * '+x+')';b.style.top='calc(var(--cs) * '+y+')'}
 function rbJump(x,y){const b=$('#rb-bot');b.style.transition='none';rbPut(x,y);b.getBoundingClientRect();b.style.transition=''}
 function nextRobot(){
+  demoClear();clearTimeout(rb.idleT);
   if(rb.n>=5){
     const K=S.robot;let up='';
-    if(rb.miss<=2){K.pt=(K.pt|0)+1;if(K.lv<5&&K.pt>=2){K.lv++;K.pt=0;up='レベル アップ！ つぎは レベル'+K.lv+'（'+RB_NAME[K.lv]+'）'}else if(K.lv<5)up='あと 1かいで レベル アップ！'}
+    if(rb.miss<=2){K.pt=(K.pt|0)+1;if(K.lv<RB_MAX&&K.pt>=2){K.lv++;K.pt=0;up='レベル アップ！ つぎは レベル'+K.lv+'（'+RB_NAME[K.lv]+'）'}else if(K.lv<RB_MAX)up='あと 1かいで レベル アップ！'}
     else if(rb.miss>=6&&K.lv>1){K.lv--;K.pt=0}
     finish('robot',up);return;
   }
   // さいしょの 1もんは ひとつ やさしい レベルで ならし
-  const q=rbMake(rb.n===0&&rb.lv>1?rb.lv-1:rb.lv);rb.q=q;rb.prog=[];rb.busy=false;qStart('robot','lv'+(rb.n===0&&rb.lv>1?rb.lv-1:rb.lv)+(q.limit?' くりかえし':''),rb.lv);
+  const qlv=rb.n===0&&rb.lv>1&&!RB_LV[rb.lv-1].direct===!RB_LV[rb.lv].direct?rb.lv-1:rb.lv,direct=!!RB_LV[rb.lv].direct;
+  const q=rbMake(qlv);rb.q=q;rb.prog=[];rb.busy=false;rb.direct=direct;rb.pos=q.s.slice();qStart('robot','lv'+qlv+(q.limit?' くりかえし':''),rb.lv);
+  $('#v-robot').classList.toggle('direct',direct);
   $('#rb-step').textContent='レベル'+rb.lv+'　'+(rb.n+1)+' / 5';
   const bd=$('#rb-board');bd.innerHTML='';
   for(let y=0;y<RB_H;y++)for(let x=0;x<RB_W;x++){
@@ -2555,8 +2564,10 @@ function nextRobot(){
   $('#rb-x').hidden=!q.limit;
   $('#rb-ask').textContent=rb.who?famRole(rb.who)+'の ところまで いこう！':'ロボットを ⭐まで うごかそう！';
   say(rb.who?famRole(rb.who)+'の ところまで いこう':'ロボットを ゴールまで うごかそう');
-  if(q.limit&&rb.n<2)say('くりかえしカードで まとめてね');
-  rbProg();
+  if(direct)say('やじるしを おすと、ロボットが うごくよ');
+  else if(q.limit&&rb.n<2)say('くりかえしカードで まとめてね');
+  else if(rb.n===0)say('やじるしを ならべてから、スタートを おしてね');
+  rbProg();rbDemoPlan(q.limit?'rep':direct?'direct':'prog');
 }
 function rbProg(i){
   const box=$('#rb-prog'),q=rb.q;box.innerHTML='';
@@ -2593,7 +2604,39 @@ async function rbRun(){
   }
   await retry('あと すこし！ カードを なおしてね');
 }
-document.querySelectorAll('#rb-keys button').forEach(b=>b.onclick=()=>{const q=rb.q;if(rb.busy||!q||rb.prog.length>=(q.limit||12))return;rb.prog.push({d:b.dataset.d,n:1});rbProg()});
+document.querySelectorAll('#rb-keys button').forEach(b=>b.onclick=()=>{const q=rb.q;if(rb.busy||!q)return;
+  if(rb.direct){rbStep(b.dataset.d);return}
+  if(rb.prog.length>=(q.limit||12))return;rb.prog.push({d:b.dataset.d,n:1});rbProg()});
+// やじるしを おすと すぐ 1マス うごく（いちばん やさしい だんかい）
+async function rbStep(dk){
+  const q=rb.q,d=RB_D[dk],[x,y]=rb.pos,nx=x+d[0],ny=y+d[1];
+  rb.busy=true;rbProg();const tok=++rb.tok,alive=()=>tok===rb.tok&&!$('#v-robot').hidden;
+  if(!rbFree(q,nx,ny)){const b=$('#rb-bot');b.classList.remove('bump');b.getBoundingClientRect();b.classList.add('bump');say(nx<0||ny<0||nx>=RB_W||ny>=RB_H?'そっちには いけないよ':'あれれ、ぶつかっちゃった');rb.miss++;qMiss();await rbWait(700);if(!alive())return;rb.busy=false;rbProg();return}
+  rb.pos=[nx,ny];rbPut(nx,ny);chime();await rbWait(400);if(!alive())return;
+  if(nx===q.g[0]&&ny===q.g[1]){
+    $('#rb-board .rb-goal').classList.add('yay');say((rb.who?famRole(rb.who)+'に とどいたよ！':'ゴール！')+' '+praiseText());combo();
+    await rbWait(2400);if(!alive())return;rb.n++;nextRobot();return;
+  }
+  rb.busy=false;rbProg();
+}
+// おてほん（ゆび）：さいしょの なんかいかは かならず、さわらずに いたら もういちど
+function rbDemo(kind,first){
+  const q=rb.q,p=rbPath(q);if(!p||p.length<2)return;
+  const [x0,y0]=rb.direct?rb.pos:q.s,[x1,y1]=p[1];
+  const dk=Object.keys(RB_D).find(k=>RB_D[k][0]===x1-x0&&RB_D[k][1]===y1-y0)||'r';
+  const key=$('#rb-keys [data-d="'+dk+'"]'),cell=$('#rb-board [data-k="'+x1+','+y1+'"]');
+  if(kind==='direct')handDemo([{el:key,to:cell,from:$('#rb-bot'),ghost:'🤖'}]);
+  else handDemo([{el:key,to:$('#rb-prog'),ghost:RB_D[dk][2]},{el:$('#rb-go')}]);
+  if(first)say(kind==='direct'?'やじるしを おすと、ロボットが そっちに うごくよ':kind==='rep'?'やじるしを おしてから、くりかえしを おすと、まとめて すすむよ':'やじるしを おすと、ここに カードが ならぶよ。ならべたら、スタートを おしてね');
+  else say('ここを タッチしてね');
+}
+function rbDemoPlan(kind){
+  clearTimeout(rb.idleT);rb.touched=false;
+  S.rbDemo=S.rbDemo||{};const seen=S.rbDemo[kind]|0;
+  if(rb.n===0&&seen<3){S.rbDemo[kind]=seen+1;save();setTimeout(()=>{if(!$('#v-robot').hidden&&!rb.touched)rbDemo(kind,true)},2600)}
+  const idle=()=>{rb.idleT=setTimeout(()=>{if($('#v-robot').hidden)return;if(!rb.touched&&!rb.busy)rbDemo(kind,false);idle()},12000)};idle();
+}
+$('#v-robot').addEventListener('pointerdown',()=>{rb.touched=true;demoClear()},true);
 $('#rb-del').onclick=()=>{if(rb.busy)return;rb.prog.pop();rbProg()};
 $('#rb-x').onclick=()=>{if(rb.busy||!rb.prog.length)return;const c=rb.prog[rb.prog.length-1];c.n=c.n>=5?1:c.n+1;rbProg()};
 $('#rb-go').onclick=rbRun;
@@ -2662,8 +2705,8 @@ function handDemo(steps){
     setTimeout(()=>{if(tk!==demoTk)return;const [x,y]=c(st.el);put(x,y)},t);t+=1000;
     setTimeout(()=>{if(tk!==demoTk)return;const [x,y]=c(st.el);h.classList.add('tap');
       const rg=document.createElement('div');rg.className='demo-ring';rg.style.left=x+'px';rg.style.top=y+'px';document.body.appendChild(rg);setTimeout(()=>rg.remove(),750);
-      if(st.to){const r=st.el.getBoundingClientRect(),g=document.createElement('div');g.className='demo-ghost';g.textContent=st.el.textContent;
-        const cs=getComputedStyle(st.el);g.style.fontSize=cs.fontSize;g.style.lineHeight='1';g.style.left=r.left+'px';g.style.top=r.top+'px';document.body.appendChild(g);
+      if(st.to){const src=st.from||st.el,r=src.getBoundingClientRect(),g=document.createElement('div');g.className='demo-ghost';g.textContent=st.ghost||src.textContent;
+        const cs=getComputedStyle(src);g.style.width=r.width+'px';g.style.height=r.height+'px';g.style.display='grid';g.style.placeItems='center';g.style.fontSize=cs.fontSize;g.style.lineHeight='1';g.style.left=r.left+'px';g.style.top=r.top+'px';document.body.appendChild(g);
         const [tx,ty]=c(st.to);setTimeout(()=>{if(tk!==demoTk){g.remove();return}g.style.left=(tx-r.width/2)+'px';g.style.top=(ty-r.height/2)+'px';g.style.opacity='0'},60);setTimeout(()=>g.remove(),950)}
       setTimeout(()=>h.classList.remove('tap'),220)},t);t+=900;
   });
@@ -2923,7 +2966,7 @@ function nextMigi(){
 const GR_STAGE={
   math:()=>CALC.map(c=>c[0]),shop:()=>SHOP.map(c=>c[0]),kotoba:()=>KT_L,nakama:()=>NK_L,migi:()=>MG_L,eigo:()=>EIGO_L,
   howmany:()=>QLV.howmany,compare:()=>QLV.compare,tokei:()=>['○じ ちょうど','○じはん','5ふん きざみ'],
-  kimari:()=>['AB','AAB・ABB','ABC','？が まんなか','ふえる・へる','かずの きまり'],robot:()=>['まっすぐ','まがる','いわを よける','ながい みち','くりかえし'],
+  kimari:()=>['AB','AAB・ABB','ABC','？が まんなか','ふえる・へる','かずの きまり'],robot:()=>RB_NAME.slice(1),
   hira:()=>TR_NAME.slice(1),kata:()=>TR_NAME.slice(1),num:()=>TR_NAME.slice(1)};
 // いまの だんかい（0から）。かな・すうじは もじごとなので ここでは なし
 const GR_NOW={math:()=>calcLv(),shop:()=>shLv(),tokei:()=>clkLv()-1,kimari:()=>kmLv()-1,robot:()=>rbLv()-1};
@@ -2936,7 +2979,7 @@ const GR_AGE={
   math:[4.5,4.5,5,4.5,5, 5,5,5.5, 5.5,5.5, 5.5, 6,6,6.5, 5,5,5.5, 5.5,5.5,6, 6,6.5,6.5],
   shop:[4.5,5,5,5.5,5.5,6.5], kotoba:[4,4.5,5,5.5,6], nakama:[3.5,4.5,5,5,6], migi:[5,6,5.5,5.5,5],
   eigo:[5,5.5,6,8], howmany:[3,3.5,4,4.5,5,5,5.5], compare:[3.5,4,4.5,5,5.5,6,6.5], tokei:[6,6.5,7.5],
-  kimari:[4,4.5,5,5.5,6,7], robot:[4.5,5,5.5,6,7]};
+  kimari:[4,4.5,5,5.5,6,7], robot:[3.5,4,4,4.5,5,5.5,6,7]};
 // かな・すうじ：「みて かく」で かける もじの わりあいで みる
 const GR_KANA_AGE={hira:5.5,kata:6.5,num:5};
 const grLbl=k=>{const [,m,d]=k.split('-');return (+m)+'/'+(+d)};
