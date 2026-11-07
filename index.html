@@ -1308,8 +1308,13 @@ function voicePlan(t){
   {const w=SM[VNORM(t)];if(w)return [{f:'voice/'+w,gap:0}]}
   const units=String(t).match(/[^。！？]+[。！？]*|[。！？]+/g)||[];
   const parts=[];
+  // なまえ入りの こえは APK にだけ はいる。アップデートだけで まだ ない ときは、なまえを はぶいた あたらしい こえに する
+  //（ふるい 1おとずつの こえを つなげない）
+  const nmS=String((typeof S!=='undefined'&&S&&S.name)||m.name||''),noName=x=>nmS&&String(x).startsWith(nmS)?String(x).slice(nmS.length).replace(/^[、。！？\s　]+/,''):null;
+  {const r=noName(t);if(r){const w=SM[VNORM(r)];if(w)return [{f:'voice/'+w,gap:0}]}}
   for(const u of units){
-    const w=SM[VNORM(u)];
+    let w=SM[VNORM(u)];
+    if(!w){const r=noName(u);if(r)w=SM[VNORM(r)];if(r!==null&&!VNORM(r))continue}
     if(w){parts.push({sf:w,gap:/[。！？]/.test(u.slice(-1))?320:0});continue}
     (u.match(/[^、。！？]+[、。！？]*|[、。！？]+/g)||[]).forEach(x=>parts.push(x));
   }
