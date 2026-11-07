@@ -623,6 +623,12 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
 .sh-clerk{position:relative;width:100%;height:min(30vh,210px);display:grid;place-items:center;font-size:min(20vh,140px);line-height:1;overflow:hidden}
 .sh-clerk img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;border-radius:16px;pointer-events:none}
 .sh-clerk img.cutout{object-fit:contain;border-radius:0}
+/* おてほんの ゆび（タッチの しかたを みせる。ほんとうの ものは うごかさない） */
+.demo-hand{position:fixed;z-index:80;font-size:64px;line-height:1;pointer-events:none;transition:left .9s ease,top .9s ease,transform .18s ease,opacity .4s;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.demo-hand.tap{transform:scale(.8)}
+.demo-ring{position:fixed;z-index:79;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;border:6px solid #FFD84D;pointer-events:none;animation:dring .7s ease-out forwards}
+@keyframes dring{from{transform:scale(.3);opacity:1}to{transform:scale(1.5);opacity:0}}
+.demo-ghost{position:fixed;z-index:78;pointer-events:none;transition:left .8s ease,top .8s ease,opacity .8s ease;opacity:.85}
 .sh-bub{background:#fff;color:#16263D;font-weight:900;font-size:22px;padding:8px 18px;border-radius:18px;min-height:1.4em;position:relative}
 .sh-shelf{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;background:color-mix(in srgb,#8B5A2B 28%,var(--surface));border-radius:14px;padding:10px;min-height:84px;width:100%}
 .sh-side{display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;min-height:0;text-align:center}
@@ -1415,7 +1421,7 @@ function inkBox(im){
   return {x:bx,y:by,w:Math.min(W-bx,Math.ceil((x1+1)/s)-bx),h:Math.min(H-by,Math.ceil((y1+1)/s)-by)};
 }
 function show(v){
-  cancelAnim();sayCut();
+  cancelAnim();sayCut();try{demoClear();if(typeof sh==='object'&&sh)clearTimeout(sh.idleT)}catch(e){}
   if(v!=='albmgr'&&amUrls.length){amUrls.forEach(u=>URL.revokeObjectURL(u));amUrls=[]}
   setOri(ORI[v]||'land');
   if(v!=='album'){closeView();albUrls.forEach(u=>URL.revokeObjectURL(u));albUrls=[]}
@@ -2642,7 +2648,45 @@ function shEnd(){
   else{C.good=0;if(sh.miss>=3){C.bad=(C.bad|0)+1;if(C.bad>=2&&C.lv>0){C.lv--;C.bad=0}}else C.bad=0}
   save();return msg;
 }
+// おてほん：ゆびが うごいて「ここを タッチ」を みせる。steps は [{el:おす もの, to:どこへ いくか（なくても よい）}]
+let demoTk=0;
+function demoClear(){demoTk++;document.querySelectorAll('.demo-hand,.demo-ring,.demo-ghost').forEach(e=>e.remove())}
+function handDemo(steps){
+  demoClear();const tk=demoTk;steps=steps.filter(x=>x&&x.el);if(!steps.length)return;
+  const h=document.createElement('div');h.className='demo-hand';h.textContent='👆';document.body.appendChild(h);
+  const c=el=>{const r=el.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]};
+  const put=(x,y)=>{h.style.left=(x-30)+'px';h.style.top=(y-6)+'px'};
+  {const [x,y]=c(steps[0].el);h.style.transition='none';put(x+90,y+140);h.style.opacity='0';void h.offsetWidth;h.style.transition='';h.style.opacity='1'}
+  let t=150;
+  steps.forEach(st=>{
+    setTimeout(()=>{if(tk!==demoTk)return;const [x,y]=c(st.el);put(x,y)},t);t+=1000;
+    setTimeout(()=>{if(tk!==demoTk)return;const [x,y]=c(st.el);h.classList.add('tap');
+      const rg=document.createElement('div');rg.className='demo-ring';rg.style.left=x+'px';rg.style.top=y+'px';document.body.appendChild(rg);setTimeout(()=>rg.remove(),750);
+      if(st.to){const r=st.el.getBoundingClientRect(),g=document.createElement('div');g.className='demo-ghost';g.textContent=st.el.textContent;
+        const cs=getComputedStyle(st.el);g.style.fontSize=cs.fontSize;g.style.lineHeight='1';g.style.left=r.left+'px';g.style.top=r.top+'px';document.body.appendChild(g);
+        const [tx,ty]=c(st.to);setTimeout(()=>{if(tk!==demoTk){g.remove();return}g.style.left=(tx-r.width/2)+'px';g.style.top=(ty-r.height/2)+'px';g.style.opacity='0'},60);setTimeout(()=>g.remove(),950)}
+      setTimeout(()=>h.classList.remove('tap'),220)},t);t+=900;
+  });
+  setTimeout(()=>{if(tk!==demoTk)return;h.style.opacity='0';setTimeout(()=>{if(tk===demoTk)h.remove()},450)},t);
+}
+// おかいもの：はじめの なんかいかは かならず、さわらずに いたら もういちど おてほん
+function shDemo(kind,first){
+  const shelf=$('#sh-shelf'),bk=$('#sh-basket'),tray=$('#sh-tray'),go=$('#sh-go');
+  const pick=box=>box.querySelector('.sh-it,.sh-coin');
+  const steps=kind==='add'?[{el:pick(shelf),to:bk}]:kind==='sub'?[{el:pick(bk),to:$('#sh-clerk')}]:kind==='make'?[{el:pick(shelf),to:bk},{el:go}]:[{el:pick(bk),to:tray},{el:go}];
+  handDemo(steps);
+  if(first)say(kind==='add'?'くだものを タッチすると、かごに はいるよ':kind==='sub'?'かごの くだものを タッチすると、あげられるよ':kind==='make'?'たなの くだものを タッチすると、かごに はいるよ。いれすぎたら、かごの くだものを タッチすると もどせるよ':'おかねを タッチすると、トレーに でるよ。ぴったりに なったら、できたを おしてね');
+  else say('ここを タッチしてね');
+}
+function shDemoPlan(kind){
+  clearTimeout(sh.idleT);sh.touched=false;
+  S.shDemo=S.shDemo||{};const seen=S.shDemo[kind]|0;
+  if(sh.n===0&&seen<3){S.shDemo[kind]=seen+1;save();setTimeout(()=>{if(!$('#v-shop').hidden&&!sh.touched)shDemo(kind,true)},2600)}
+  const idle=()=>{sh.idleT=setTimeout(()=>{if($('#v-shop').hidden)return;if(!sh.touched){shDemo(kind,false);idle()}},11000)};idle();
+}
+$('#v-shop').addEventListener('pointerdown',()=>{sh.touched=true;demoClear()},true);
 function nextShop(){
+  demoClear();clearTimeout(sh.idleT);
   if(sh.n>=5){finish('shop',shEnd());return}
   const L=SHOP[sh.lv],g=SHOP_G[rnd(SHOP_G.length)],shelf=$('#sh-shelf'),bk=$('#sh-basket'),tray=$('#sh-tray'),go=$('#sh-go');
   $('#sh-step').textContent=L[0]+'　'+(sh.n+1)+' / 5';
@@ -2654,7 +2698,7 @@ function nextShop(){
     const b=L[2],a=sh.n+1;qStart('shop',a+'+'+b,sh.lv+1);
     for(let i=0;i<a;i++)bk.appendChild(shItem(g));
     for(let i=0;i<6;i++)shelf.appendChild(shItem(g));
-    shSay('もう '+b+'こ どうぞ！');say(shRole()+'が もう '+KO[b]+' どうぞって');
+    shSay('おまけ '+b+'こ どうぞ！');say(shRole()+'が おまけを '+KO[b]+' くれるって！ たなから '+KO[b]+'、かごに いれてね');shDemoPlan('add');
     let put=0;
     shelf.querySelectorAll('.sh-it').forEach(it=>it.onclick=()=>{
       if(put>=b)return;put++;imiMove([it],bk);it.onclick=null;chime();
@@ -2664,7 +2708,7 @@ function nextShop(){
     // かごに a こ。かぞくが 1こ たべたい → かごから 1こ あげる → のこりは？（さいごは 0）
     const b=L[2],a=5-sh.n;qStart('shop',a+'-'+b,sh.lv+1);
     for(let i=0;i<a;i++)bk.appendChild(shItem(g));
-    shSay(KO[b]+' たべたいな！');say(shRole()+'が '+KO[b]+' たべたいって');
+    shSay(KO[b]+' たべたいな！');say(shRole()+'が '+KO[b]+' たべたいって。かごから '+KO[b]+' あげてね');shDemoPlan('sub');
     let e=0;
     bk.querySelectorAll('.sh-it').forEach(it=>it.onclick=()=>{
       if(e>=b)return;e++;it.onclick=null;chime();
@@ -2683,9 +2727,9 @@ function nextShop(){
     const N=3+rnd(5),a=1+rnd(N-2);qStart('shop','make'+N+'from'+a,sh.lv+1);
     for(let i=0;i<a;i++)bk.appendChild(shItem(g));
     for(let i=0;i<8;i++)shelf.appendChild(shItem(g));
-    shSay(N+'こ ください！');$('#sh-ask').textContent='かごの なかが '+N+'こに なるように いれてね';say(KO[N]+'に なるように いれてね');
+    shSay(N+'こ ください！');$('#sh-ask').textContent='かごの なかが '+N+'こに なるように いれてね';say(KO[N]+'に なるように いれてね。できたら、できたを おしてね');
     const wire=()=>{shelf.querySelectorAll('.sh-it').forEach(it=>it.onclick=()=>{imiMove([it],bk);chime();wire()});bk.querySelectorAll('.sh-it').forEach(it=>it.onclick=()=>{imiMove([it],shelf);wire()})};
-    wire();go.hidden=false;
+    wire();go.hidden=false;shDemoPlan('make');
     go.onclick=()=>{
       const n=bk.children.length;
       if(n===N){go.hidden=true;chime();say(numToJa(N)+'。ぴったり！ ありがとう');shSay('ぴったり！ ありがとう！');shLine(a,N);combo();setTimeout(()=>{sh.n++;nextShop()},3200)}
@@ -2701,7 +2745,7 @@ function nextShop(){
     for(let i=0;i<(five?4:6);i++)bk.appendChild(shCoin(1));
     const sum=()=>[...tray.children].reduce((s,c)=>s+(+c.dataset.v),0);
     const wire=()=>{bk.querySelectorAll('.sh-coin').forEach(c=>c.onclick=()=>{imiMove([c],tray);chime();wire()});tray.querySelectorAll('.sh-coin').forEach(c=>c.onclick=()=>{imiMove([c],bk);wire()})};
-    wire();go.hidden=false;
+    wire();go.hidden=false;shDemoPlan('pay');
     if(five&&sh.n===0)$('#sh-ask').textContent='5えんだまは 1えんだま 5まいと おなじ だよ';
     go.onclick=()=>{
       const v=sum();
