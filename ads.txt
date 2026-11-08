@@ -1,0 +1,31 @@
+# ゲームの中の広告の画面の名前（の一部）。見守りがこの画面を見つけたら「戻る」を押して閉じる。
+# アプリの「アップデート」でも新しくなる。1行に1つ。# のあとはメモ。
+ads.AdActivity          # Google AdMob
+AdUnitActivity          # Unity Ads
+unity3d.ads
+unity3d.services
+applovin                # AppLovin / MAX
+ironsource              # ironSource / LevelPlay
+vungle                  # Vungle / Liftoff
+AudienceNetwork         # Meta (Facebook) Audience Network
+facebook.ads
+openadsdk               # Pangle (TikTok)
+bytedance
+pangle
+mbridge                 # Mintegral
+mintegral
+chartboost
+inmobi
+fyber                   # Fyber / Digital Turbine
+startapp
+adcolony
+my.target
+yandex.mobile.ads
+tapjoy
+smaato
+bigo.ads
+InterstitialActivity
+RewardedActivity
+RewardedVideoActivity
+FullscreenAdActivity
+FullScreenAdActivity
