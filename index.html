@@ -3283,7 +3283,7 @@ $('#to-parent').onclick=()=>{show('parent');$('#pin-box').hidden=false;$('#paren
 $('#pin-ok').onclick=()=>{
   if($('#pin-in').value===S.pin){
     $('#pin-box').hidden=true;$('#parent-panel').hidden=false;wuInit();$('#set-per').value=S.cardMin;$('#set-cap').value=S.cap;$('#set-name').value=S.name||'';$('#set-birth').value=S.birth||'';renderParentMedia();$('#set-luck').value=S.luck;$('#set-rbonus').value=S.rBonus;$('#set-tklv').value=String(clkLv());$('#set-kmlv').value=String(kmLv());{const sel=$('#set-calc');if(!sel.options.length)CALC.forEach((L,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'：'+L[0];sel.appendChild(o)});sel.value=String(calcLv())}$('#set-rblv').value=String(rbLv());$('#set-emin').value=S.eMin;$('#set-egive').value=S.eGive;$('#earn-row1').hidden=$('#earn-row2').hidden=!(window.Android&&typeof window.Android.setEarnApps==='function');$('#set-pin').value='';
-    const nat=!!(window.Android&&typeof window.Android.openSettings==='function');$('#sys-settings').hidden=!nat;$('#app-mgr-btn').hidden=!nat;$('#sys-update').hidden=!nat;document.querySelector('[data-arm="release"]').hidden=!nat;$('#app-row').hidden=!nat;$('#sys-acc').hidden=!nat;$('#sys-clearerr').hidden=!nat;$('#sys-ads').hidden=!(window.Android&&typeof window.Android.adReport==='function');$('#sys-voice').hidden=!nat;$('#fam-pick').hidden=!nat;$('#sys-store').hidden=!nat;$('#bk-box').hidden=!nat;$('#diag-info').hidden=!nat;if(nat){try{$('#diag-info').textContent='落ちたときの記録\n'+window.Android.diagLog()}catch(e){}try{$('#set-app').value=window.Android.getVideoApp()}catch(e){}}parentInfo();
+    const nat=!!(window.Android&&typeof window.Android.openSettings==='function');$('#sys-settings').hidden=!nat;$('#app-mgr-btn').hidden=!nat;$('#sys-update').hidden=!nat;document.querySelector('[data-arm="release"]').hidden=!nat;$('#app-row').hidden=!nat;$('#sys-acc').hidden=!nat;$('#sys-clearerr').hidden=!nat;$('#sys-ads').hidden=!(window.Android&&typeof window.Android.adReport==='function');$('#sys-voice').hidden=!nat;$('#fam-pick').hidden=!nat;$('#sys-store').hidden=!nat;$('#bk-box').hidden=!nat;$('#diag-info').hidden=!nat;if(nat){try{$('#diag-info').textContent='落ちたとき・縦のアプリを開いたときの記録\n'+window.Android.diagLog()}catch(e){}try{$('#set-app').value=window.Android.getVideoApp()}catch(e){}}parentInfo();
   }else $('#pin-err').textContent='暗証番号が違います';
 };
 $('#set-per').onchange=e=>{const v=Math.min(60,Math.max(1,parseInt(e.target.value)||10));S.cardMin=v;e.target.value=v;save()};
@@ -3312,7 +3312,7 @@ $('#sys-ads').onclick=()=>{
     const cp=document.createElement('button');cp.className='btn ghost';cp.textContent='コピーする';cp.onclick=()=>{t.select();try{document.execCommand('copy');cp.textContent='コピーしました'}catch(e){}};b.appendChild(cp);
   }catch(e){b.textContent='記録を読めませんでした（Androidアプリ版で使えます）'}
 };
-$('#sys-clearerr').onclick=()=>{try{window.Android.clearError();$('#diag-info').textContent='落ちたときの記録\n'+window.Android.diagLog();parentInfo()}catch(e){}};
+$('#sys-clearerr').onclick=()=>{try{window.Android.clearError();$('#diag-info').textContent='落ちたとき・縦のアプリを開いたときの記録\n'+window.Android.diagLog();parentInfo()}catch(e){}};
 $('#sys-acc').onclick=()=>{try{window.Android.openAccessibility()}catch(e){}};
 $('#sys-update').onclick=()=>{try{window.Android.openUpdate()}catch(e){}};
 $('#sys-store').onclick=()=>{try{window.Android.openStore()}catch(e){}};
