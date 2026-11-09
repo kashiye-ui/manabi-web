@@ -516,6 +516,20 @@ main>section:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:
   .btn{min-height:48px}
 }
 .mg-row{display:flex;gap:6vw;justify-content:center;font-size:min(18vh,120px);line-height:1;margin-top:8px}
+.mg-week{display:flex;gap:4px;justify-content:center;margin-top:8px}
+.mg-week span{width:min(7vh,48px);height:min(7vh,48px);display:grid;place-items:center;border-radius:12px;background:var(--surface);border:2px solid var(--line);font-family:var(--font-display);font-size:min(3.8vh,26px);color:var(--ink)}
+.mg-week span.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.mg-grid{display:grid;grid-template-columns:repeat(3,min(13vh,90px));grid-auto-rows:min(13vh,90px);gap:6px;justify-content:center;margin-top:6px}
+.mg-grid span{display:grid;place-items:center;border-radius:14px;background:var(--surface);border:2px solid var(--line);font-size:min(9.5vh,64px);line-height:1}
+.mg-grid span.on{border-color:var(--accent);border-width:4px}
+.mg-cal{display:grid;grid-template-columns:repeat(7,min(8vh,54px));grid-auto-rows:min(5.6vh,38px);gap:3px;justify-content:center;margin-top:6px}
+.mg-cal span{display:grid;place-items:center;border-radius:8px;background:var(--surface);font-family:var(--font-display);font-size:min(3.8vh,26px);color:var(--ink)}
+.mg-cal span.h{background:none;color:var(--muted)}
+.mg-cal span.e{background:none}
+.mg-cal span.on{background:var(--accent);color:var(--accent-ink)}
+.mg-face{display:flex;align-items:center;justify-content:center;gap:2vw;margin-top:6px;font-size:min(12vh,80px);line-height:1}
+.mg-face .who{font-size:min(20vh,130px)}
+.mg-face img{height:min(24vh,160px);width:auto;object-fit:contain}
 /* スタンプカード：ちがう ゲームを 3つ やると チケット */
 .card3{display:flex;align-items:center;gap:8px;background:var(--surface);border:3px solid var(--line);border-radius:20px;padding:6px 12px;margin-bottom:10px}
 .cs{width:min(9vh,64px);height:min(9vh,64px);flex:none;border-radius:50%;border:3px dashed var(--line);display:grid;place-items:center;font-size:min(5.4vh,38px);line-height:1}
@@ -1259,14 +1273,21 @@ let Q=null;
 function qStart(game,item,lv){sayCut();Q={game,item:String(item),lv:lv|0,t:Date.now(),miss:0,hint:0}}
 function qMiss(){if(Q)Q.miss++}
 function qHint(){if(Q)Q.hint=1}
-// だんかいの すすみかた（どの ゲームも おなじ）：5もん ぜんぶ 1かいで せいかいの かいが 2かい つづいたら つぎへ。
-// あてずっぽうで あたっても すすまない。まちがいが 3もん いじょうの かいが 2かい つづいたら ひとつ もどる
+// だんかいの すすみかた（どの ゲームも おなじ・2026-11-10 かえた）：10もんの うち 9もん いじょう 1かいで せいかいなら つぎへ。
+// 10もんには つぎの だんかいの「ちょうせん」が 2もん はいるので、ちょうせんも できないと すすまない（あてずっぽうでは すすまない）。
+// まちがいが 5もん いじょうの かいが 2かい つづいたら ひとつ もどる。ねらいは せいかいりつ 7〜8わり
 let sessMiss=0;
+// 1かい 10もんの うちわけ：1もんめ＝まえの だんかい（ふくしゅう）、4・8もんめ＝つぎの だんかい（ちょうせん）、のこり 7もん＝いまの だんかい
+const QPLAN=[-1,0,0,1,0,0,0,1,0,0];
+function qLvAt(base,n,len){const v=base+(QPLAN[n]||0);return v<0||v>len-1?base:v}
+const qTag=(base,lv)=>lv>base?'⭐ちょうせん ':lv<base?'ふくしゅう ':'';
+function qChal(base,lv){if(lv>base)say('ちょうせん もんだい！')}
 function lvGet(k,n){S.lv=S.lv||{};const o=S.lv[k]=S.lv[k]||{lv:0,good:0,bad:0};return Math.min(o.lv,n-1)}
 function lvEnd(k,names){
   lvGet(k,names.length);const o=S.lv[k],top=o.lv>=names.length-1;let msg='';
-  if(sessMiss===0){o.good++;o.bad=0;if(!top&&o.good>=2){o.lv++;o.good=0;msg='レベル アップ！ つぎは「'+names[o.lv]+'」'}else if(!top)msg='あと 1かいで レベル アップ！'}
-  else{o.good=0;if(sessMiss>=3){o.bad++;if(o.bad>=2&&o.lv>0){o.lv--;o.bad=0}}else o.bad=0}
+  o.good=0;
+  if(sessMiss<=1){o.bad=0;if(!top){o.lv++;msg='レベル アップ！ つぎは「'+names[o.lv]+'」'}}
+  else{if(sessMiss>=5){o.bad++;if(o.bad>=2&&o.lv>0){o.lv--;o.bad=0}}else o.bad=0;if(sessMiss<=3&&!top)msg='もうすこし！ 9もん できたら レベル アップ'}
   save();return msg;
 }
 function qDone(){if(!Q)return;rec(Q.game,Q.item,Q.miss===0,Date.now()-Q.t,Q.miss,Q.lv,Q.hint);Q=null}
@@ -2004,17 +2025,18 @@ function threeChoices(ans,lo,hi){const set=new Set([ans]);let guard=0;while(set.
 function nextQ(){
   if(qn>=QN){if(qKey==='math')finish('math',calcEnd());else finish(qKey,QLV[qKey]?lvEnd(qKey,QLV[qKey]):'');return}
   if(midBreak(qKey,qn,nextQ))return;
-  $('#quiz-step').textContent=(qKey==='math'?CALC[calc.lv][0]+'　':QLV[qKey]?QLV[qKey][lvGet(qKey,QLV[qKey].length)]+'　':'')+(qn+1)+' / '+QN;
+  const qb=qKey==='math'?calc.lv:QLV[qKey]?lvGet(qKey,QLV[qKey].length):0,ql=qKey==='math'?calcQLv(qn):QLV[qKey]?qLvAt(qb,qn,QLV[qKey].length):0;
+  $('#quiz-step').textContent=qTag(qb,ql)+(qKey==='math'?CALC[ql][0]+'　':QLV[qKey]?QLV[qKey][ql]+'　':'')+(qn+1)+' / '+QN;qChal(qb,ql);
   const box=$('#quiz-choices'),q=$('#quiz-q');box.innerHTML='';box.className='choices';
   let ans,opts,speak;
   if(qKey==='math'){
-    const L=CALC[calc.lv],c=calcGen(L,qn),sub=c.op==='sub',a=c.a,b=c.b;ans=sub?a-b:a+b;calc.cur={a,b,sub};
+    const L=CALC[ql],c=calcGen(L,qn),sub=c.op==='sub',a=c.a,b=c.b;ans=sub?a-b:a+b;calc.cur={a,b,sub};calc.ql=ql;
     const op=sub?'−':'＋';
     const e1=FRUITS[rnd(FRUITS.length)];let e2=FRUITS[rnd(FRUITS.length)];while(e2===e1)e2=FRUITS[rnd(FRUITS.length)];
     q.innerHTML='<div class="eq">'+a+' '+op+' '+b+' ＝ ？</div>'+(L[1]==='pic'?'<div class="dots"><span class="g em">'+e1.repeat(a)+'</span><span>'+op+'</span><span class="g em">'+e2.repeat(b)+'</span></div>':'');
-    opts=threeChoices(ans,0,10);speak=numToJa(a)+(sub?'ひく':'たす')+numToJa(b)+'は';qStart('math',a+(sub?'-':'+')+b,calc.lv+1);
+    opts=threeChoices(ans,0,10);speak=numToJa(a)+(sub?'ひく':'たす')+numToJa(b)+'は';qStart('math',a+(sub?'-':'+')+b,ql+1);
   }else if(qKey==='howmany'){
-    const lv=lvGet('howmany',QLV.howmany.length),mx=[3,5,5,10,10,8,20][lv],lo=lv===6?11:lv>=3?4:1;
+    const lv=ql,mx=[3,5,5,10,10,8,20][lv],lo=lv===6?11:lv>=3?4:1;
     ans=lo+rnd(mx-lo+1);
     const em=FRUITS[rnd(FRUITS.length)];let em2=FRUITS[rnd(FRUITS.length)];while(em2===em)em2=FRUITS[rnd(FRUITS.length)];
     let body,ask='ぜんぶで いくつ？';
@@ -2024,7 +2046,7 @@ function nextQ(){
     q.innerHTML='<div class="ask">'+ask+'</div>'+body;
     opts=threeChoices(ans,1,Math.max(mx,4));speak=lv===5?'この くだものは いくつ あるかな':'いくつ あるかな';qStart('howmany',ans,lv+1);
   }else{
-    const lv=lvGet('compare',QLV.compare.length),mx=[5,5,10,10,20,50,100][lv],pic=lv===0||lv===2;
+    const lv=ql,mx=[5,5,10,10,20,50,100][lv],pic=lv===0||lv===2;
     const a=1+rnd(mx);let b=a;while(b===a)b=1+rnd(mx);
     ans=Math.max(a,b);
     q.innerHTML='<div class="ask">'+(pic?'おおいほうを タッチ！':'おおきいほうを タッチ！')+'</div>';
@@ -2067,7 +2089,10 @@ const CALC=[
 function calcLv(){if(!S.calc){const old=(S.plays||{}).math|0||(S.plays||{}).imi|0;S.calc={lv:old?1:0,good:0,bad:0}}return Math.min(S.calc.lv,CALC.length-1)}
 let calc={n:0,miss:0,times:[],lv:0,last:''};
 // その だんかいの もんだいを 1つ つくる（まえと おなじ もんだいは さける）
+// けいさんの ちょうせん・ふくしゅう：じゅんばんに だす だんかい（seq）と くだもので かぞえる だんかい（imi）は まぜない
+function calcQLv(n){const b=calc.lv,v=qLvAt(b,n,CALC.length),ok=L=>L[1]!=='imi'&&!L[4];return ok(CALC[b])&&ok(CALC[v])?v:b}
 function calcGen(L,i){
+  i=i%5; // じゅんばんの だんかいは 5もんで ひとまわり（10もんでも こたえが 10を こえない）
   // じゅんばんに だす だんかい：i もんめ（0〜4）で きまる
   if(L[4]==='seq'){
     if(L[2]==='to1')return {op:'add',a:1,b:i+1};
@@ -2086,7 +2111,7 @@ function calcGen(L,i){
 // じゅんばんの だんかいでは、こたえの あとに 0〜10 の かずの せんで、どこから どこへ うごいたか みせる
 const NAN=['','ひとつ','ふたつ','みっつ','よっつ','いつつ'];
 function calcLine(host,c){
-  const L=CALC[calc.lv];if(!c||L[4]!=='seq')return false;
+  const L=CALC[calc.ql!=null?calc.ql:calc.lv];if(!c||L[4]!=='seq')return false;
   const r=c.sub?c.a-c.b:c.a+c.b,w=document.createElement('div');w.className='nline';
   for(let n=0;n<=10;n++){const d=document.createElement('span');d.textContent=n;if(n===c.a)d.className='from';if(n===r)d.className='to';if(n>Math.min(c.a,r)&&n<Math.max(c.a,r))d.className='way';w.appendChild(d)}
   host.appendChild(w);
@@ -2094,7 +2119,7 @@ function calcLine(host,c){
   return true;
 }
 function startCalc(){
-  comboN=0;calc={n:0,miss:0,times:[],lv:calcLv(),last:''};
+  comboN=0;calc={n:0,miss:0,times:[],lv:calcLv(),last:'',ql:null};
   const L=CALC[calc.lv];
   if(L[1]==='imi'){imi={n:0,list:Array.from({length:5},(_,i)=>calcGen(L,i)),calc:true};show('imi');nextImi()}
   else{qKey='math';qn=0;show('quiz');nextQ()}
@@ -2103,16 +2128,13 @@ function startCalc(){
 function calcNote(){if(!Q||Q.game!=='math')return;if(Q.miss)calc.miss++;calc.times.push((Date.now()-Q.t)/1000)}
 function calcEnd(){
   const C=S.calc,L=CALC[calc.lv],avg=calc.times.length?calc.times.reduce((x,y)=>x+y,0)/calc.times.length:99,goal=L[1]==='pic'?8:6;
-  const perfect=calc.miss===0,fast=L[1]==='imi'||avg<=goal,top=C.lv>=CALC.length-1;
-  let msg='';
-  if(perfect&&fast){
-    C.good=(C.good|0)+1;C.bad=0;
-    if(!top&&(C.good>=2||(L[1]!=='imi'&&avg<=goal*.6))){C.lv++;C.good=0;msg='レベル アップ！ つぎは「'+CALC[C.lv][0]+'」'}
-    else if(!top)msg='あと 1かいで レベル アップ！';
-  }else{
-    C.good=0;
-    if(calc.miss>=3){C.bad=(C.bad|0)+1;if(C.bad>=2&&C.lv>0){C.lv--;C.bad=0}}else C.bad=0;
-    if(perfect)msg='ぜんぶ せいかい！ つぎは もうすこし はやく できるかな';
+  // 9もん いじょう 1かいで せいかい（くだものの だんかいは 5もんなので まちがい 0）＋ はやさで つぎへ（2026-11-10）
+  const good=calc.miss<=(L[1]==='imi'?0:1),fast=L[1]==='imi'||avg<=goal,top=C.lv>=CALC.length-1;
+  let msg='';C.good=0;
+  if(good&&fast){C.bad=0;if(!top){C.lv++;msg='レベル アップ！ つぎは「'+CALC[C.lv][0]+'」'}}
+  else{
+    if(calc.miss>=5){C.bad=(C.bad|0)+1;if(C.bad>=2&&C.lv>0){C.lv--;C.bad=0}}else C.bad=0;
+    if(good)msg='よく できたね！ つぎは もうすこし はやく できるかな';
   }
   save();return msg;
 }
@@ -2725,9 +2747,9 @@ function shChoices(ans,after){
   });
 }
 function shEnd(){
-  const C=S.shop;let msg='';
-  if(sh.miss===0){C.good=(C.good|0)+1;C.bad=0;if(C.lv<SHOP.length-1&&C.good>=2){C.lv++;C.good=0;msg='レベル アップ！ つぎは「'+SHOP[C.lv][0]+'」'}else if(C.lv<SHOP.length-1)msg='あと 1かいで レベル アップ！'}
-  else{C.good=0;if(sh.miss>=3){C.bad=(C.bad|0)+1;if(C.bad>=2&&C.lv>0){C.lv--;C.bad=0}}else C.bad=0}
+  const C=S.shop;let msg='';C.good=0;
+  if(sh.miss<=1){C.bad=0;if(C.lv<SHOP.length-1){C.lv++;msg='レベル アップ！ つぎは「'+SHOP[C.lv][0]+'」'}}
+  else{if(sh.miss>=5){C.bad=(C.bad|0)+1;if(C.bad>=2&&C.lv>0){C.lv--;C.bad=0}}else C.bad=0}
   save();return msg;
 }
 // おてほん：ゆびが うごいて「ここを タッチ」を みせる。steps は [{el:おす もの, to:どこへ いくか（なくても よい）}]
@@ -2771,14 +2793,15 @@ function nextShop(){
   demoClear();clearTimeout(sh.idleT);
   if(sh.n>=QN){finish('shop',shEnd());return}
   if(midBreak('shop',sh.n,nextShop))return;
-  const L=SHOP[sh.lv],g=SHOP_G[rnd(SHOP_G.length)],shelf=$('#sh-shelf'),bk=$('#sh-basket'),tray=$('#sh-tray'),go=$('#sh-go');
-  $('#sh-step').textContent=L[0]+'　'+(sh.n+1)+' / '+QN;
+  const sb=sh.lv,sq=sb>=3?Math.max(3,qLvAt(sb,sh.n,SHOP.length)):sb; // はじめの 3つ（じゅんばんに だす）は まぜない
+  const L=SHOP[sq],g=SHOP_G[rnd(SHOP_G.length)],shelf=$('#sh-shelf'),bk=$('#sh-basket'),tray=$('#sh-tray'),go=$('#sh-go');
+  $('#sh-step').textContent=qTag(sb,sq)+L[0]+'　'+(sh.n+1)+' / '+QN;qChal(sb,sq);
   shelf.innerHTML='';bk.innerHTML='';tray.innerHTML='';tray.hidden=true;go.hidden=true;$('#sh-choices').innerHTML='';$('#sh-choices').hidden=true;$('#sh-ask').textContent='';
   $('#v-shop').classList.toggle('pay',L[1].startsWith('pay'));
   sh.qm=0;bk.classList.toggle('wallet',L[1].startsWith('pay'));
   if(L[1]==='add'){
     // かごに a こ。おみせの ひとが「もう b こ どうぞ」→ たなから b こ いれる → いくつ？
-    const b=L[2],a=sh.n%5+1;qStart('shop',a+'+'+b,sh.lv+1);
+    const b=L[2],a=sh.n%5+1;qStart('shop',a+'+'+b,sq+1);
     for(let i=0;i<a;i++)bk.appendChild(shItem(g));
     for(let i=0;i<6;i++)shelf.appendChild(shItem(g));
     shSay('おまけ '+b+'こ どうぞ！');say(shRole()+'が おまけを '+KO[b]+' くれるって！ たなから '+KO[b]+'、かごに いれてね');shDemoPlan('add');
@@ -2789,7 +2812,7 @@ function nextShop(){
     });
   }else if(L[1]==='sub'){
     // かごに a こ。かぞくが 1こ たべたい → かごから 1こ あげる → のこりは？（さいごは 0）
-    const b=L[2],a=5-sh.n%5;qStart('shop',a+'-'+b,sh.lv+1);
+    const b=L[2],a=5-sh.n%5;qStart('shop',a+'-'+b,sq+1);
     for(let i=0;i<a;i++)bk.appendChild(shItem(g));
     shSay(KO[b]+' たべたいな！');say(shRole()+'が '+KO[b]+' たべたいって。かごから '+KO[b]+' あげてね');shDemoPlan('sub');
     let e=0;
@@ -2807,7 +2830,7 @@ function nextShop(){
     });
   }else if(L[1]==='make'){
     // 「N こに なるように いれてね」：じぶんで かぞえて いれる。いれすぎたら かごから もどせる
-    const N=3+rnd(5),a=1+rnd(N-2);qStart('shop','make'+N+'from'+a,sh.lv+1);
+    const N=3+rnd(5),a=1+rnd(N-2);qStart('shop','make'+N+'from'+a,sq+1);
     for(let i=0;i<a;i++)bk.appendChild(shItem(g));
     for(let i=0;i<8;i++)shelf.appendChild(shItem(g));
     shSay(N+'こ ください！');$('#sh-ask').textContent='かごの なかが '+N+'こに なるように いれてね';say(KO[N]+'に なるように いれてね。できたら、できたを おしてね');
@@ -2820,7 +2843,7 @@ function nextShop(){
     };
   }else{
     // おかね：「P えん です」→ さいふの こうかを トレーに だして はらう
-    const five=L[1]==='pay5',P=five?5+rnd(5):1+rnd(5);qStart('shop','pay'+P+(five?'(5)':''),sh.lv+1);
+    const five=L[1]==='pay5',P=five?5+rnd(5):1+rnd(5);qStart('shop','pay'+P+(five?'(5)':''),sq+1);
     const goods=document.createElement('div');goods.className='sh-goods';goods.innerHTML='<span>'+g+'</span><b>'+P+'えん</b>';shelf.appendChild(goods);
     shSay(g+' は '+P+'えん です');say(numToJa(P)+'えん です。おかねを はらってね');
     tray.hidden=false;
@@ -2855,14 +2878,15 @@ function ktCard(ch){const b=document.createElement('button');b.className='kt-car
 function nextKotoba(){
   if(kt.n>=QN){finish('kotoba',lvEnd('kotoba',KT_L));return}
   if(midBreak('kotoba',kt.n,nextKotoba))return;
-  const [w,g]=kt.list[kt.n],chars=[...w];kt.w=w;kt.pos=0;
-  qStart('kotoba',w,kt.lv+1);
-  $('#kt-step').textContent=KT_L[kt.lv]+'　'+(kt.n+1)+' / '+QN;
+  const kl=qLvAt(kt.lv,kt.n,KT_L.length),kp=KT_POOL(kl);
+  const [w,g]=kl===kt.lv?kt.list[kt.n]:kp[rnd(kp.length)],chars=[...w];kt.w=w;kt.pos=0;
+  qStart('kotoba',w,kl+1);qChal(kt.lv,kl);
+  $('#kt-step').textContent=qTag(kt.lv,kl)+KT_L[kl]+'　'+(kt.n+1)+' / '+QN;
   $('#kt-pic').textContent=g;
   const slots=$('#kt-slots'),cards=$('#kt-cards');slots.innerHTML='';cards.innerHTML='';
   chars.forEach(()=>{const s=document.createElement('span');s.className='kt-slot';slots.appendChild(s)});
   let deck;
-  if(kt.lv===0){
+  if(kl===0){
     // はじめの もじ：ただしい もじと、ちがう もじ 1つ
     let other;do{other=HIRA[rnd(44)][0]}while(other===chars[0]||chars.includes(other));
     deck=shuffle([chars[0],other]);
@@ -2870,7 +2894,7 @@ function nextKotoba(){
     say(w+'。はじめの もじは どれかな');
   }else{
     deck=chars.slice();
-    if(kt.lv===3){let other;do{other=HIRA[rnd(44)][0]}while(chars.includes(other));deck.push(other)}
+    if(kl===3){let other;do{other=HIRA[rnd(44)][0]}while(chars.includes(other));deck.push(other)}
     deck=shuffle(deck);
     say(w+'。もじを ならべてね');
   }
@@ -2880,9 +2904,9 @@ function nextKotoba(){
       if(b.disabled)return;
       if(ch===chars[kt.pos]){
         const s=slots.children[kt.pos];s.textContent=ch;s.classList.add('on');b.disabled=true;b.classList.add('used');chime();kt.pos++;
-        if(kt.lv===0||kt.pos>=chars.length){
+        if(kl===0||kt.pos>=chars.length){
           cards.querySelectorAll('.kt-card').forEach(x=>x.disabled=true);
-          if(kt.lv===0)slots.querySelectorAll('.kt-slot').forEach(x=>x.classList.add('on'));
+          if(kl===0)slots.querySelectorAll('.kt-slot').forEach(x=>x.classList.add('on'));
           say(w+'。'+praiseText());combo();
           setTimeout(()=>{kt.n++;nextKotoba()},2400);
         }
@@ -2919,29 +2943,31 @@ function nextNakama(){
   if(nk.n>=QN){finish('nakama',lvEnd('nakama',NK_L));return}
   if(midBreak('nakama',nk.n,nextNakama))return;
   const box=$('#quiz-choices'),q=$('#quiz-q');box.innerHTML='';box.className='choices';
-  $('#quiz-step').textContent=NK_L[nk.lv]+'　'+(nk.n+1)+' / '+QN;
+  const nl=qLvAt(nk.lv,nk.n,NK_L.length);qChal(nk.lv,nl);
+  $('#quiz-step').textContent=qTag(nk.lv,nl)+NK_L[nl]+'　'+(nk.n+1)+' / '+QN;
   const done=(bt,text)=>{bt.classList.add('good');box.style.pointerEvents='none';chime();say('せいかい！ '+praiseText());if(text)say(text);combo();nk.n++;setTimeout(()=>{box.style.pointerEvents='';box.style.gridTemplateColumns='';nextNakama()},text?3600:2400)};
   const miss=bt=>{bt.classList.add('shake');setTimeout(()=>bt.classList.remove('shake'),400);say(oshii())};
-  if(nk.lv<3){
+  if(nl<3){
     // なかまはずれ：4つの うち 1つだけ ちがう
     let items,odd,why='';
-    if(nk.lv===0){
+    if(nl===0){
       const cats=Object.keys(NK_CAT),c=NK_CAT[cats[rnd(cats.length)]],same=c[rnd(c.length)];let o;do{o=c[rnd(c.length)]}while(o===same);
       items=[same,same,same];odd=o;qStart('nakama','same '+same+' '+o,1);
       $('#quiz-q').innerHTML='<div class="ask">ひとつだけ ちがうのは どれかな？</div>';say('ひとつだけ ちがうのは どれかな');
     }else{
-      const pr=(nk.lv===1?NK_FAR:NK_NEAR)[rnd(6)],main=NK_CAT[pr[0]],oc=NK_CAT[pr[1]];
-      items=shuffle(main.slice()).slice(0,3);odd=oc[rnd(oc.length)];qStart('nakama',pr[0]+'/'+pr[1],nk.lv+1);
+      const pr=(nl===1?NK_FAR:NK_NEAR)[rnd(6)],main=NK_CAT[pr[0]],oc=NK_CAT[pr[1]];
+      items=shuffle(main.slice()).slice(0,3);odd=oc[rnd(oc.length)];qStart('nakama',pr[0]+'/'+pr[1],nl+1);
       why='ほかは みんな '+pr[0]+'の なかま。これは '+pr[1]+'だね';
       $('#quiz-q').innerHTML='<div class="ask">なかまはずれは どれかな？</div>';say('なかまはずれは どれかな');
     }
     box.style.gridTemplateColumns='repeat(4,minmax(0,1fr))';
     shuffle(items.concat([odd]).map((g,i)=>({g,odd:i===3}))).forEach(o=>{
-      const bt=nkBtn(o.g);bt.onclick=()=>o.odd?done(bt,nk.lv?why:'ひとつだけ ちがったね'):miss(bt);box.appendChild(bt);
+      const bt=nkBtn(o.g);bt.onclick=()=>o.odd?done(bt,nl?why:'ひとつだけ ちがったね'):miss(bt);box.appendChild(bt);
     });
   }else{
     // はんたいことば：ことばと えを みて、はんたいの ことばを えらぶ
-    const p=nk.list[nk.n];qStart('nakama','opp '+p[0],nk.lv+1);
+    const op=NK_OPP.slice(0,nl===3?4:NK_OPP.length),r0=op[rnd(op.length)];
+    const p=nl===nk.lv?nk.list[nk.n]:rnd(2)?r0:[r0[2],r0[3],r0[0],r0[1]];qStart('nakama','opp '+p[0],nl+1);
     const others=shuffle(NK_OPP.filter(x=>x[0]!==p[0]&&x[2]!==p[0]&&x[0]!==p[2]&&x[2]!==p[2])).slice(0,2).map(x=>rnd(2)?[x[0],x[1]]:[x[2],x[3]]);
     q.innerHTML='<div class="ask">「'+p[0]+'」の はんたいは どれかな？</div><div class="pic"></div>';q.querySelector('.pic').textContent=p[1];
     say(p[0]+'の はんたいは どれかな');
@@ -2953,10 +2979,16 @@ function nextNakama(){
 }
 
 /* ---- migi みぎ・ひだり、カレンダー：むきと じかんの じゅんばん
-   だんかい：みぎと ひだり → なにの みぎ？ → ようびの じゅんばん → きのう・きょう・あした（ほんとうの ひづけ）→ きせつ ---- */
-const MG_L=['みぎと ひだり','なにの みぎ？','ようびの じゅんばん','きのう・きょう・あした','きせつ'];
+   だんかい：みぎと ひだり → なにの みぎ？ → ようびの じゅんばん → きのう・きょう・あした（ほんとうの ひづけ）→ きせつ
+   → なんにち あと（ようび）→ つきの じゅんばん → マスの うえ・した・みぎ・ひだり → カレンダーを よむ → むかいあった ひとの みぎ（2026-11-10 たした） ---- */
+const MG_L=['みぎと ひだり','なにの みぎ？','ようびの じゅんばん','きのう・きょう・あした','きせつ','なんにち あと？','つきの じゅんばん','マスの うえ・した・みぎ・ひだり','カレンダーを よむ','むかいあった ひとの みぎ'];
 const MG_ANI=[['いぬ','🐶'],['ねこ','🐱'],['うさぎ','🐰'],['くま','🐻'],['ぱんだ','🐼'],['ぞう','🐘']];
-const WD=['にちようび','げつようび','かようび','すいようび','もくようび','きんようび','どようび'],WDK='日月火水木金土';
+const MG_GRID=[['いぬ','🐶'],['ねこ','🐱'],['うさぎ','🐰'],['くま','🐻'],['ぱんだ','🐼'],['ぞう','🐘'],['ぶた','🐷'],['かえる','🐸'],['ひよこ','🐥']];
+const MG_MON=['いちがつ','にがつ','さんがつ','しがつ','ごがつ','ろくがつ','しちがつ','はちがつ','くがつ','じゅうがつ','じゅういちがつ','じゅうにがつ'];
+const MG_DAY=['','ついたち','ふつか','みっか','よっか','いつか','むいか','なのか','ようか','ここのか','とおか','じゅういちにち','じゅうににち','じゅうさんにち','じゅうよっか','じゅうごにち','じゅうろくにち','じゅうしちにち','じゅうはちにち','じゅうくにち','はつか','にじゅういちにち','にじゅうににち','にじゅうさんにち','にじゅうよっか','にじゅうごにち','にじゅうろくにち','にじゅうしちにち','にじゅうはちにち','にじゅうくにち','さんじゅうにち','さんじゅういちにち'];
+const MG_HOLD=[['りんご','🍎'],['バナナ','🍌'],['ぶどう','🍇'],['いちご','🍓'],['ふうせん','🎈'],['ほん','📕']];
+const WD=['にちようび','げつようび','かようび','すいようび','もくようび','きんようび','どようび'];
+const WDK='日月火水木金土';
 const MG_SEASON={'はる':[['さくら','🌸'],['ちょうちょ','🦋'],['チューリップ','🌷']],'なつ':[['すいか','🍉'],['はなび','🎆'],['ひまわり','🌻']],'あき':[['もみじ','🍁'],['くり','🌰'],['さつまいも','🍠']],'ふゆ':[['ゆきだるま','⛄'],['クリスマス','🎄'],['てぶくろ','🧤']]};
 let mg={lv:0,n:0};
 function startMigi(){comboN=0;sessMiss=0;mg={lv:lvGet('migi',MG_L.length),n:0};qKey='migi';show('quiz');nextMigi()}
@@ -2965,18 +2997,19 @@ function nextMigi(){
   if(mg.n>=QN){finish('migi',lvEnd('migi',MG_L));return}
   if(midBreak('migi',mg.n,nextMigi))return;
   const box=$('#quiz-choices'),q=$('#quiz-q');box.innerHTML='';box.className='choices';
-  $('#quiz-step').textContent=MG_L[mg.lv]+'　'+(mg.n+1)+' / '+QN;
+  const ml=qLvAt(mg.lv,mg.n,MG_L.length);qChal(mg.lv,ml);
+  $('#quiz-step').textContent=qTag(mg.lv,ml)+MG_L[ml]+'　'+(mg.n+1)+' / '+QN;
   const done=(bt,text)=>{bt.classList.add('good');box.style.pointerEvents='none';chime();say('せいかい！ '+praiseText());if(text)say(text);combo();mg.n++;setTimeout(()=>{box.style.pointerEvents='';box.style.gridTemplateColumns='';nextMigi()},text?3400:2400)};
   const miss=bt=>{bt.classList.add('shake');setTimeout(()=>bt.classList.remove('shake'),400);say(oshii())};
   const ask=(t,v)=>{q.innerHTML='<div class="ask"></div>';q.firstChild.textContent=t;say(v||t)};
   const opts=(list,cols)=>{box.style.gridTemplateColumns='repeat('+(cols||list.length)+',minmax(0,1fr))';shuffle(list).forEach(([big,small,ok,why])=>{const bt=mgBtn(big,small);bt.onclick=()=>ok?done(bt,why):miss(bt);box.appendChild(bt)})};
-  if(mg.lv===0){
+  if(ml===0){
     // ⬅️ ➡️ だけ（もじは ださない）
     const r=rnd(2)===0;qStart('migi',r?'みぎ':'ひだり',1);
     ask((r?'みぎ':'ひだり')+'は どっち？',(r?'みぎ':'ひだり')+'は どっち');
     box.style.gridTemplateColumns='repeat(2,minmax(0,1fr))';
     [['⬅️',!r],['➡️',r]].forEach(([g,ok])=>{const bt=mgBtn(g);bt.onclick=()=>ok?done(bt,'おはしを もつ ほうが みぎだよ'):miss(bt);box.appendChild(bt)});
-  }else if(mg.lv===1){
+  }else if(ml===1){
     // 3びき ならんで、まんなかの みぎ／ひだり
     const row=shuffle(MG_ANI.slice()).slice(0,3),r=rnd(2)===0,ans=r?row[2]:row[0];qStart('migi',(r?'R ':'L ')+row[1][0],2);
     q.innerHTML='<div class="ask"></div><div class="mg-row"></div>';
@@ -2984,24 +3017,70 @@ function nextMigi(){
     row.forEach(a=>{const s=document.createElement('span');s.textContent=a[1];q.lastChild.appendChild(s)});
     say(row[1][0]+'の '+(r?'みぎ':'ひだり')+'に いるのは だれかな');
     opts(row.map(a=>[a[1],'',a===ans]));
-  }else if(mg.lv===2){
+  }else if(ml===2){
     // ようびの つぎ／まえ
     const d=rnd(7),next=rnd(2)===0,ans=(d+(next?1:6))%7;qStart('migi',(next?'next ':'prev ')+WD[d],3);
     ask(WD[d]+'の '+(next?'つぎ':'まえ')+'は？',WD[d]+'の '+(next?'つぎは':'まえは')+' なんようび');
     const set=[ans,...shuffle([0,1,2,3,4,5,6].filter(i=>i!==d&&i!==ans)).slice(0,2)];
     opts(set.map(i=>[WDK[i],WD[i],i===ans,WD[d]+'の '+(next?'つぎは ':'まえは ')+WD[ans]]));
-  }else if(mg.lv===3){
+  }else if(ml===3){
     // きょうの ほんとうの ようびから、きのう／あした
     const t=new Date().getDay(),k=rnd(2)===0?'あした':'きのう',ans=(t+(k==='あした'?1:6))%7;qStart('migi',k+' '+WD[t],4);
     ask('きょうは '+WD[t]+'。'+k+'は？','きょうは '+WD[t]+'。'+k+'は なんようび');
     const set=new Set([ans,t]);while(set.size<3)set.add(rnd(7));
     opts([...set].map(i=>[WDK[i],WD[i],i===ans,k+'は '+WD[ans]]));
-  }else{
+  }else if(ml===4){
     // きせつ：えを みて、どの きせつ？
     const ks=Object.keys(MG_SEASON),s=ks[rnd(4)],it=MG_SEASON[s][rnd(3)];qStart('migi','season '+it[0],5);
     q.innerHTML='<div class="ask"></div><div class="pic"></div>';q.firstChild.textContent=it[0]+'は どの きせつ？';q.lastChild.textContent=it[1];
     say(it[0]+'は どの きせつかな');
     opts(ks.map(x=>[x,'',x===s,it[0]+'は '+s]),4);
+  }
+  else if(ml===5){
+    // なんにち あと／まえ：ようびの ならびを みながら かぞえる
+    const d=rnd(7),k=2+rnd(2),next=rnd(3)>0,ans=(d+(next?k:7-k))%7,kj=MG_DAY[k];qStart('migi','days '+(next?'+':'-')+k+' '+WD[d],6);
+    q.innerHTML='<div class="ask"></div><div class="mg-week"></div>';q.firstChild.textContent=WD[d]+'の '+kj+' '+(next?'あと':'まえ')+'は？';
+    [...WDK].forEach((c,i)=>{const sp=document.createElement('span');sp.textContent=c;if(i===d)sp.className='on';q.lastChild.appendChild(sp)});
+    say(WD[d]+'の '+kj+' '+(next?'あとは':'まえは')+' なんようび');
+    const set=new Set([ans]);[(d+(next?1:6))%7,(d+(next?k+1:6-k))%7].forEach(x=>{if(x!==d)set.add(x)});while(set.size<3){const x=rnd(7);if(x!==d)set.add(x)}
+    opts([...set].map(i=>[WDK[i],WD[i],i===ans,WD[d]+'の '+kj+' '+(next?'あとは ':'まえは ')+WD[ans]]));
+  }else if(ml===6){
+    // つきの じゅんばん
+    const m=rnd(12),next=rnd(2)===0,ans=(m+(next?1:11))%12;qStart('migi','month '+(next?'next ':'prev ')+(m+1),7);
+    ask((m+1)+'がつの '+(next?'つぎ':'まえ')+'は？',MG_MON[m]+'の '+(next?'つぎは':'まえは')+' なんがつ');
+    const set=new Set([ans]);[(m+(next?11:1))%12,(m+(next?2:10))%12].forEach(x=>{if(x!==m)set.add(x)});while(set.size<3){const x=rnd(12);if(x!==m)set.add(x)}
+    opts([...set].map(i=>[(i+1)+'がつ','',i===ans,MG_MON[m]+'の '+(next?'つぎは ':'まえは ')+MG_MON[ans]]));
+  }else if(ml===7){
+    // 3×3の マス：だれの うえ・した・みぎ・ひだり
+    const g=shuffle(MG_GRID.slice()),dirs=[['うえ',-3],['した',3],['みぎ',1],['ひだり',-1]];
+    const nb=(c,v)=>{const x=c+v;return x>=0&&x<9&&!(Math.abs(v)===1&&Math.floor(x/3)!==Math.floor(c/3))};
+    let c,dn,dv;do{c=rnd(9);[dn,dv]=dirs[rnd(4)]}while(!nb(c,dv));
+    const tgt=c+dv;qStart('migi','grid '+dn,8);
+    q.innerHTML='<div class="ask"></div><div class="mg-grid"></div>';q.firstChild.textContent=g[c][1]+'の '+dn+'に いるのは だれ？';
+    g.forEach((a,i)=>{const sp=document.createElement('span');sp.textContent=a[1];if(i===c)sp.className='on';q.lastChild.appendChild(sp)});
+    say(g[c][0]+'の '+dn+'に いるのは だれかな');
+    const others=shuffle([-3,3,1,-1].filter(v=>v!==dv&&nb(c,v)).map(v=>c+v)).slice(0,2);
+    while(others.length<2){const x=rnd(9);if(x!==c&&x!==tgt&&!others.includes(x))others.push(x)}
+    opts([tgt,...others].map(i=>[g[i][1],'',i===tgt,dn+'に いるのは '+g[tgt][0]+'だね']));
+  }else if(ml===8){
+    // こんげつの カレンダーを よむ：なんにちは なんようび
+    const now=new Date(),y=now.getFullYear(),mo=now.getMonth(),first=new Date(y,mo,1).getDay(),days=new Date(y,mo+1,0).getDate();
+    const dd=1+rnd(days),ans=(first+dd-1)%7;qStart('migi','cal '+dd,9);
+    q.innerHTML='<div class="ask"></div><div class="mg-cal"></div>';q.firstChild.textContent=(mo+1)+'がつの カレンダー。'+dd+'にちは なんようび？';
+    const cal=q.lastChild,cell=(t,c)=>{const sp=document.createElement('span');sp.textContent=t;if(c)sp.className=c;cal.appendChild(sp)};
+    [...WDK].forEach(c=>cell(c,'h'));for(let i=0;i<first;i++)cell('','e');for(let i=1;i<=days;i++)cell(i,i===dd?'on':'');
+    say(MG_DAY[dd]+'は なんようび');
+    opts([ans,(ans+1)%7,(ans+6)%7].map(i=>[WDK[i],WD[i],i===ans,WD[ans]+'だね']));
+  }else{
+    // むかいあった ひとの みぎて：こちらから みて ひだりがわ。a＝その ひとの みぎて（がめんの ひだり）
+    const f=famPick(),[a,b]=shuffle(MG_HOLD.slice()).slice(0,2);qStart('migi','face '+a[0],10);
+    q.innerHTML='<div class="ask"></div><div class="mg-face"><span></span><span class="who"></span><span></span></div>';
+    q.firstChild.textContent='こっちを むいている '+(f?famRole(f):'ひと')+'の みぎてに あるのは？';
+    const fc=q.lastChild.children;fc[0].textContent=a[1];fc[2].textContent=b[1];
+    if(f){const im=document.createElement('img');im.src=f.url;im.alt='';if(f.cut)im.className='cutout';fc[1].appendChild(im)}else fc[1].textContent='🧍';
+    say('こっちを むいている ひとの みぎてに あるのは どっちかな');
+    box.style.gridTemplateColumns='repeat(2,minmax(0,1fr))';
+    shuffle([[a,true],[b,false]]).forEach(([x,ok])=>{const bt=mgBtn(x[1],x[0]);bt.onclick=()=>ok?done(bt,'むかいあうと、あいての みぎては こっちから みて ひだりがわ だよ'):miss(bt);box.appendChild(bt)});
   }
 }
 
@@ -3020,7 +3099,7 @@ const grEsc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;
 /* 年齢の目安（だんかいごと・さい）。小学校学習指導要領（1・2年で学ぶ内容）と、幼児の一般的な発達の目安から、このアプリが独自に決めたもの */
 const GR_AGE={
   math:[4.5,4.5,5,4.5,5, 5,5,5.5, 5.5,5.5, 5.5, 6,6,6.5, 5,5,5.5, 5.5,5.5,6, 6,6.5,6.5],
-  shop:[4.5,5,5,5.5,5.5,6.5], kotoba:[4,4.5,5,5.5,6], nakama:[3.5,4.5,5,5,6], migi:[5,6,5.5,5.5,5],
+  shop:[4.5,5,5,5.5,5.5,6.5], kotoba:[4,4.5,5,5.5,6], nakama:[3.5,4.5,5,5,6], migi:[5,6,5.5,5.5,5,6,6,6,6.5,7],
   eigo:[5,5.5,6,8], howmany:[3,3.5,4,4.5,5,5,5.5], compare:[3.5,4,4.5,5,5.5,6,6.5], tokei:[6,6.5,7.5],
   kimari:[4,4.5,5,5.5,6,7], robot:[3.5,4,4,4.5,5,5.5,6,7]};
 // かな・すうじ：「みて かく」で かける もじの わりあいで みる
@@ -3193,15 +3272,16 @@ function startEigo(){
 function nextEigo(){
   if(eg.n>=QN){finish('eigo',lvEnd('eigo',EIGO_L));return}
   if(midBreak('eigo',eg.n,nextEigo))return;
-  const w=eg.list[eg.n],k=[2,3,4,4][eg.lv];qStart('eigo',w.e,eg.lv+1);
-  $('#quiz-step').textContent=EIGO_L[eg.lv]+'　'+(eg.n+1)+' / '+QN;
+  const el=qLvAt(eg.lv,eg.n,EIGO_L.length),pool=el===eg.lv?eg.pool:WORDS.slice(0,[8,12,20,WORDS.length][el]);
+  const w=el===eg.lv?eg.list[eg.n]:pool[rnd(pool.length)],k=[2,3,4,4][el];qStart('eigo',w.e,el+1);qChal(eg.lv,el);
+  $('#quiz-step').textContent=qTag(eg.lv,el)+EIGO_L[el]+'　'+(eg.n+1)+' / '+QN;
   const box=$('#quiz-choices'),q=$('#quiz-q');box.innerHTML='';box.className='choices';box.style.gridTemplateColumns='repeat('+k+',minmax(0,1fr))';
   q.innerHTML='<div class="ask">えいごを きいて、えを えらんでね</div><button class="btn ghost" id="eg-play">🔊 もういちど きく</button>';
   $('#eg-play').onclick=()=>{qHint();egSay(w)};
-  const others=shuffle(eg.pool.filter(x=>x!==w&&x.e!==w.e&&x.g!==w.g)).slice(0,k-1);
+  const others=shuffle(pool.filter(x=>x!==w&&x.e!==w.e&&x.g!==w.g)).slice(0,k-1);
   shuffle([w].concat(others)).forEach(o=>{
     const bt=document.createElement('button');bt.className='choice eg-pic';
-    bt.innerHTML='<span></span>'+(eg.lv>=3?'<small></small>':'');bt.querySelector('span').textContent=o.g;if(eg.lv>=3)bt.querySelector('small').textContent=o.e;
+    bt.innerHTML='<span></span>'+(el>=3?'<small></small>':'');bt.querySelector('span').textContent=o.g;if(el>=3)bt.querySelector('small').textContent=o.e;
     bt.onclick=()=>{
       if(o===w){bt.classList.add('good');chime();say(w.j+'。'+(AIV()?w.e:w.k)+'。せいかい！ '+praiseText());combo();eg.n++;box.style.pointerEvents='none';setTimeout(()=>{box.style.pointerEvents='';box.style.gridTemplateColumns='';nextEigo()},2800)}
       else{bt.classList.add('shake');setTimeout(()=>bt.classList.remove('shake'),400);say(o.j+'。'+oshii())}
